@@ -1,0 +1,1 @@
+\usepackage[nameinlink]{cleveref} % nameInLink used on pandoc-crossref too (see cref option too)
