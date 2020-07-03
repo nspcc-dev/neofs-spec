@@ -917,7 +917,7 @@ $endif$
 
 $if(titlepage-background)$
 $else$
-\textsf{$if(released)$Released: $released$\\$endif$Build: $date$\\Revision: $version$}
+\textsf{$if(released)$Released: $released$\\$endif$Date: $date$\\Revision: $version$}
 $endif$
 \end{flushleft}
 \end{titlepage}

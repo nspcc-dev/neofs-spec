@@ -30,6 +30,8 @@ $(OUT_DIR)/$(PDF_NAME): | directories
 	-M version="$(VERSION)" \
 	--template=templates/eisvogel.latex \
 	-H templates/style.pandoc \
+	-F pandoc-crossref \
+	-F pandoc-plantuml \
 	--toc \
 	--listings \
  -o $@
