@@ -34,7 +34,7 @@ $(OUT_DIR)/$(PDF_NAME): | directories
 	-F pandoc-plantuml \
 	--toc \
 	--listings \
- -o $@
+	-o $@
 
 docker_image:
 	docker build -t 'nspcc/neofs-spec' .
