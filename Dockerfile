@@ -17,6 +17,7 @@ RUN apt-get update && \
   texlive-latex-extra \
   texlive-latex-recommended \
   texlive-xetex \
+  latexmk \
   openjdk-14-jre \
   wget
 

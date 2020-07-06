@@ -8,6 +8,7 @@ BUILD_DIR = build
 OUT_DIR = output
 
 PDF_NAME?= "neofs-spec-${VERSION}.pdf"
+TEX_NAME?= "neofs-spec-${VERSION}.tex"
 PARTS = $(shell find . -mindepth 2 -maxdepth 2 -type f -name '*.md' | sort)
 
 .PHONY: all directories clean
@@ -25,7 +26,6 @@ $(OUT_DIR):
 $(OUT_DIR)/$(PDF_NAME): | directories
 	pandoc \
 	$(PARTS) \
-	--pdf-engine=xelatex \
 	-M date="$(DATE)" \
 	-M version="$(VERSION)" \
 	--template=templates/eisvogel.latex \
@@ -34,7 +34,11 @@ $(OUT_DIR)/$(PDF_NAME): | directories
 	-F pandoc-plantuml \
 	--toc \
 	--listings \
-	-o $@
+	-o $(BUILD_DIR)/$(TEX_NAME) && \
+	latexmk -pdflatex='xelatex %O %S' \
+	-outdir=$(BUILD_DIR) \
+	-pdf $(BUILD_DIR)/$(TEX_NAME) && \
+	mv $(BUILD_DIR)/$(PDF_NAME) $@
 
 docker_image:
 	docker build -t 'nspcc/neofs-spec' .
