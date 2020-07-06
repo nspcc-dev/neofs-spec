@@ -11,4 +11,17 @@ toc-own-page: true
 
 # Introduction
 
-The specification describes technical details of NeoFS.
+## Overview
+
+
+## Terminology
+
+## Background
+
+## Technical Requirements
+
+## Out of Scope
+
+## Future Goals
+
+\newpage
