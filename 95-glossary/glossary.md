@@ -1,8 +1,8 @@
 # Terms and definitions
 
-
-NeoFS
- : **N**eoFS **E**xaggerative **O**bject **F**ile **S**torage
+Object
+ : The immutable piece of data with a metadata in form of a set of key-value
+ headers. Object has a globally unique identifier.
 
 <!-- Here comes generated glossary. See glossaries LaTeX package. -->
 <!-- https://www.overleaf.com/learn/latex/glossaries -->
