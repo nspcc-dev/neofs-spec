@@ -1,1 +1,5 @@
 \usepackage[nameinlink]{cleveref} % nameInLink used on pandoc-crossref too (see cref option too)
+\usepackage[toc,section=section]{glossaries}
+\loadglsentries[main]{95-glossary/glossary.tex}
+\makeglossaries
+

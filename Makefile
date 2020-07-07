@@ -35,7 +35,8 @@ $(OUT_DIR)/$(PDF_NAME): | directories
 	--toc \
 	--listings \
 	-o $(BUILD_DIR)/$(TEX_NAME) && \
-	latexmk -pdflatex='xelatex %O %S' \
+	latexmk -r 'templates/glossaries.latexmk' \
+	-pdflatex='xelatex %O %S' \
 	-outdir=$(BUILD_DIR) \
 	-pdf $(BUILD_DIR)/$(TEX_NAME) && \
 	mv $(BUILD_DIR)/$(PDF_NAME) $@
