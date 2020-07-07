@@ -15,9 +15,10 @@ generate the specification paper pdf.
 ## Build using docker
 The easiest way to build is by using docker.
 
-* Build the docker image using `make docker_image`
 * Compile the specification paper using `make docker_build`
 * Output will be generated as `output/neofs-spec-<revision>.pdf`
+
+You can build docker image locally with `make docker_image`
 
 ## How to contribute
 If you know NeoFS technology and want to contribute, feel free to directly

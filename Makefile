@@ -42,10 +42,10 @@ $(OUT_DIR)/$(PDF_NAME): | directories
 	mv $(BUILD_DIR)/$(PDF_NAME) $@
 
 docker_image:
-	docker build -t 'nspcc/neofs-spec' .
+	docker build -t 'nspccdev/neofs-spec' .
 
 docker_build:
-	docker run --rm -it -v `pwd`:/src -u `stat -c "%u:%g" .`  nspcc/neofs-spec:latest make
+	docker run --rm -it -v `pwd`:/src -u `stat -c "%u:%g" .` nspccdev/neofs-spec:latest make
 
 clean:
 	rm -rf $(BUILD_DIR)
