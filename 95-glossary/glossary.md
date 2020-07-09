@@ -1,3 +1,4 @@
+\newpage
 # Terms and definitions
 
 Object

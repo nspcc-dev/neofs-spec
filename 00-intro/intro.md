@@ -55,5 +55,3 @@ users access that data using a regular Web Browser or mobile application.
 ## Out of Scope
 
 ## Future Goals
-
-\newpage

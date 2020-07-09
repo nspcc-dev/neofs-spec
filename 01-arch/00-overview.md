@@ -1,6 +1,7 @@
-# Architecture and components
+\newpage
+# Architecture overview
 
-## Design overview
+## Design and components
 
 NeoFS heavily relies on Neo Blockchain and its features. This allows NeoFS nodes
 to concentrate on their primary tasks --- data storage and processing, and leave
@@ -69,4 +70,4 @@ In the long term, more ecosystem components will be added that will allow
 developing truly decentralized applications solving almost any problems that are
 nowadays solved in a centralized manner.
 
-\newpage
+
