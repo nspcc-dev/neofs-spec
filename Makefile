@@ -13,7 +13,7 @@ PARTS = $(shell find . -mindepth 2 -maxdepth 2 -type f -name '*.md' | sort)
 
 .PHONY: all pdf directories view clean
 
-all: $(OUT_DIR)/$(PDF_NAME)
+all: pdf html
 
 directories: $(OUT_DIR) $(BUILD_DIR)
 
@@ -34,6 +34,7 @@ $(OUT_DIR)/$(PDF_NAME): | directories
 	-M date="$(DATE)" \
 	-M version="$(VERSION)" \
 	--template=templates/eisvogel.latex \
+	--default-image-extension=pdf \
 	-H templates/style.pandoc \
 	-F pandoc-crossref \
 	-F pandoc-plantuml \
@@ -46,15 +47,23 @@ $(OUT_DIR)/$(PDF_NAME): | directories
 	-pdf $(BUILD_DIR)/$(TEX_NAME) && \
 	mv $(BUILD_DIR)/$(PDF_NAME) $@
 
-.PHONY: docker_image docker_build docker_pdf
+html: | directories
+	pandoc  --no-highlight \
+	$(PARTS) \
+	-M date="$(DATE)" \
+	-M version="$(VERSION)" \
+	--default-image-extension=svg \
+  --from markdown+smart+yaml_metadata_block+auto_identifiers \
+  --to html5 \
+  --output $(OUT_DIR)/index.html
 
-docker_image:
+.PHONY: image docker_build
+
+image:
 	docker build -t 'nspccdev/neofs-spec' .
 
-docker_build: docker_pdf
-
-docker_pdf:
-	docker run --rm -it -v `pwd`:/src -u `stat -c "%u:%g" .` nspccdev/neofs-spec:latest make pdf
+docker/%:
+	docker run --rm -it -v `pwd`:/src -u `stat -c "%u:%g" .` nspccdev/neofs-spec:latest make $$(basename $@)
 
 clean:
 	rm -rf $(BUILD_DIR)

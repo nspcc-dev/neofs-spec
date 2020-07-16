@@ -9,7 +9,7 @@ assets management and distributed system coordination to Neo and a set of Smart
 Contracts. In such approach, Blockchain is mainly used as a trusted source of
 truth and coordination data.
 
-![Architecture overview](01-arch/pic/overview-sc2.pdf)
+![Architecture overview](01-arch/pic/overview-sc2)
 
 In \gls{mainnet} there is a NeoFS [Native
 Contract](https://medium.com/neo-smart-economy/native-contracts-in-neo-3-0-e786100abf6e),
