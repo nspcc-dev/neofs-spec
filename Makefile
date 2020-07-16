@@ -38,6 +38,7 @@ $(OUT_DIR)/$(PDF_NAME): | directories
 	-H templates/style.pandoc \
 	-F pandoc-crossref \
 	-F pandoc-plantuml \
+	-F pandoc-img-glob \
 	--toc \
 	--listings \
 	-o $(BUILD_DIR)/$(TEX_NAME) && \
@@ -55,7 +56,7 @@ html: | directories
 	--default-image-extension=svg \
   --from markdown+smart+yaml_metadata_block+auto_identifiers \
   --to html5 \
-  --output $(OUT_DIR)/index.html
+  -o $(OUT_DIR)/index.html
 
 .PHONY: image docker_build
 

@@ -39,6 +39,8 @@ RUN wget -q http://downloads.sourceforge.net/project/plantuml/1.2020.15/plantuml
 RUN pip3 install pandocfilters
 RUN pip3 install pyyaml
 RUN pip3 install pandoc-plantuml-filter
+RUN pip3 install panflute
+RUN pip3 install pandoc-img-glob
 
 WORKDIR /src
 CMD /bin/bash
