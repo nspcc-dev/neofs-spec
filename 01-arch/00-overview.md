@@ -34,7 +34,7 @@ The second type does not store user data. Inner Ring nodes monitor the NeoFS
 network health, aggregate Storage Nodes reputation ratings and perform data
 audit, giving out penalties and bounties depending on the audit results. Inner
 Ring nodes listen for both Main Net and Sidechain, providing a trusted and
-reliable way of data syncronization between two Blockchains.
+reliable way of data synchronization between two Blockchains.
 
 Each Storage node in the system has a set of key-value attributes describing
 node properties such as geographical location, reputation rating, number of

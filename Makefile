@@ -1,7 +1,7 @@
 #!/usr/bin/make -f
 
 SHELL = bash
-VERSION?=$(shell git describe --abbrev=6 --dirty --always)
+VERSION?=$(shell git describe --abbrev=8 --dirty --always)
 DATE?= `LC_ALL=en_US date "+%B %e, %Y"`
 
 BUILD_DIR = build
@@ -11,11 +11,16 @@ PDF_NAME?= "neofs-spec-${VERSION}.pdf"
 TEX_NAME?= "neofs-spec-${VERSION}.tex"
 PARTS = $(shell find . -mindepth 2 -maxdepth 2 -type f -name '*.md' | sort)
 
-.PHONY: all directories clean
+.PHONY: all pdf directories view clean
 
 all: $(OUT_DIR)/$(PDF_NAME)
 
 directories: $(OUT_DIR) $(BUILD_DIR)
+
+pdf: $(OUT_DIR)/$(PDF_NAME)
+
+view:
+	type xdg-open >/dev/null 2>&1 && xdg-open $(OUT_DIR)/$(PDF_NAME) || open $(OUT_DIR)/$(PDF_NAME)
 
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
@@ -41,11 +46,15 @@ $(OUT_DIR)/$(PDF_NAME): | directories
 	-pdf $(BUILD_DIR)/$(TEX_NAME) && \
 	mv $(BUILD_DIR)/$(PDF_NAME) $@
 
+.PHONY: docker_image docker_build docker_pdf
+
 docker_image:
 	docker build -t 'nspccdev/neofs-spec' .
 
-docker_build:
-	docker run --rm -it -v `pwd`:/src -u `stat -c "%u:%g" .` nspccdev/neofs-spec:latest make
+docker_build: docker_pdf
+
+docker_pdf:
+	docker run --rm -it -v `pwd`:/src -u `stat -c "%u:%g" .` nspccdev/neofs-spec:latest make pdf
 
 clean:
 	rm -rf $(BUILD_DIR)

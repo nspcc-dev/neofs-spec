@@ -8,6 +8,7 @@ logo: 00-intro/pic/logo.pdf
 logo-width: 300
 toc-own-page: true
 colorlinks: true
+links-as-notes: true
 ...
 
 # Introduction
