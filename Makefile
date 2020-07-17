@@ -1,8 +1,8 @@
 #!/usr/bin/make -f
 
-SHELL = bash
+SHELL=bash
 VERSION?=$(shell git describe --abbrev=8 --dirty --always)
-DATE?= `LC_ALL=en_US date "+%B %e, %Y"`
+DATE?=`LC_ALL=en_US date "+%B %e, %Y"`
 
 BUILD_DIR = build
 OUT_DIR = output
@@ -10,10 +10,11 @@ OUT_DIR = output
 PDF_NAME?= "neofs-spec-${VERSION}.pdf"
 TEX_NAME?= "neofs-spec-${VERSION}.tex"
 PARTS = $(shell find . -mindepth 2 -maxdepth 2 -type f -name '*.md' | sort)
+HTML_PIC = $(shell find . -mindepth 3 -maxdepth 3 ! -path './${OUT_DIR}/*' ! -path './${BUILD_DIR}/*' -type f -name '*.svg' -o -name '*.png' -o -name '*.jpg')
 
-.PHONY: all pdf directories view clean
+.PHONY: all pdf html site directories view clean
 
-all: pdf html
+all: pdf site
 
 directories: $(OUT_DIR) $(BUILD_DIR)
 
@@ -54,9 +55,20 @@ html: | directories
 	-M date="$(DATE)" \
 	-M version="$(VERSION)" \
 	--default-image-extension=svg \
-  --from markdown+smart+yaml_metadata_block+auto_identifiers \
-  --to html5 \
-  -o $(OUT_DIR)/index.html
+	--from markdown+smart+yaml_metadata_block+auto_identifiers \
+	--to html5 \
+	-o $(OUT_DIR)/index.html
+
+.ONESHELL:
+pic:
+	@for img in ${HTML_PIC}
+	do
+		path=$$(grep -Po \".\*`basename $$img`.\"* ${OUT_DIR}/index.html | tr -d '\"') && \
+		mkdir -p `dirname ${OUT_DIR}/$$path` && \
+		cp $$img ${OUT_DIR}/$$path
+	done
+
+site: html pic
 
 .PHONY: image docker_build
 
