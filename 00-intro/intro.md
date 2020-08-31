@@ -15,7 +15,7 @@ links-as-notes: true
 
 ## Overview
 
-Welcome to \Gls{NeoFS} - a decentralized distributed object storage system integrated with [Neo Blockchain](https://neo.org).
+Welcome to \Gls{NeoFS} --- a decentralized distributed object storage system integrated with [Neo Blockchain](https://neo.org).
 
 We store and distribute users' data across a peer-to-peer network of \Glspl{Node}. Whether a business or an individual, any Neo user may join the network and
 get paid for providing storage resources to others. Don't want to become an operator but need some extra storage capacities? Pay a competitive price and enjoy NeoFS storage solution.
