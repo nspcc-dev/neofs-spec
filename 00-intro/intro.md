@@ -20,8 +20,7 @@ links-as-notes: true
 We store and distribute users' data across a peer-to-peer network of \Glspl{Node}. Whether a business or an individual, any Neo user may join the network and get paid for providing storage resources to others or pay a competitive price and enjoy NeoFS storage solution.
 
 The decentralized architecture and flexible storage
-policies allow users to reliably store object data in the NeoFS network. Each
-\Gls{Node} is responsible for executing the storage policies selected by the users
+policies allow users to reliably store object data in the NeoFS network. Each \Gls{Node} is responsible for executing the storage policies selected by the users
 regarding the geographical location, reliability level, number of nodes, type of
 disks, capacity, etc. Thus, NeoFS enables a transparent
 data placement process and gives full control over data to the users.
