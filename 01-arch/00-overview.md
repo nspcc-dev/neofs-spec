@@ -32,7 +32,7 @@ from the Side Chain.
 The second type does not store user data. Inner Ring nodes monitor the NeoFS
 network health, aggregate Storage Nodes reputation ratings, and perform data
 audit, giving out penalties and bounties depending on the audit results. Inner
-Ring nodes consider both Main Net and Sidechain, providing a trusted and
+Ring nodes listen for both Main Net and Sidechain, providing a trusted and
 reliable way of data synchronization between two Blockchains.
 
 Each Storage node in the system has a set of key-value attributes describing
@@ -57,7 +57,7 @@ smart contract code level. Thanks to the Neo 3.0 Oracles protocol and the integr
 between NeoFS and Neo Blockchain, dApps are not limited to on-chain storage and
 can manipulate large amounts of data without paying a prohibitive price for it.
 
-NeoFS uses native gRPC API and supports popular protocols allowing easy
+NeoFS provides native gRPC API and supports popular protocol gateways allowing easy
 integration with other systems and applications without rewriting their code.
 
 Such an architecture makes it possible to implement dApp's smart
