@@ -75,8 +75,8 @@ site: html pic
 image:
 	docker build -t 'nspccdev/neofs-spec' .
 
-docker/pdf:
-	docker run --rm -it -v "C:/Users/User/Desktop/neofs-spec":/src  nspccdev/neofs-spec:latest make pdf
+docker/%:
+	docker run --rm -it -v `pwd`:/src -u `stat -c "%u:%g" .` nspccdev/neofs-spec:latest make $$(basename $@)
 	
 
 clean:
