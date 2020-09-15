@@ -4,6 +4,7 @@ subtitle: "Architecture and Implementation details"
 author: "Neo Saint Petersburg Competence Center"
 lang: "en"
 titlepage: true
+titlepage-rule-color: "00E599"
 logo: 00-intro/pic/logo.pdf
 logo-width: 300
 toc-own-page: true
