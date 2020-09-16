@@ -1,0 +1,89 @@
+## {{ (index .Files 0).Package }}
+
+{{ (index .Files 0).Description }}
+
+{{ range $file := .Files -}}
+{{ range .Services -}}
+### Service "{{ .LongName }}"
+
+{{ .Description }}
+
+{{ range .Methods }}
+### Method {{ .Name }}
+
+{{ $method_name := .Name -}}
+{{ $method_req := .RequestType -}}
+{{ $method_res := .ResponseType -}}
+
+{{ .Description }}
+
+{{ range $file.Messages -}}
+{{ if hasSuffix .LongName (nospace (cat $method_req ".Body")) }}
+
+__Request Body:__ {{.LongName}}
+
+{{.Description}}
+
+{{if .HasFields -}}
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+{{range .Fields -}}
+| {{.Name}} | {{.Type}} | {{nobr .Description}}{{if .DefaultValue}} Default: {{.DefaultValue}}{{end}} |
+{{ end }} {{/* end .Fields range */ -}}
+{{ end }} {{/* endif .HasFields */ -}}
+{{ end }} {{/* endif hasSuffix .Name "$method_req.Body" */ -}}
+
+{{ end }} {{/* end $file.Messages range */ -}}
+
+{{ range $file.Messages -}}
+{{ if hasSuffix (nospace (cat $method_res ".Body")) .LongName }}
+
+__Response Body__ {{.LongName}}
+
+{{.Description}}
+
+{{if .HasFields -}}
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+{{range .Fields -}}
+| {{.Name}} | {{.Type}} | {{nobr .Description}}{{if .DefaultValue}} Default: {{.DefaultValue}}{{end}} |
+{{ end }} {{/* end .Fields range */ -}}
+{{ end }} {{/* endif .HasFields */ -}}
+{{ end }} {{/* endif hasSuffix .Name "$method_res.Body" */ -}}
+
+{{ end }} {{/* end $file.Messages range */ -}}
+
+{{ end -}} {{/* end .Methods range */ -}}
+{{ end -}} {{/* end .Services range */ -}}
+
+{{ range .Messages -}}
+{{ if not (or (hasSuffix "Body" .Name) (hasSuffix "Request" .Name) (hasSuffix "Response" .Name) ) }}
+### Message {{ .LongName }}
+
+{{.Description}}
+
+{{if .HasFields -}}
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+{{range .Fields -}}
+| {{.Name}} | {{.Type}} | {{nobr .Description}}{{if .DefaultValue}} Default: {{.DefaultValue}}{{end}} |
+{{ end }} {{/* end .Fields range */ -}}
+{{ end }} {{/* endif .HasFields */ -}}
+{{ end }} {{/* endif hasSuffix of method-related messages */ -}}
+
+{{ end }} {{/* end .Messages range */ -}}
+
+{{ range .Enums }}
+### Emun {{ .LongName }}
+
+{{.Description}}
+
+| Number | Name | Description |
+| ------ | ---- | ----------- |
+{{range .Values -}}
+  | {{.Number}} | {{.Name}} | {{nobr .Description}} |
+{{end -}}
+
+{{ end }} {{/* end .Enums range */ -}}
+
+{{ end -}} {{/* end .Files range */}}

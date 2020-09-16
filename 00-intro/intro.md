@@ -10,6 +10,7 @@ logo-width: 300
 toc-own-page: true
 colorlinks: true
 links-as-notes: true
+table-use-row-colors: true
 ...
 
 # Introduction
