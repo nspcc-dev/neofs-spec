@@ -7,6 +7,9 @@ DATE?=`LC_ALL=en_US date "+%B %e, %Y"`
 BUILD_DIR = build
 OUT_DIR = output
 
+APIV2_DIR = "../neofs-api"
+APIV2_DOC_DIR = "20-api-v2"
+
 PDF_NAME?= "neofs-spec-${VERSION}.pdf"
 TEX_NAME?= "neofs-spec-${VERSION}.tex"
 PARTS = $(shell find . -mindepth 2 -maxdepth 2 -type f -name '*.md' | sort)
@@ -69,6 +72,21 @@ pic:
 	done
 
 site: html pic
+
+.PHONY: update_api update_api_v2
+
+.ONESHELL:
+update_api_v2:
+	@for f in `find ${APIV2_DIR} -type f -name '*.proto' -exec dirname {} \; | sort -u `;
+	do
+		echo "Documentation for $$(basename $$f)";
+		protoc \
+			--doc_opt=templates/apiv2-package.tmpl,$${f}.md \
+			--proto_path=${APIV2_DIR}:/usr/local/include \
+			--doc_out=${APIV2_DOC_DIR} $${f}/*.proto;
+	done
+
+update_api: update_api_v2
 
 .PHONY: image docker_build
 
