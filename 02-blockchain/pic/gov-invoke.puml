@@ -1,0 +1,26 @@
+@startuml
+
+participant "IR Ⰰ" as ir1
+participant "IR Ⰱ" as ir2
+participant "SC Ⰰ" as az
+participant "SC Netmap" as nm
+
+
+alt successful case
+  ir1 -> az: Emit()
+  az -> nm: InnerRingList()
+  nm -> az: []PublicKeys
+  note left
+    valid invoker
+  end note
+  az -> az: emit gas
+else panic case
+  ir2 -> az: Emit()
+  az -> nm: InnerRingList()
+  nm -> az: []PublicKeys
+  note left
+    invalid invoker
+  end note
+  az -x az: panic
+end
+@enduml

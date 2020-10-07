@@ -1,0 +1,30 @@
+@startuml
+
+participant "NeoFS\ncontract" as nfscon
+participant "InnerRing1" as ir0
+participant "InnerRing2" as ir1
+participant "InnerRing3" as ir2
+participant "InnerRing4\n(out)" as ir3
+participant "InnerRing5\n(new)" as ir4
+participant "Committee" as cmt
+
+alt failed update
+
+cmt -> nfscon: UpdateInnerRing( {1, 5, 6, 7} )
+nfscon -x nfscon: panic
+note right
+at least 2\3+1
+nodes must be the same
+end note
+
+else success update
+
+cmt -> nfscon: UpdateInnerRing( {1, 2, 3, 5} )
+nfscon --> ir0: Notify
+nfscon --> ir1: Notify
+nfscon --> ir2: Notify
+nfscon --> ir3: Notify
+nfscon --> ir4: Notify
+end
+
+@enduml

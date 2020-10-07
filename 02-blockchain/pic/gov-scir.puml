@@ -1,0 +1,40 @@
+@startuml
+
+frame "NeoFS IR" {
+node "IR Ⰰ" as IRAz
+node "IR Ⰱ" as IRBuky
+node "IR Ⰲ" as IRVedi
+node "IR Ⰳ" as IRGlagoli
+node "IR Ⰴ" as IRDobro
+node "IR Ⰵ" as IRJest
+node "IR Ⰶ" as IRZhivete
+
+node "IR" as IR
+
+node "IR Candidate" as IRCN
+
+}
+
+frame "NeoFS Sidechain" {
+artifact "SC Ⰰ" as SCAz
+artifact "SC Ⰱ" as SCBuky
+artifact "SC Ⰲ" as SCVedi
+artifact "SC Ⰳ" as SCGlagoli
+artifact "SC Ⰴ" as SCDobro
+artifact "SC Ⰵ" as SCJest
+artifact "SC Ⰶ" as SCZhivete
+
+artifact "SC Netmap" as NetmapSC
+artifact "SC Audit" as AuditSC
+}
+
+'Links and relations
+
+IRAz -->        SCAz
+IRBuky -->      SCBuky
+IRVedi -->      SCVedi
+IRGlagoli -->   SCGlagoli
+IRDobro -->     SCDobro
+IRJest -->      SCJest
+IRZhivete -->   SCZhivete
+@enduml
