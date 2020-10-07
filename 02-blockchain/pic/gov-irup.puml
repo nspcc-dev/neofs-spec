@@ -1,0 +1,23 @@
+@startuml
+
+participant "NeoFS\ncontract" as nfscon
+participant "InnerRing1" as ir0
+participant "InnerRing2" as ir1
+participant "InnerRing3" as ir2
+participant "InnerRing4\n(out)" as ir3
+participant "InnerRing5\n(new)" as ir4
+
+ir4 -> nfscon: InnerRingAddCandidate
+
+ir0 -> nfscon: UpdateInnerRing( {1, 2, 3, 5} )
+ir1 -> nfscon: UpdateInnerRing( {1, 2, 3, 5} )
+ir2 -> nfscon: UpdateInnerRing( {1, 2, 3, 5} )
+ir3 -> nfscon: UpdateInnerRing( {1, 2, 3, 5} )
+
+
+nfscon --> ir0: Notify
+nfscon --> ir1: Notify
+nfscon --> ir2: Notify
+nfscon --> ir3: Notify
+nfscon --> ir4: Notify
+@enduml
