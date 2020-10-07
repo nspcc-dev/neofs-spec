@@ -41,7 +41,7 @@ $(OUT_DIR)/$(PDF_NAME): | directories
 	-F pandoc-plantuml \
 	-F pandoc-img-glob \
 	--toc \
-	--listings \
+	--highlight-style pygments \
 	-o $(BUILD_DIR)/$(TEX_NAME) && \
 	latexmk -r 'templates/glossaries.latexmk' \
 	-pdflatex='xelatex %O %S' \
