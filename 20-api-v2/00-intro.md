@@ -208,7 +208,7 @@ In addition to the RPC requests themselves there is a need to sign followong str
 * Container ID in `container.DeleteRequest.Body` message
 * Extended ACL table structure in `container.SetExtendedACLRequest.Body` message
 
-Those structures' signature is verified by Smart Contracts, hence it must be
+Those structures' signature is verified by smart contracts, hence it must be
 compatible with \Gls{NeoVM}. The signature format supported by \Gls{NeoVM} is
 different from the format described in previous sections.
 
