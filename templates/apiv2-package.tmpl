@@ -57,7 +57,7 @@ __Response Body__ {{.LongName}}
 {{ end -}} {{/* end .Services range */ -}}
 
 {{ range .Messages -}}
-{{ if or (not (or (hasSuffix "Body" .Name) (hasSuffix "Request" .Name) (hasSuffix "Response" .Name) )) (contains "BearerToken.Body" .LongName) }}
+{{ if or (not (or (hasSuffix "Body" .Name) (hasSuffix "Request" .Name) (hasSuffix "Response" .Name) )) (contains "BearerToken.Body" .LongName) (contains "SessionToken.Body" .LongName) }}
 ### Message {{ .LongName }}
 
 {{.Description}}
