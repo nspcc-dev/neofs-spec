@@ -4,178 +4,203 @@
 
 ### Service "ContainerService"
 
-ContainerService provides API to access container smart-contract in morph chain
-via NeoFS node.
+`ContainerService` provides API to interact with `Container` smart contract
+in NeoFS sidechain via other NeoFS nodes. All of those actions can be done
+equivalently by directly issuing transactions and RPC calls to sidechain
+nodes.
 
 
 ### Method Put
 
-Put invokes 'Put' method in container smart-contract and returns
-response immediately. After new block in morph chain, request is verified
-by inner ring nodes. After one more block in morph chain, container
-added into smart-contract storage.
+`Put` invokes `Container` smart contract's `Put` method and returns
+response immediately. After a new block is issued in sidechain, request is
+verified by Inner Ring nodes. After one more block in sidechain, container
+is added into smart contract storage.
 
                  
 
 __Request Body:__ PutRequest.Body
 
-Request body
+Container creation request has container structure's signature as a
+separate field. It's not stored in sidechain, just verified on container
+creation by `Container` smart contract. `ContainerID` is a SHA256 hash of
+the stable-marshalled container strucutre, hence there is no need for
+additional signature checks.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| container | Container | Container to create in NeoFS. |
-| signature | Signature | Signature of stable-marshalled container according to RFC-6979. |
+| container | Container | Container structure to register in NeoFS |
+| signature | Signature | Signature of a stable-marshalled container according to RFC-6979 |
                              
 
 __Response Body__ PutResponse.Body
 
-Response body
+Container put response body contains information about the newly registered
+container as seen by `Container` smart contract. `ContainerID` can be
+calculated beforehand from the container structure and compared to the one
+returned here to make sure everything was done as expected.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| container_id | ContainerID | container_id carries identifier of the new container. |
+| container_id | ContainerID | Unique identifier of the newly created container |
         
 ### Method Delete
 
-Delete invokes 'Delete' method in container smart-contract and returns
-response immediately. After new block in morph chain, request is verified
-by inner ring nodes. After one more block in morph chain, container
-removed from smart-contract storage.
+`Delete` invokes `Container` smart contract's `Delete` method and returns
+response immediately. After a new block is issued in sidechain, request is
+verified by Inner Ring nodes. After one more block in sidechain, container
+is added into smart contract storage.
 
  
 
 __Request Body:__ DeleteRequest.Body
 
-Request body
+Container removal request body has a signed `ContainerID` as a proof of
+container owner's intent. The signature will be verified by `Container`
+smart contract, so signing algorithm must be supported by NeoVM.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| container_id | ContainerID | container_id carries identifier of the container to delete from NeoFS. |
-| signature | Signature | Signature of container id according to RFC-6979. |
+| container_id | ContainerID | Identifier of the container to delete from NeoFS |
+| signature | Signature | `ContainerID` signed with the container owner's key according to RFC-6979 |
                              
 
 __Response Body__ DeleteResponse.Body
 
-Response body
+`DeleteResponse` has an empty body because delete operation is asynchronous
+and done via consensus in Inner Ring nodes.
 
                        
 ### Method Get
 
-Get returns container from container smart-contract storage.
+Returns container structure from `Container` smart contract storage.
 
          
 
 __Request Body:__ GetRequest.Body
 
-Request body
+Get container structure request body.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| container_id | ContainerID | container_id carries identifier of the container to get. |
+| container_id | ContainerID | Identifier of the container to get |
                              
 
 __Response Body__ GetResponse.Body
 
-Response body
+Get container response body does not have container structure signature. It
+was already verified on container creation.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| container | Container | Container that has been requested. |
+| container | Container | Requested container structure |
                 
 ### Method List
 
-List returns all owner's containers from container smart-contract
-storage.
+Returns all owner's containers from 'Container` smart contract' storage.
 
              
 
 __Request Body:__ ListRequest.Body
 
-Request body
+List containers request body.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| owner_id | OwnerID | owner_id carries identifier of the container owner. |
+| owner_id | OwnerID | Identifier of the container owner |
                              
 
 __Response Body__ ListResponse.Body
 
-Response body
+List containers response body.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| container_ids | ContainerID | ContainerIDs carries list of identifiers of the containers that belong to the owner. |
+| container_ids | ContainerID | List of `ContainerID`s belonging to the requested `OwnerID` |
             
 ### Method SetExtendedACL
 
-SetExtendedACL invokes 'SetEACL' method in container smart-contract and
-returns response immediately. After new block in morph chain,
-Extended ACL added into smart-contract storage.
+Invokes 'SetEACL' method of 'Container` smart contract and returns response
+immediately. After one more block in sidechain, Extended ACL changes are
+added into smart contract storage.
 
                      
 
 __Request Body:__ SetExtendedACLRequest.Body
 
-Request body
+Set Extended ACL request body does not have separate `ContainerID`
+reference. It will be taken from `EACLTable.container_id` field.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| eacl | EACLTable | Extended ACL to set for the container. |
-| signature | Signature | Signature of stable-marshalled Extended ACL according to RFC-6979. |
+| eacl | EACLTable | Extended ACL table to set for container |
+| signature | Signature | Signature of stable-marshalled Extended ACL table according to RFC-6979 |
                              
 
 __Response Body__ SetExtendedACLResponse.Body
 
-Response body
+`SetExtendedACLResponse` has an empty body because the operation is
+asynchronous and update should be reflected in `Container` smart contract's
+storage after next block is issued in sidechain.
 
    
 ### Method GetExtendedACL
 
-GetExtendedACL returns Extended ACL table and signature from container
-smart-contract storage.
+Returns Extended ACL table and signature from `Container` smart contract
+storage.
 
      
 
 __Request Body:__ GetExtendedACLRequest.Body
 
-Request body
+Get Extended ACL request body
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| container_id | ContainerID | container_id carries identifier of the container that has Extended ACL. |
+| container_id | ContainerID | Identifier of the container having Extended ACL |
                              
 
 __Response Body__ GetExtendedACLResponse.Body
 
-Response body
+Get Extended ACL Response body can be empty if the requested container did
+not have Extended ACL Table attached or Extended ACL was not allowed at
+container creation.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| eacl | EACLTable | Extended ACL that has been requested if it was set up. |
-| signature | Signature | Signature of stable-marshalled Extended ACL according to RFC-6979. |
+| eacl | EACLTable | Extended ACL requested, if available |
+| signature | Signature | Signature of stable-marshalled Extended ACL according to RFC-6979 |
                                               
 ### Message Container
 
-Container is a structure that defines object placement behaviour. Objects
-can be stored only within containers. They define placement rule, attributes
-and access control information. ID of the container is a 32 byte long
-SHA256 hash of stable-marshalled container message.
+Container is a structure that defines object placement behaviour. Objects can
+be stored only within containers. They define placement rule, attributes and
+access control information. ID of the container is a 32 byte long SHA256 hash
+of stable-marshalled container message.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| version | Version | Container format version. Effectively the version of API library used to create container |
-| owner_id | OwnerID | OwnerID carries identifier of the container owner. |
-| nonce | bytes | Nonce is a 16 byte UUID, used to avoid collisions of container id. |
-| basic_acl | uint32 | BasicACL contains access control rules for owner, system, others groups and permission bits for bearer token and Extended ACL. |
-| attributes | Attribute | Attributes define any immutable characteristics of container. |
-| placement_policy | PlacementPolicy | Placement policy for the object inside the container. |
+| version | Version | Container format version. Effectively the version of API library used to create container. |
+| owner_id | OwnerID | Identifier of the container owner |
+| nonce | bytes | Nonce is a 16 byte UUID, used to avoid collisions of container id |
+| basic_acl | uint32 | `BasicACL` contains access control rules for owner, system, others groups and permission bits for `BearerToken` and `Extended ACL` |
+| attributes | Attribute | Attributes represent immutable container's meta data |
+| placement_policy | PlacementPolicy | Placement policy for the object inside the container |
    
 ### Message Container.Attribute
 
-Attribute is a key-value pair of strings.
+`Attribute` is a user-defined Key-Value metadata pair attached to the
+container. Container attribute are immutable. They are set at container
+creation and cna never be added or updated.
+
+There are some "well-known" attributes affecting system behaviour:
+
+* Subnet \
+  String ID of container's storage subnet. Container can be attached to
+  only one subnet.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| key | string | Key of immutable container attribute. |
-| value | string | Value of immutable container attribute. |
+| key | string | Attribute name key |
+| value | string | Attribute value |
      

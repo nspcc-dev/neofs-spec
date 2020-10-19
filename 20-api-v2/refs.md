@@ -5,16 +5,17 @@
 
 ### Message Address
 
-Address of object (container id + object id)
+Object in NeoFS can be addressed by it's ContainerID and ObjectID. In string
+format there MUST be a '/' delimeter between them.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| container_id | ContainerID | container_id carries container identifier. |
-| object_id | ObjectID | object_id carries object identifier. |
+| container_id | ContainerID | Container identifier |
+| object_id | ObjectID | Object identifier |
    
 ### Message Checksum
 
-Checksum message
+Checksum message.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
@@ -23,53 +24,60 @@ Checksum message
    
 ### Message ContainerID
 
-NeoFS container identifier.
+NeoFS container identifier. Container structures are immutable and
+content-addressed. `ContainerID` is a 32 byte long SHA256 hash of
+stable-marshalled container message.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| value | bytes | value carries the container identifier in a binary format. |
+| value | bytes | Container identifier in a binary format. |
    
 ### Message ObjectID
 
-NeoFS object identifier.
+NeoFS Object unique identifier. Objects are immutable and content-addressed.
+It means `ObjectID` will change if `header` or `payload` changes. `ObjectID`
+is calculated as a hash of `header` field, which contains hash of object's
+payload.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| value | bytes | value carries the object identifier in a binary format. |
+| value | bytes | Object identifier in a binary format |
    
 ### Message OwnerID
 
-OwnerID group information about the owner of the NeoFS container.
+OwnerID is a derivative of a user's main public key. The transformation
+algorithm is the same as for Neo3 wallet addresses. Neo3 wallet address can
+be directly used as `OwnerID`.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| value | bytes | value carries the identifier of the container owner in a binary format. |
+| value | bytes | Identifier of the container owner in a binary format |
    
 ### Message Signature
 
-Signature of something in NeoFS
+Signature of something in NeoFS.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| key | bytes | Public key used for signing. |
+| key | bytes | Public key used for signing |
 | sign | bytes | Signature |
    
 ### Message Version
 
-Represents API version used by node.
+API version used by a node.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| major | uint32 | Major API version. |
-| minor | uint32 | Minor API version. |
+| major | uint32 | Major API version |
+| minor | uint32 | Minor API version |
     
 ### Emun ChecksumType
 
-Checksum algorithm type
+Checksum algorithm type.
 
 | Number | Name | Description |
 | ------ | ---- | ----------- |
 | 0 | CHECKSUM_TYPE_UNSPECIFIED | Unknown. Not used |
-| 1 | TZ | Tillich-Zemor homomorphic hash funciton |
+| 1 | TZ | Tillich-Zemor homomorphic hash function |
 | 2 | SHA256 | SHA-256 |
  

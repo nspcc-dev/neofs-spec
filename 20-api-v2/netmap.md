@@ -4,37 +4,45 @@
 
 ### Service "NetmapService"
 
-Methods to work with NetworkMap
+`NetmapService` provides methods to work with `Network Map` and information
+required to build it. The resulting `Network Map` is stored in sidechain
+`Netmap` smart contract, while related information can be obtained from other
+NeoFS nodes.
 
 
 ### Method LocalNodeInfo
 
-Return information about Node
+Get NodeInfo structure from the particular node directly. Node information
+can be taken from `Netmap` smart contract, but in some cases the one may
+want to get recent information directly, or to talk to the node not yet
+present in `Network Map` to find out what API version can be used for
+further communication. Can also be used to check if node is up and running.
 
  
 
 __Request Body:__ LocalNodeInfoRequest.Body
 
-Request body
+LocalNodeInfo request body is empty.
 
         
 
 __Response Body__ LocalNodeInfoResponse.Body
 
-Response body
+Local Node Info, including API Version in use.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| version | Version | API version in use |
-| node_info | NodeInfo | NodeInfo from node itself |
+| version | Version | Latest NeoFS API version in use |
+| node_info | NodeInfo | NodeInfo structure with recent information from node itself |
           
 ### Message Filter
 
-Filter
+Filter will return the subset of nodes from `NetworkMap` or another filter's
+results, that will satisfy filter's conditions.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| name | string | Name of the filter or a reference to the named filter. '*' means application to the whole unfiltered NetworkMap At top level it's used as a filter name. At lower levels it's considered to be a reference to another named filter |
+| name | string | Name of the filter or a reference to the named filter. '*' means application to the whole unfiltered NetworkMap. At top level it's used as a filter name. At lower levels it's considered to be a reference to another named filter |
 | key | string | Key to filter |
 | op | Operation | Filtering operation |
 | value | string | Value to match |
@@ -53,51 +61,91 @@ NeoFS node description
    
 ### Message NodeInfo.Attribute
 
-Attributes of the NeoFS node.
+Administrator-defined Attributes of the NeoFS Storage Node.
+
+Node's attributes are mostly used during Storage Policy evaluation to
+calculate object's placement and find a set of nodes satisfying policy
+requirements. There are some "well-known" node attributes common to all the
+Storage Nodes in the network and used implicitly with default values if not
+explicitly set:
+
+* Capacity \
+  Total available disk space in Gigabytes.
+* Price \
+  Price in GAS tokens for storing one GB of data during one Epoch. In node
+  attributes it's a string presenting floating point number with comma or
+  point delimiter for decimal part. In the Network Map it will be saved as
+  64-bit unsigned integer representing number of minimal token fractions.
+* Subnet \
+  String ID of Node's storage subnet. There can be only one subnet served
+  by the Storage Node.
+* Locode \
+  Node's geographic location in
+  [UN/LOCODE](https://www.unece.org/cefact/codesfortrade/codes_index.html)
+  format approximated to the nearest point defined in standard.
+* Country \
+  Country code in
+  [ISO 3166-1_alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)
+  format. Calculated automatically from `Locode` attribute
+* Region \
+  Country's administative subdivision where node is located. Calculated
+  automatically from `Locode` attribute based on `SubDiv` field. Presented
+  in [ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2) format.
+* City \
+  City, town, village or rural area name where node is located written
+  without diacritics . Calculated automatically from `Locode` attribute.
+
+For detailed description of each well-known attribute please see the
+corresponding section in NeoFS Technical specification.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 | key | string | Key of the node attribute. |
 | value | string | Value of the node attribute. |
-| parents | string | Parent keys, if any Example: For City it can be Region or Country |
+| parents | string | Parent keys, if any. For example for `City` it could be `Region` and `Country`. |
    
 ### Message PlacementPolicy
 
-Set of rules to select a subset of nodes able to store container's objects
+Set of rules to select a subset of nodes from `NetworkMap` able to store
+container's objects. The format is simple enough to transpile from different
+storage policy definition languages.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| replicas | Replica | Rules to set number of object replicas and place each one into a particular bucket |
-| container_backup_factor | uint32 | Container backup factor controls how deep NeoFS will search for nodes alternatives to include into container. |
+| replicas | Replica | Rules to set number of object replicas and place each one into a named bucket |
+| container_backup_factor | uint32 | Container backup factor controls how deep NeoFS will search for nodes alternatives to include into container's nodes subset |
 | selectors | Selector | Set of Selectors to form the container's nodes subset |
 | filters | Filter | List of named filters to reference in selectors |
    
 ### Message Replica
 
-Exact bucket for each replica
+Number of object replicas in a set of nodes from the defined selector. If no
+selector set the root bucket containing all possible nodes will be used by
+default.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 | count | uint32 | How many object replicas to put |
-| selector | string | Named selector bucket to put in |
+| selector | string | Named selector bucket to put replicas |
    
 ### Message Selector
 
-Selector
+Selector chooses a number of nodes from the bucket taking the nearest nodes
+to the provided `ContainerID` by hash distance.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 | name | string | Selector name to reference in object placement section |
-| count | uint32 | How many nodes to select from bucket |
+| count | uint32 | How many nodes to select from the bucket |
 | clause | Clause | Selector modifier showing how to form a bucket |
 | attribute | string | Attribute bucket to select from |
 | filter | string | Filter reference to select from |
     
 ### Emun Clause
 
-Selector modifier showing how the node set will be formed
-By default selector just groups by attribute into a bucket selecting nodes
-only by their hash distance.
+Selector modifier shows how the node set will be formed. By default selector
+just groups nodes into a bucket by attribute, selecting nodes only by their
+hash distance.
 
 | Number | Name | Description |
 | ------ | ---- | ----------- |

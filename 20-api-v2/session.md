@@ -4,33 +4,36 @@
 
 ### Service "SessionService"
 
-Create Session record on Node side
+`SessionService` allows to establish a temporary trust relationship between
+two peer nodes and generate a `SessionToken` as the proof of trust to be
+attached in requests for further verification. Please see corresponding
+section of NeoFS Technical Specification for details.
 
 
 ### Method Create
 
-Create opens new session between the client and the server.
+Opens a new session between two peers.
 
  
 
 __Request Body:__ CreateRequest.Body
 
-Request body
+Session creation request body
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| owner_id | OwnerID | Carries an identifier of a session initiator. |
-| expiration | uint64 | Expiration Epoch |
+| owner_id | OwnerID | Dession initiating user's or node's key derived `OwnerID`. |
+| expiration | uint64 | Session expiration `Epoch` |
          
 
 __Response Body__ CreateResponse.Body
 
-Response body
+Session creation response body
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| id | bytes | id carries an identifier of session token. |
-| session_key | bytes | session_key carries a session public key. |
+| id | bytes | Identifier of a newly created session |
+| session_key | bytes | Public key used for session |
           
 ### Message ObjectSessionContext
 
@@ -38,32 +41,33 @@ Context information for Session Tokens related to ObjectService requests
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| verb | Verb | Verb is a type of request for which the token is issued |
+| verb | Verb | Type of request for which the token is issued |
 | address | Address | Related Object address |
    
 ### Message RequestMetaHeader
 
-Information about the request
+Meta information attached to the request. When forwarded between peers,
+request meta headers are folded in matryoshka style.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| version | Version | Client API version. |
-| epoch | uint64 | Client local epoch number. Set to 0 if unknown. |
-| ttl | uint32 | Maximum number of nodes in the request route. |
-| x_headers | XHeader | Request X-Headers. |
-| session_token | SessionToken | Token is a token of the session within which the request is sent |
-| bearer_token | BearerToken | Bearer is a Bearer token of the request |
-| origin | RequestMetaHeader | RequestMetaHeader of the origin request. |
+| version | Version | Peer's API version used |
+| epoch | uint64 | Peer's local epoch number. Set to 0 if unknown. |
+| ttl | uint32 | Maximum number of intermediate nodes in the request route |
+| x_headers | XHeader | Request X-Headers |
+| session_token | SessionToken | Session token within which the request is sent |
+| bearer_token | BearerToken | `BearerToken` with eACL overrides for the request |
+| origin | RequestMetaHeader | `RequestMetaHeader` of the origin request |
    
 ### Message RequestVerificationHeader
 
-Verification info for request signed by all intermediate nodes
+Verification info for request signed by all intermediate nodes.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 | body_signature | Signature | Request Body signature. Should be generated once by request initiator. |
-| meta_signature | Signature | Request Meta signature is added and signed by any intermediate node |
-| origin_signature | Signature | Sign previous hops |
+| meta_signature | Signature | Request Meta signature is added and signed by each intermediate node |
+| origin_signature | Signature | Signature of previous hops |
 | origin | RequestVerificationHeader | Chain of previous hops signatures |
    
 ### Message ResponseMetaHeader
@@ -72,11 +76,11 @@ Information about the response
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| version | Version | Server API version. |
-| epoch | uint64 | Server local epoch number. |
-| ttl | uint32 | Maximum number of nodes in the response route. |
-| x_headers | XHeader | Response X-Headers. |
-| origin | ResponseMetaHeader | Carries response meta header of the origin response. |
+| version | Version | Peer's API version used |
+| epoch | uint64 | Peer's local epoch number |
+| ttl | uint32 | Maximum number of intermediate nodes in the request route |
+| x_headers | XHeader | Response X-Headers |
+| origin | ResponseMetaHeader | `ResponseMetaHeader` of the origin request |
    
 ### Message ResponseVerificationHeader
 
@@ -85,19 +89,31 @@ Verification info for response signed by all intermediate nodes
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 | body_signature | Signature | Response Body signature. Should be generated once by answering node. |
-| meta_signature | Signature | Response Meta signature is added and signed by any intermediate node |
-| origin_signature | Signature | Sign previous hops |
+| meta_signature | Signature | Response Meta signature is added and signed by each intermediate node |
+| origin_signature | Signature | Signature of previous hops |
 | origin | ResponseVerificationHeader | Chain of previous hops signatures |
    
 ### Message SessionToken
 
-NeoFS session token.
+NeoFS Session Token.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| body | Body | Session Token body |
-| signature | Signature | Signature is a signature of session token information |
-    
+| body | Body | Session Token contains the proof of trust between peers to be attached in requests for further verification. Please see corresponding section of NeoFS Technical Specification for details. |
+| signature | Signature | Signature of `SessionToken` information |
+   
+### Message SessionToken.Body
+
+Session Token body
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| id | bytes | Token identifier is a valid UUIDv4 in binary form |
+| owner_id | OwnerID | Identifier of the session initiator |
+| lifetime | TokenLifetime | Lifetime of the session |
+| session_key | bytes | Public key used in session |
+| object | ObjectSessionContext | ObjectService session context |
+   
 ### Message SessionToken.Body.TokenLifetime
 
 Lifetime parameters of the token. Filed names taken from rfc7519.
@@ -110,12 +126,12 @@ Lifetime parameters of the token. Filed names taken from rfc7519.
    
 ### Message XHeader
 
-Extended headers for Request/Response
+Extended headers for Request/Response.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| key | string | Key of the X-Header. |
-| value | string | Value of the X-Header. |
+| key | string | Key of the X-Header |
+| value | string | Value of the X-Header |
     
 ### Emun ObjectSessionContext.Verb
 

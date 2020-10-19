@@ -5,16 +5,33 @@
 
 ### Message BearerToken
 
-BearerToken has information about request ACL rules with limited lifetime
+BearerToken allows to attach signed Extended ACL rules to the request in
+`RequestMetaHeader`. If container's Basic ACL rules allow, the attached rule
+set will be checked instead of one attached to the container itself. Just
+like [JWT](https://jwt.io), it has a limited lifetime and scope, hence can be
+used in the similar use cases, like providing authorisation to externally
+authenticated party.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 | body | Body | Bearer Token body |
 | signature | Signature | Signature of BearerToken body |
-    
+   
+### Message BearerToken.Body
+
+Bearer Token body structure contains Extended ACL table issued by container
+owner with additional information preventing token's abuse.
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| eacl_table | EACLTable | Table of Extended ACL rules to use instead of the ones attached to the container |
+| owner_id | OwnerID | `OwnerID` to whom the token was issued. MUST match with the request originator's `OwnerID` |
+| lifetime | TokenLifetime | Token expiration and valid time period parameters |
+   
 ### Message BearerToken.Body.TokenLifetime
 
-Lifetime parameters of the token. Filed names taken from rfc7519.
+Lifetime parameters of the token. Filed names taken from
+[rfc7519](https://tools.ietf.org/html/rfc7519).
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
@@ -24,58 +41,63 @@ Lifetime parameters of the token. Filed names taken from rfc7519.
    
 ### Message EACLRecord
 
-EACLRecord groups information about extended ACL rule.
+Describes a single eACL rule.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| operation | Operation | Operation carries type of operation. |
-| action | Action | Action carries ACL target action. |
-| filters | Filter | filters carries set of filters. |
-| targets | Target | targets carries information about extended ACL target list. |
+| operation | Operation | NeoFS request Verb to match |
+| action | Action | Rule execution result. Either allows or denies access if filters match. |
+| filters | Filter | List of filters to match and see if rule is applicable |
+| targets | Target | List of target subjects to apply ACL rule to |
    
 ### Message EACLRecord.Filter
 
-Filter definition
+Filter to check particular properties of the request or object.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| header_type | HeaderType | Header carries type of header. |
-| match_type | MatchType | MatchType carries type of match. |
-| header_name | string | header_name carries name of filtering header. |
-| header_val | string | header_val carries value of filtering header. |
+| header_type | HeaderType | Define if Object or Request header will be used |
+| match_type | MatchType | Match operation type |
+| header_name | string | Name of the Header to use |
+| header_val | string | Expected Header Value or pattern to match |
    
 ### Message EACLRecord.Target
 
-Information about extended ACL target.
+Target to apply ACL rule. Can be a subject's role class or a list of public
+keys to match.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| role | Role | target carries target of ACL rule. |
-| key_list | bytes | key_list carries public keys of ACL target. |
+| role | Role | Target subject's role class |
+| keys | bytes | List of public keys to identify target subject |
    
 ### Message EACLTable
 
-EACLRecord carries the information about extended ACL rules.
+Extended ACL rules table. Defined a list of ACL rules additionally to Basic
+ACL. Extended ACL rules can be attached to the container and can be updated
+or may be defined in `BearerToken` structure. Please see the corresponding
+NeoFS Technical Specification's section for detailed description.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| version | Version | eACL format version. Effectively the version of API library used to create eACL Table |
-| container_id | ContainerID | Carries identifier of the container that should use given access control rules. |
-| records | EACLRecord | Records carries list of extended ACL rule records. |
+| version | Version | eACL format version. Effectively the version of API library used to create eACL Table. |
+| container_id | ContainerID | Identifier of the container that should use given access control rules |
+| records | EACLRecord | List of Extended ACL rules |
     
 ### Emun Action
 
-Action is an enumeration of EACL actions.
+Rule execution result action. Either allows or denies access if the rule's
+filters match.
 
 | Number | Name | Description |
 | ------ | ---- | ----------- |
-| 0 | ACTION_UNSPECIFIED | Unspecified action, default value. |
+| 0 | ACTION_UNSPECIFIED | Unspecified action, default value |
 | 1 | ALLOW | Allow action |
 | 2 | DENY | Deny action |
 
 ### Emun HeaderType
 
-Header is an enumeration of filtering header types.
+Enumeration of possible sources of Headers to apply filters.
 
 | Number | Name | Description |
 | ------ | ---- | ----------- |
@@ -95,11 +117,12 @@ MatchType is an enumeration of match types.
 
 ### Emun Operation
 
-Operation is an enumeration of operation types.
+Request's operation type to match if the rule is applicable to a particular
+request.
 
 | Number | Name | Description |
 | ------ | ---- | ----------- |
-| 0 | OPERATION_UNSPECIFIED | Unspecified operation, default value. |
+| 0 | OPERATION_UNSPECIFIED | Unspecified operation, default value |
 | 1 | GET | Get |
 | 2 | HEAD | Head |
 | 3 | PUT | Put |
@@ -114,8 +137,8 @@ Target role of the access control rule in access control list.
 
 | Number | Name | Description |
 | ------ | ---- | ----------- |
-| 0 | ROLE_UNSPECIFIED | Unspecified role, default value. |
-| 1 | USER | User target rule is applied if sender is the owner of the container. |
-| 2 | SYSTEM | System target rule is applied if sender is the storage node within the container or inner ring node. |
-| 3 | OTHERS | Others target rule is applied if sender is not user or system target. |
+| 0 | ROLE_UNSPECIFIED | Unspecified role, default value |
+| 1 | USER | User target rule is applied if sender is the owner of the container |
+| 2 | SYSTEM | System target rule is applied if sender is the storage node within the container or inner ring node |
+| 3 | OTHERS | Others target rule is applied if sender is not user nor system target |
  
