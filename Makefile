@@ -2,6 +2,7 @@
 
 SHELL=bash
 VERSION?=$(shell git describe --abbrev=8 --dirty --always)
+PLANTUML_BIN?=plantuml
 DATE?=`LC_ALL=en_US date "+%B %e, %Y"`
 
 BUILD_DIR = build
@@ -13,6 +14,8 @@ APIV2_DOC_DIR = "20-api-v2"
 PDF_NAME?= "neofs-spec-${VERSION}.pdf"
 TEX_NAME?= "neofs-spec-${VERSION}.tex"
 PARTS = $(shell find . -mindepth 2 -maxdepth 2 -type f -name '*.md' | sort)
+PUMLS = $(shell find . -mindepth 3 -maxdepth 4 -type f -name '*.puml' -o -name '*.plantuml' | sort)
+SVGS = $(shell find . -mindepth 3 -maxdepth 4 -type f -name '*.svg' | sort)
 HTML_PIC = $(shell find . -mindepth 3 -maxdepth 3 ! -path './${OUT_DIR}/*' ! -path './${BUILD_DIR}/*' -type f -name '*.svg' -o -name '*.png' -o -name '*.jpg')
 
 .PHONY: all pdf html site directories view clean
@@ -69,6 +72,21 @@ pic:
 		path=$$(grep -Po \".\*`basename $$img`.\"* ${OUT_DIR}/index.html | tr -d '\"') && \
 		mkdir -p `dirname ${OUT_DIR}/$$path` && \
 		cp $$img ${OUT_DIR}/$$path
+	done
+
+.PHONY: puml2svg svg2pdf
+.ONESHELL:
+puml2svg:
+	@for img in ${PUMLS}
+	do
+		$(PLANTUML_BIN) -charset utf8 -tsvg $$img
+	done
+
+.ONESHELL:
+svg2pdf:
+	@for img in $(basename $(SVGS))
+	do
+		rsvg-convert -f pdf -o $${img}.pdf $${img}.svg
 	done
 
 site: html pic
