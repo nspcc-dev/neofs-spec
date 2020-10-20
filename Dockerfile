@@ -6,20 +6,22 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update && \
   apt-get install -y \
   git \
-  make \
   graphviz \
-  libgraphviz-dev \
   imagemagick \
+  latexmk \
+  libgraphviz-dev \
+  make \
+  openjdk-14-jre \
   python3-pip \
+  librsvg2-bin \
   texlive-fonts-extra \
   texlive-fonts-recommended \
   texlive-latex-base \
   texlive-latex-extra \
   texlive-latex-recommended \
   texlive-xetex \
-  latexmk \
-  openjdk-14-jre \
-  wget
+  wget && \
+  rm -rf /var/lib/apt/lists/* /var/cache/apt/*
 
 # Install pandoc
 RUN cd /tmp && \
@@ -41,6 +43,9 @@ RUN pip3 install pyyaml
 RUN pip3 install pandoc-plantuml-filter
 RUN pip3 install panflute
 RUN pip3 install pandoc-img-glob
+
+# Cleanup
+RUN rm -rf /tmp/*
 
 WORKDIR /src
 CMD /bin/bash
