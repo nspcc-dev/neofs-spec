@@ -8,6 +8,8 @@ For each part of the original object's payload a separate object with own
 `ObjectID` will be created. The large object will not be physically present in
 the system, but it will be reconstructed from the object parts when requested.
 
+![Large object split](pic/object_split_all)
+
 All objects participating int the split have the `Split` headers set. Depending
 on the place in the split hierarchy it has different field combinations. There
 are four possible cases:
