@@ -72,7 +72,9 @@ automatically rendered to SVG format by `puml2svg` make target.
 [Draw.io](https://github.com/jgraph/drawio-desktop) diagrams must be exported to
 SVG format and saved under `pic/` directory of corresponding section. To avoid
 text rendering errors, please follow [this
-guide](https://desk.draw.io/support/solutions/articles/16000042487).
+guide](https://desk.draw.io/support/solutions/articles/16000042487). Don't
+enable `Embed Images` checkbox, or raster image version will be saved in PDF
+instead of vector image version.
 
 Please palace the source `.drawio` file in the same directory with exported SVG
 to allow future edits.
