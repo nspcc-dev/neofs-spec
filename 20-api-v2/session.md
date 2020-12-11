@@ -116,7 +116,7 @@ Session Token body
    
 ### Message SessionToken.Body.TokenLifetime
 
-Lifetime parameters of the token. Filed names taken from rfc7519.
+Lifetime parameters of the token. Field names taken from rfc7519.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |

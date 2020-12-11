@@ -12,6 +12,9 @@ like [JWT](https://jwt.io), it has a limited lifetime and scope, hence can be
 used in the similar use cases, like providing authorisation to externally
 authenticated party.
 
+BearerToken can be issued only by container's owner and must be signed using
+the key associated with container's `OwnerID`.
+
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 | body | Body | Bearer Token body |
@@ -25,12 +28,12 @@ owner with additional information preventing token's abuse.
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 | eacl_table | EACLTable | Table of Extended ACL rules to use instead of the ones attached to the container |
-| owner_id | OwnerID | `OwnerID` to whom the token was issued. MUST match with the request originator's `OwnerID` |
+| owner_id | OwnerID | `OwnerID` to whom the token was issued. Must match the request originator's `OwnerID`. If empty, any token bearer will be accepted. |
 | lifetime | TokenLifetime | Token expiration and valid time period parameters |
    
 ### Message BearerToken.Body.TokenLifetime
 
-Lifetime parameters of the token. Filed names taken from
+Lifetime parameters of the token. Field names taken from
 [rfc7519](https://tools.ietf.org/html/rfc7519).
 
 | Field | Type | Description |
@@ -54,12 +57,35 @@ Describes a single eACL rule.
 
 Filter to check particular properties of the request or object.
 
+By default `key` field refers to the corresponding object's `Attribute`.
+Some Object's header fields can also be accessed by adding `$Object:`
+prefix to the name. Here is the list of fields available via this prefix:
+
+* $Object:version \
+  version
+* $Object:objectID \
+  object_id
+* $Object:containerID \
+  container_id
+* $Object:ownerID \
+  owner_id
+* $Object:creationEpoch \
+  creation_epoch
+* $Object:payloadLength \
+  payload_length
+* $Object:payloadHash \
+  payload_hash
+* $Object:objectType \
+  object_type
+* $Object:homomorphicHash \
+  homomorphic_hash
+
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 | header_type | HeaderType | Define if Object or Request header will be used |
 | match_type | MatchType | Match operation type |
-| header_name | string | Name of the Header to use |
-| header_val | string | Expected Header Value or pattern to match |
+| key | string | Name of the Header to use |
+| value | string | Expected Header Value or pattern to match |
    
 ### Message EACLRecord.Target
 

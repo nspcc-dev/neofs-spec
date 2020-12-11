@@ -37,6 +37,7 @@ GET Object Response body
 | ----- | ---- | ----------- |
 | init | Init | Initial part of the object stream |
 | chunk | bytes | Chunked object payload |
+| split_info | SplitInfo | Meta information of split hierarchy for object assembly. |
                      
 ### Method Put
 
@@ -87,7 +88,10 @@ __Response Body__ DeleteResponse.Body
 
 Object DELETE Response has an empty body.
 
-                                
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| tombstone | Address | Address of the tombstone created for the deleted object |
+                                 
 ### Method Head
 
 Returns the object Headers without data payload. By default full header is
@@ -115,6 +119,7 @@ Object HEAD response body
 | ----- | ---- | ----------- |
 | header | HeaderWithSignature | Full object's `Header` with `ObjectID` signature |
 | short_header | ShortHeader | Short object header |
+| split_info | SplitInfo | Meta information of split hierarchy. |
                 
 ### Method Search
 
@@ -160,6 +165,7 @@ Byte range of object's payload request body
 | ----- | ---- | ----------- |
 | address | Address | Address of the object containing the requested payload range |
 | range | Range | Requested payload range |
+| raw | bool | If `raw` flag is set, request will work only with objects that are physically stored on the peer node. |
                                       
 
 __Response Body__ GetRangeResponse.Body
@@ -171,7 +177,8 @@ chunks.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| chunk | bytes | Chunked object payload's range |
+| chunk | bytes | Chunked object payload's range. |
+| split_info | SplitInfo | Meta information of split hierarchy. |
                          
 ### Method GetRangeHash
 
@@ -252,13 +259,57 @@ Object payload range.Ranges of zero length SHOULD be considered as invalid.
      
 ### Message SearchRequest.Body.Filter
 
-Filter structure
+Filter structure checks if object header field or attribute content
+matches a value.
+
+By default `key` field refers to the corresponding object's `Attribute`.
+Some Object's header fields can also be accessed by adding `$Object:`
+prefix to the name. Here is the list of fields available via this prefix:
+
+* $Object:version \
+  version
+* $Object:objectID \
+  object_id
+* $Object:containerID \
+  container_id
+* $Object:ownerID \
+  owner_id
+* $Object:creationEpoch \
+  creation_epoch
+* $Object:payloadLength \
+  payload_length
+* $Object:payloadHash \
+  payload_hash
+* $Object:objectType \
+  object_type
+* $Object:homomorphicHash \
+  homomorphic_hash
+* $Object:split.parent \
+  object_id of parent
+* $Object:split.splitID \
+  16 byte UUIDv4 used to identify the split object hierarchy parts
+
+There are some well-known filter aliases to match objects by certain
+properties:
+
+* $Object:ROOT \
+  Returns only `REGULAR` type objects that are not split or are the top
+  level root objects in a split hierarchy. This includes objects not
+  present physically, like large objects split into smaller objects
+  without separate top-level root object. Other type objects like
+  StorageGroups and Tombstones will not be shown. This filter may be
+  useful for listing objects like `ls` command of some virtual file
+  system. This filter is activated if the `key` exists, disregarding the
+  value and matcher type.
+* $Object:PHY \
+  Returns only objects physically stored in the system. This filter is
+  activated if the `key` exists, disregarding the value and matcher type.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 | match_type | MatchType | Match type to use |
-| name | string | Header name to match |
-| value | string | Header value to match |
+| key | string | Attribute or Header fields to match |
+| value | string | Value to match |
        
 ### Message Header
 
@@ -270,10 +321,10 @@ Object Header
 | container_id | ContainerID | Object's container |
 | owner_id | OwnerID | Object's owner |
 | creation_epoch | uint64 | Object creation Epoch |
-| payload_length | uint64 | Size of payload in bytes. `0xFFFFFFFFFFFFFFFF` means `payload_length` is unknown |
+| payload_length | uint64 | Size of payload in bytes. `0xFFFFFFFFFFFFFFFF` means `payload_length` is unknown. |
 | payload_hash | Checksum | Hash of payload bytes |
 | object_type | ObjectType | Type of the object payload content |
-| homomorphic_hash | Checksum | Homomorphic hash of the object payload. |
+| homomorphic_hash | Checksum | Homomorphic hash of the object payload |
 | session_token | SessionToken | Session token, if it was used during Object creation. Need it to verify integrity and authenticity out of Request scope. |
 | attributes | Attribute | User-defined object attributes |
 | split | Split | Position of the object in the split hierarchy |
@@ -283,11 +334,26 @@ Object Header
 `Attribute` is a user-defined Key-Value metadata pair attached to the
 object.
 
+Key name must be a object-unique valid UTF-8 string. Value can't be empty.
+Objects with duplicated attribute names or attributes with empty values
+will be considered invalid.
+
 There are some "well-known" attributes starting with `__NEOFS__` prefix
 that affect system behaviour:
 
-* __NEOFS__UPLOAD_ID
-* __NEOFS__EXPIRATION_EPOCH
+* __NEOFS__UPLOAD_ID \
+  Marks smaller parts of a split bigger object
+* __NEOFS__EXPIRATION_EPOCH \
+  Tells GC to delete object after that epoch
+
+And some well-known attributes used by applications only:
+
+* Name \
+  Human-friendly name
+* FileName \
+  File name to be associated with the object on saving
+* Timestamp \
+  User-defined local time of object creation in Unix Timestamp format
 
 For detailed description of each well-known attribute please see the
 corresponding section in NeoFS Technical specification.
@@ -311,6 +377,7 @@ must be within the same container.
 | parent_signature | Signature | `signature` field of the parent object. Used to reconstruct parent. |
 | parent_header | Header | `header` field of the parent object. Used to reconstruct parent. |
 | children | ObjectID | List of identifiers of the objects generated by splitting current one. |
+| split_id | bytes | 16 byte UUIDv4 used to identify the split object hierarchy parts. Must be unique inside container. All objects participating in the split must have the same `split_id` value. |
    
 ### Message Object
 
@@ -323,7 +390,7 @@ hash of header field, which contains hash of object's payload.
 | object_id | ObjectID | Object's unique identifier. |
 | signature | Signature | Signed object_id |
 | header | Header | Object metadata headers |
-| payload | bytes | Payload bytes. |
+| payload | bytes | Payload bytes |
    
 ### Message ShortHeader
 
@@ -331,11 +398,24 @@ Short header fields
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| version | Version | Object format version. Effectively the version of API library used to create particular object |
+| version | Version | Object format version. Effectively the version of API library used to create particular object. |
 | creation_epoch | uint64 | Epoch when the object was created |
 | owner_id | OwnerID | Object's owner |
 | object_type | ObjectType | Type of the object payload content |
 | payload_length | uint64 | Size of payload in bytes. `0xFFFFFFFFFFFFFFFF` means `payload_length` is unknown |
+   
+### Message SplitInfo
+
+Meta information of split hierarchy for object assembly. With last part
+one can traverse linked list of split hierarchy back to first part and
+assemble original object. With linking object one can assembly object
+straight away from the object parts.
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| split_id | bytes | 16 byte UUID used to identify the split object hierarchy parts. |
+| last_part | ObjectID | Identifier of the last object in split hierarchy parts. It contains split header with original object header. |
+| link | ObjectID | Identifier of linking object for split hierarchy parts. It contains split header with original object header and sorted list of object parts. |
     
 ### Emun MatchType
 
@@ -348,7 +428,15 @@ Type of match expression
 
 ### Emun ObjectType
 
-Type of the object payload content.
+Type of the object payload content. Only `REGULAR` type objects can be split,
+hence `TOMBSTONE` and `STORAGEGROUP` payload is limited by maximal object
+size.
+
+String presentation of object type is PascalCased `ObjectType` enumeration
+item name:
+* Regular
+* Tombstone
+* StorageGroup
 
 | Number | Name | Description |
 | ------ | ---- | ----------- |

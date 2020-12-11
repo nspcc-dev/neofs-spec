@@ -56,12 +56,15 @@ NeoFS node description
 | ----- | ---- | ----------- |
 | public_key | bytes | Public key of the NeoFS node in a binary format. |
 | address | string | Ways to connect to a node |
-| attributes | Attribute | Carries list of the NeoFS node attributes in a string key-value format. |
+| attributes | Attribute | Carries list of the NeoFS node attributes in a key-value form. Key name must be a node-unique valid UTF-8 string. Value can't be empty. NodeInfo structures with duplicated attribute names or attributes with empty values will be considered invalid. |
 | state | State | Carries state of the NeoFS node. |
    
 ### Message NodeInfo.Attribute
 
 Administrator-defined Attributes of the NeoFS Storage Node.
+
+`Attribute` is a Key-Value metadata pair. Key name must be a valid UTF-8
+string. Value can't be empty.
 
 Node's attributes are mostly used during Storage Policy evaluation to
 calculate object's placement and find a set of nodes satisfying policy
