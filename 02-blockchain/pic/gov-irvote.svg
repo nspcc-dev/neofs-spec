@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="878px" preserveAspectRatio="none" style="width:781px;height:878px;" version="1.1" viewBox="0 0 781 878" width="781px" zoomAndPan="magnify"><defs><filter height="300%" id="f9eqlbsuyczmj" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><ellipse cx="449.5" cy="20" fill="#000000" filter="url(#f9eqlbsuyczmj)" rx="10" ry="10" style="stroke: none; stroke-width: 1.0;"/><rect fill="#FEFECE" filter="url(#f9eqlbsuyczmj)" height="33.9688" rx="12.5" ry="12.5" style="stroke: #A80036; stroke-width: 1.5;" width="334" x="282.5" y="50"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" textLength="314" x="292.5" y="71.1387">Take inactive list from  sidechain Netmap contract</text><rect fill="#FEFECE" filter="url(#f9eqlbsuyczmj)" height="33.9688" rx="12.5" ry="12.5" style="stroke: #A80036; stroke-width: 1.5;" width="591" x="154" y="152.3711"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" textLength="571" x="164" y="173.5098">Take candiate list from mainnet DesignationContract and filter out inactive or invalid nodes</text><path d="M292.5,252.0503 L292.5,292.3159 A0,0 0 0 0 292.5,292.3159 L419.5,292.3159 A0,0 0 0 0 419.5,292.3159 L419.5,276.1831 L439.5,272.1831 L419.5,268.1831 L419.5,262.0503 L409.5,252.0503 L292.5,252.0503 A0,0 0 0 0 292.5,252.0503 " fill="#FBFB77" filter="url(#f9eqlbsuyczmj)" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M409.5,252.0503 L409.5,262.0503 L419.5,262.0503 L409.5,252.0503 " fill="#FBFB77" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="106" x="298.5" y="269.1172">There is no need</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="101" x="298.5" y="284.25">to change IR list</text><ellipse cx="449.5" cy="272.1831" fill="#FFFFFF" filter="url(#f9eqlbsuyczmj)" rx="10" ry="10" style="stroke: #000000; stroke-width: 1.5;"/><line style="stroke: #000000; stroke-width: 2.5;" x1="443.3128" x2="455.6872" y1="265.9959" y2="278.3703"/><line style="stroke: #000000; stroke-width: 2.5;" x1="455.6872" x2="443.3128" y1="265.9959" y2="278.3703"/><polygon fill="#FEFECE" filter="url(#f9eqlbsuyczmj)" points="328.5,206.3398,570.5,206.3398,582.5,218.3398,570.5,230.3398,328.5,230.3398,316.5,218.3398,328.5,206.3398" style="stroke: #A80036; stroke-width: 1.5;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="20" x="453.5" y="240.5503">yes</text><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="242" x="328.5" y="222.1479">Are first seven candidates in active IR list?</text><polygon fill="#FEFECE" filter="url(#f9eqlbsuyczmj)" points="249,103.9688,650,103.9688,662,115.9688,650,127.9688,249,127.9688,237,115.9688,249,103.9688" style="stroke: #A80036; stroke-width: 1.5;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="14" x="453.5" y="138.1792">no</text><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="401" x="249" y="119.7769">Are there inactive nodes in active IR list or need to change IR number?</text><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="20" x="662" y="113.3745">yes</text><polygon fill="#FEFECE" filter="url(#f9eqlbsuyczmj)" points="449.5,334.3159,461.5,346.3159,449.5,358.3159,437.5,346.3159,449.5,334.3159" style="stroke: #A80036; stroke-width: 1.5;"/><path d="M10,375.1675 L10,415.4331 A0,0 0 0 0 10,415.4331 L134,415.4331 A0,0 0 0 0 134,415.4331 L134,399.3003 L154,395.3003 L134,391.3003 L134,385.1675 L124,375.1675 L10,375.1675 A0,0 0 0 0 10,375.1675 " fill="#FBFB77" filter="url(#f9eqlbsuyczmj)" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M124,375.1675 L124,385.1675 L134,385.1675 L124,375.1675 " fill="#FBFB77" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="96" x="16" y="392.2344">May be cached</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="103" x="16" y="407.3672">at previous step</text><rect fill="#FEFECE" filter="url(#f9eqlbsuyczmj)" height="33.9688" rx="12.5" ry="12.5" style="stroke: #A80036; stroke-width: 1.5;" width="591" x="154" y="378.3159"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" textLength="571" x="164" y="399.4546">Take candiate list from mainnet DesignationContract and filter out inactive or invalid nodes</text><path d="M195.5,425.4331 L195.5,495.9644 A0,0 0 0 0 195.5,495.9644 L327.5,495.9644 A0,0 0 0 0 327.5,495.9644 L327.5,464.6987 L347.5,460.6987 L327.5,456.6987 L327.5,435.4331 L317.5,425.4331 L195.5,425.4331 A0,0 0 0 0 195.5,425.4331 " fill="#FBFB77" filter="url(#f9eqlbsuyczmj)" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M317.5,425.4331 L317.5,435.4331 L327.5,435.4331 L317.5,425.4331 " fill="#FBFB77" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="94" x="201.5" y="442.5">Alphabet IR list</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="83" x="201.5" y="457.6328">must only be</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="111" x="201.5" y="472.7656">changed by 1/3-1</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="91" x="201.5" y="487.8984">nodes at once</text><rect fill="#FEFECE" filter="url(#f9eqlbsuyczmj)" height="33.9688" rx="12.5" ry="12.5" style="stroke: #A80036; stroke-width: 1.5;" width="204" x="347.5" y="443.7144"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" textLength="184" x="357.5" y="464.853">Calculate Alphabet IR change</text><rect fill="#FEFECE" filter="url(#f9eqlbsuyczmj)" height="33.9688" rx="12.5" ry="12.5" style="stroke: #A80036; stroke-width: 1.5;" width="488" x="205.5" y="515.9644"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" textLength="468" x="215.5" y="537.103">Take current IR list non-Alphabet tail and filter out inactive or invalid nodes</text><rect fill="#FEFECE" filter="url(#f9eqlbsuyczmj)" height="33.9688" rx="12.5" ry="12.5" style="stroke: #A80036; stroke-width: 1.5;" width="559" x="170" y="618.3354"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" textLength="539" x="180" y="639.4741">Take candiate list from mainnet NeoFS contract and filter out inactive or invalid nodes</text><rect fill="#FEFECE" filter="url(#f9eqlbsuyczmj)" height="33.9688" rx="12.5" ry="12.5" style="stroke: #A80036; stroke-width: 1.5;" width="248" x="325.5" y="687.3042"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" textLength="228" x="335.5" y="708.4429">Append new candidates to IR list tail</text><polygon fill="#FEFECE" filter="url(#f9eqlbsuyczmj)" points="388,569.9331,511,569.9331,523,581.9331,511,593.9331,388,593.9331,376,581.9331,388,569.9331" style="stroke: #A80036; stroke-width: 1.5;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="14" x="453.5" y="604.1436">no</text><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="123" x="388" y="585.7412">Enough IR nodes left?</text><polygon fill="#FEFECE" filter="url(#f9eqlbsuyczmj)" points="449.5,741.2729,461.5,753.2729,449.5,765.2729,437.5,753.2729,449.5,741.2729" style="stroke: #A80036; stroke-width: 1.5;"/><rect fill="#FEFECE" filter="url(#f9eqlbsuyczmj)" height="33.9688" rx="12.5" ry="12.5" style="stroke: #A80036; stroke-width: 1.5;" width="428" x="235.5" y="785.2729"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" textLength="408" x="245.5" y="806.4116">Invoke Prepare() method of Voting smart contract with new IR list</text><ellipse cx="449.5" cy="850.2417" fill="#FFFFFF" filter="url(#f9eqlbsuyczmj)" rx="11" ry="11" style="stroke: #000000; stroke-width: 1.0;"/><ellipse cx="449.5" cy="850.2417" fill="#000000" rx="6" ry="6" style="stroke: #7F7F7F; stroke-width: 1.0;"/><line style="stroke: #A80036; stroke-width: 1.5;" x1="449.5" x2="449.5" y1="30" y2="50"/><polygon fill="#A80036" points="445.5,40,449.5,50,453.5,40,449.5,44" style="stroke: #A80036; stroke-width: 1.0;"/><line style="stroke: #A80036; stroke-width: 1.5;" x1="449.5" x2="449.5" y1="230.3398" y2="262.1831"/><polygon fill="#A80036" points="445.5,252.1831,449.5,262.1831,453.5,252.1831,449.5,256.1831" style="stroke: #A80036; stroke-width: 1.0;"/><line style="stroke: #A80036; stroke-width: 1.5;" x1="582.5" x2="594.5" y1="218.3398" y2="218.3398"/><polygon fill="#A80036" points="590.5,259.1831,594.5,269.1831,598.5,259.1831,594.5,263.1831" style="stroke: #A80036; stroke-width: 1.5;"/><line style="stroke: #A80036; stroke-width: 1.5;" x1="594.5" x2="594.5" y1="218.3398" y2="314.3159"/><line style="stroke: #A80036; stroke-width: 1.5;" x1="594.5" x2="449.5" y1="314.3159" y2="314.3159"/><line style="stroke: #A80036; stroke-width: 1.5;" x1="449.5" x2="449.5" y1="314.3159" y2="334.3159"/><polygon fill="#A80036" points="445.5,324.3159,449.5,334.3159,453.5,324.3159,449.5,328.3159" style="stroke: #A80036; stroke-width: 1.0;"/><line style="stroke: #A80036; stroke-width: 1.5;" x1="449.5" x2="449.5" y1="186.3398" y2="206.3398"/><polygon fill="#A80036" points="445.5,196.3398,449.5,206.3398,453.5,196.3398,449.5,200.3398" style="stroke: #A80036; stroke-width: 1.0;"/><line style="stroke: #A80036; stroke-width: 1.5;" x1="449.5" x2="449.5" y1="127.9688" y2="152.3711"/><polygon fill="#A80036" points="445.5,142.3711,449.5,152.3711,453.5,142.3711,449.5,146.3711" style="stroke: #A80036; stroke-width: 1.0;"/><line style="stroke: #A80036; stroke-width: 1.5;" x1="662" x2="755" y1="115.9688" y2="115.9688"/><polygon fill="#A80036" points="751,221.3906,755,231.3906,759,221.3906,755,225.3906" style="stroke: #A80036; stroke-width: 1.5;"/><line style="stroke: #A80036; stroke-width: 1.5;" x1="755" x2="755" y1="115.9688" y2="346.3159"/><line style="stroke: #A80036; stroke-width: 1.5;" x1="755" x2="461.5" y1="346.3159" y2="346.3159"/><polygon fill="#A80036" points="471.5,342.3159,461.5,346.3159,471.5,350.3159,467.5,346.3159" style="stroke: #A80036; stroke-width: 1.0;"/><line style="stroke: #A80036; stroke-width: 1.5;" x1="449.5" x2="449.5" y1="83.9688" y2="103.9688"/><polygon fill="#A80036" points="445.5,93.9688,449.5,103.9688,453.5,93.9688,449.5,97.9688" style="stroke: #A80036; stroke-width: 1.0;"/><line style="stroke: #A80036; stroke-width: 1.5;" x1="449.5" x2="449.5" y1="358.3159" y2="378.3159"/><polygon fill="#A80036" points="445.5,368.3159,449.5,378.3159,453.5,368.3159,449.5,372.3159" style="stroke: #A80036; stroke-width: 1.0;"/><line style="stroke: #A80036; stroke-width: 1.5;" x1="449.5" x2="449.5" y1="412.2847" y2="443.7144"/><polygon fill="#A80036" points="445.5,433.7144,449.5,443.7144,453.5,433.7144,449.5,437.7144" style="stroke: #A80036; stroke-width: 1.0;"/><line style="stroke: #A80036; stroke-width: 1.5;" x1="449.5" x2="449.5" y1="477.6831" y2="515.9644"/><polygon fill="#A80036" points="445.5,505.9644,449.5,515.9644,453.5,505.9644,449.5,509.9644" style="stroke: #A80036; stroke-width: 1.0;"/><line style="stroke: #A80036; stroke-width: 1.5;" x1="449.5" x2="449.5" y1="652.3042" y2="687.3042"/><polygon fill="#A80036" points="445.5,677.3042,449.5,687.3042,453.5,677.3042,449.5,681.3042" style="stroke: #A80036; stroke-width: 1.0;"/><line style="stroke: #A80036; stroke-width: 1.5;" x1="449.5" x2="449.5" y1="593.9331" y2="618.3354"/><polygon fill="#A80036" points="445.5,608.3354,449.5,618.3354,453.5,608.3354,449.5,612.3354" style="stroke: #A80036; stroke-width: 1.0;"/><line style="stroke: #A80036; stroke-width: 1.5;" x1="523" x2="739" y1="581.9331" y2="581.9331"/><polygon fill="#A80036" points="735,659.8042,739,669.8042,743,659.8042,739,663.8042" style="stroke: #A80036; stroke-width: 1.5;"/><line style="stroke: #A80036; stroke-width: 1.5;" x1="739" x2="739" y1="581.9331" y2="753.2729"/><line style="stroke: #A80036; stroke-width: 1.5;" x1="739" x2="461.5" y1="753.2729" y2="753.2729"/><polygon fill="#A80036" points="471.5,749.2729,461.5,753.2729,471.5,757.2729,467.5,753.2729" style="stroke: #A80036; stroke-width: 1.0;"/><line style="stroke: #A80036; stroke-width: 1.5;" x1="449.5" x2="449.5" y1="721.2729" y2="741.2729"/><polygon fill="#A80036" points="445.5,731.2729,449.5,741.2729,453.5,731.2729,449.5,735.2729" style="stroke: #A80036; stroke-width: 1.0;"/><line style="stroke: #A80036; stroke-width: 1.5;" x1="449.5" x2="449.5" y1="549.9331" y2="569.9331"/><polygon fill="#A80036" points="445.5,559.9331,449.5,569.9331,453.5,559.9331,449.5,563.9331" style="stroke: #A80036; stroke-width: 1.0;"/><line style="stroke: #A80036; stroke-width: 1.5;" x1="449.5" x2="449.5" y1="765.2729" y2="785.2729"/><polygon fill="#A80036" points="445.5,775.2729,449.5,785.2729,453.5,775.2729,449.5,779.2729" style="stroke: #A80036; stroke-width: 1.0;"/><line style="stroke: #A80036; stroke-width: 1.5;" x1="449.5" x2="449.5" y1="819.2417" y2="839.2417"/><polygon fill="#A80036" points="445.5,829.2417,449.5,839.2417,453.5,829.2417,449.5,833.2417" style="stroke: #A80036; stroke-width: 1.0;"/><!--MD5=[cefe1c74d317e833d319d60bf20c1702]
+@startuml
+
+
+start
+
+/' Initial phase. Check if there is a need to change anything. '/
+
+:Take inactive list from  sidechain Netmap contract;
+
+if (Are there inactive nodes in active IR list or need to change IR number?) then (yes)
+else (no)
+  :Take candiate list from mainnet DesignationContract and filter out inactive or invalid nodes;
+  if (Are first seven candidates in active IR list?) then (yes)
+    end
+    note left
+      There is no need
+      to change IR list
+    end note
+  endif
+
+endif
+
+/' New IR list construction phase. '/
+:Take candiate list from mainnet DesignationContract and filter out inactive or invalid nodes;
+note left
+  May be cached
+  at previous step
+end note
+
+:Calculate Alphabet IR change;
+note left
+  Alphabet IR list
+  must only be
+  changed by 1/3-1
+  nodes at once
+end note
+
+:Take current IR list non-Alphabet tail and filter out inactive or invalid nodes;
+
+if (Enough IR nodes left?) then (no)
+:Take candiate list from mainnet NeoFS contract and filter out inactive or invalid nodes;
+:Append new candidates to IR list tail;
+endif
+
+:Invoke Prepare() method of Voting smart contract with new IR list;
+
+stop
+
+
+@enduml
+
+@startuml
+
+
+start
+
+
+:Take inactive list from  sidechain Netmap contract;
+
+if (Are there inactive nodes in active IR list or need to change IR number?) then (yes)
+else (no)
+  :Take candiate list from mainnet DesignationContract and filter out inactive or invalid nodes;
+  if (Are first seven candidates in active IR list?) then (yes)
+    end
+    note left
+      There is no need
+      to change IR list
+    end note
+  endif
+
+endif
+
+:Take candiate list from mainnet DesignationContract and filter out inactive or invalid nodes;
+note left
+  May be cached
+  at previous step
+end note
+
+:Calculate Alphabet IR change;
+note left
+  Alphabet IR list
+  must only be
+  changed by 1/3-1
+  nodes at once
+end note
+
+:Take current IR list non-Alphabet tail and filter out inactive or invalid nodes;
+
+if (Enough IR nodes left?) then (no)
+:Take candiate list from mainnet NeoFS contract and filter out inactive or invalid nodes;
+:Append new candidates to IR list tail;
+endif
+
+:Invoke Prepare() method of Voting smart contract with new IR list;
+
+stop
+
+
+@enduml
+
+PlantUML version 1.2020.15(Sun Jun 28 11:39:45 UTC 2020)
+(GPL source distribution)
+Java Runtime: OpenJDK Runtime Environment
+JVM: OpenJDK 64-Bit Server VM
+Default Encoding: ANSI_X3.4-1968
+Language: en
+Country: US
+--></g></svg>

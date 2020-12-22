@@ -1,0 +1,112 @@
+@startuml
+
+participant "NeoFS\ncontract" as nfscon
+participant "Netmap\ncontract" as netmap
+participant "Voting\ncontract" as vote
+
+participant "IR Ⰰ" as irA
+participant "IR Ⰱ" as irB
+participant "IR Ⰲ" as irV
+
+participant "IR 1" as ir1
+participant "IR 2" as ir2
+participant "IR 3" as ir3
+
+group Failed voting
+activate irA
+activate irB
+activate irV
+irA -> vote: Prepare( {Ⰰ,Ⰱ,Ⰲ,1,2} )
+deactivate irA
+
+note right: Each list calculated deterministically \nby each Alphabet IR node
+irB -> vote: Prepare( {Ⰰ,Ⰱ,Ⰲ,1,2} )
+deactivate irB
+irV -> vote: Prepare( {Ⰰ,Ⰱ,Ⰲ,1,2} )
+note left: Need 2/3+1 Alphabet IR votes
+deactivate irV
+
+activate vote
+vote ->x ir1: Notify
+vote -> ir2: Notify
+note left: Only new IR nodes in the list send confirmation
+deactivate vote
+
+activate ir2
+ir2 -> vote: Prepare( {Ⰰ,Ⰱ,Ⰲ,1,2} )
+note left: Regular IR confirm only,\nwithout list recalculation
+deactivate ir2
+
+irA -> vote: EndRound()
+activate vote
+note right: Alphabet IR nodes wait for timeout \nand then invoke round results settlement
+vote -> netmap: SetInactiveIR( {1} )
+
+vote -> irA: Notify
+activate irA
+
+vote -> irB: Notify
+activate irB
+
+vote -> irV: Notify
+deactivate vote
+activate irV
+end
+
+group New voting round
+irA -> vote: Prepare( {Ⰰ,Ⰱ,Ⰲ,2,3} )
+deactivate irA
+irB -> vote: Prepare( {Ⰰ,Ⰱ,Ⰲ,2,3} )
+deactivate irB
+irV -> vote: Prepare( {Ⰰ,Ⰱ,Ⰲ,2,3} )
+deactivate irV
+activate vote
+vote -> ir2: Notify
+activate ir2
+vote -> ir3: Notify
+deactivate vote
+activate ir3
+ir2 -> vote: Prepare( {Ⰰ,Ⰱ,Ⰲ,2,3} )
+deactivate ir2
+ir3 -> vote: Prepare( {Ⰰ,Ⰱ,Ⰲ,2,3} )
+deactivate ir3
+activate vote
+note left: Got new IR List!
+vote -> irA: Notify
+activate irA
+vote -> irB: Notify
+activate irB
+vote -> irV: Notify
+deactivate vote
+activate irV
+end
+
+group Update IR list
+irA -> nfscon: UpdateInnerRing( {Ⰰ,Ⰱ,Ⰲ,2,3} )
+deactivate irA
+irB -> nfscon: UpdateInnerRing( {Ⰰ,Ⰱ,Ⰲ,2,3} )
+deactivate irB
+irV -> nfscon: UpdateInnerRing( {Ⰰ,Ⰱ,Ⰲ,2,3} )
+deactivate irV
+activate nfscon
+nfscon -> nfscon: Update IR list
+nfscon -> irA: Notify
+activate irA
+nfscon -> irB: Notify
+activate irB
+nfscon -> irV: Notify
+deactivate nfscon
+activate irV
+irA -> netmap: UpdateInnerRing( {Ⰰ,Ⰱ,Ⰲ,2,3} )
+deactivate irA
+irB -> netmap: UpdateInnerRing( {Ⰰ,Ⰱ,Ⰲ,2,3} )
+deactivate irB
+irV -> netmap: UpdateInnerRing( {Ⰰ,Ⰱ,Ⰲ,2,3} )
+deactivate irV
+activate netmap
+netmap -> netmap: Update IR list
+deactivate netmap
+
+end
+
+@enduml

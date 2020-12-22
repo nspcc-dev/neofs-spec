@@ -1,0 +1,50 @@
+@startuml
+
+
+start
+
+/' Initial phase. Check if there is a need to change anything. '/
+
+:Take inactive list from  sidechain Netmap contract;
+
+if (Are there inactive nodes in active IR list or need to change IR number?) then (yes)
+else (no)
+  :Take candiate list from mainnet DesignationContract and filter out inactive or invalid nodes;
+  if (Are first seven candidates in active IR list?) then (yes)
+    end
+    note left
+      There is no need
+      to change IR list
+    end note
+  endif
+
+endif
+
+/' New IR list construction phase. '/
+:Take candiate list from mainnet DesignationContract and filter out inactive or invalid nodes;
+note left
+  May be cached
+  at previous step
+end note
+
+:Calculate Alphabet IR change;
+note left
+  Alphabet IR list
+  must only be
+  changed by 1/3-1
+  nodes at once
+end note
+
+:Take current IR list non-Alphabet tail and filter out inactive or invalid nodes;
+
+if (Enough IR nodes left?) then (no)
+:Take candiate list from mainnet NeoFS contract and filter out inactive or invalid nodes;
+:Append new candidates to IR list tail;
+endif
+
+:Invoke Prepare() method of Voting smart contract with new IR list;
+
+stop
+
+
+@enduml
