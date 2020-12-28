@@ -403,6 +403,8 @@ Short header fields
 | owner_id | OwnerID | Object's owner |
 | object_type | ObjectType | Type of the object payload content |
 | payload_length | uint64 | Size of payload in bytes. `0xFFFFFFFFFFFFFFFF` means `payload_length` is unknown |
+| payload_hash | Checksum | Hash of payload bytes |
+| homomorphic_hash | Checksum | Homomorphic hash of the object payload |
    
 ### Message SplitInfo
 
