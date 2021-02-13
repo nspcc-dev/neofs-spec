@@ -17,7 +17,7 @@ response immediately. After a new block is issued in sidechain, request is
 verified by Inner Ring nodes. After one more block in sidechain, container
 is added into smart contract storage.
 
-                 
+                      
 
 __Request Body:__ PutRequest.Body
 
@@ -31,7 +31,7 @@ additional signature checks.
 | ----- | ---- | ----------- |
 | container | Container | Container structure to register in NeoFS |
 | signature | Signature | Signature of a stable-marshalled container according to RFC-6979 |
-                             
+                                  
 
 __Response Body__ PutResponse.Body
 
@@ -51,7 +51,7 @@ response immediately. After a new block is issued in sidechain, request is
 verified by Inner Ring nodes. After one more block in sidechain, container
 is added into smart contract storage.
 
- 
+      
 
 __Request Body:__ DeleteRequest.Body
 
@@ -63,7 +63,7 @@ smart contract, so signing algorithm must be supported by NeoVM.
 | ----- | ---- | ----------- |
 | container_id | ContainerID | Identifier of the container to delete from NeoFS |
 | signature | Signature | `ContainerID` signed with the container owner's key according to RFC-6979 |
-                             
+                                  
 
 __Response Body__ DeleteResponse.Body
 
@@ -75,7 +75,7 @@ and done via consensus in Inner Ring nodes.
 
 Returns container structure from `Container` smart contract storage.
 
-         
+              
 
 __Request Body:__ GetRequest.Body
 
@@ -84,7 +84,7 @@ Get container structure request body.
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 | container_id | ContainerID | Identifier of the container to get |
-                             
+                                  
 
 __Response Body__ GetResponse.Body
 
@@ -99,7 +99,7 @@ was already verified on container creation.
 
 Returns all owner's containers from 'Container` smart contract' storage.
 
-             
+                  
 
 __Request Body:__ ListRequest.Body
 
@@ -108,7 +108,7 @@ List containers request body.
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 | owner_id | OwnerID | Identifier of the container owner |
-                             
+                                  
 
 __Response Body__ ListResponse.Body
 
@@ -124,7 +124,7 @@ Invokes 'SetEACL' method of 'Container` smart contract and returns response
 immediately. After one more block in sidechain, Extended ACL changes are
 added into smart contract storage.
 
-                     
+                          
 
 __Request Body:__ SetExtendedACLRequest.Body
 
@@ -135,7 +135,7 @@ reference. It will be taken from `EACLTable.container_id` field.
 | ----- | ---- | ----------- |
 | eacl | EACLTable | Extended ACL table to set for container |
 | signature | Signature | Signature of stable-marshalled Extended ACL table according to RFC-6979 |
-                             
+                                  
 
 __Response Body__ SetExtendedACLResponse.Body
 
@@ -149,7 +149,7 @@ storage after next block is issued in sidechain.
 Returns Extended ACL table and signature from `Container` smart contract
 storage.
 
-     
+          
 
 __Request Body:__ GetExtendedACLRequest.Body
 
@@ -158,7 +158,7 @@ Get Extended ACL request body
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 | container_id | ContainerID | Identifier of the container having Extended ACL |
-                             
+                                  
 
 __Response Body__ GetExtendedACLResponse.Body
 
@@ -170,7 +170,38 @@ container creation.
 | ----- | ---- | ----------- |
 | eacl | EACLTable | Extended ACL requested, if available |
 | signature | Signature | Signature of stable-marshalled Extended ACL according to RFC-6979 |
-                                              
+                    
+### Method AnnounceUsedSpace
+
+Announce container used space values for P2P synchronization.
+
+ 
+
+__Request Body:__ AnnounceUsedSpaceRequest.Body
+
+Container used space announcement body.
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| announcements | Announcement | List of announcements. If nodes share several containers, then announcements transferred in a batch. |
+                                   
+
+__Response Body__ AnnounceUsedSpaceResponse.Body
+
+`AnnounceUsedSpaceResponse` has an empty body because announcements are
+one way communication.
+
+                             
+### Message AnnounceUsedSpaceRequest.Body.Announcement
+
+Announcement contains used space information about single container.
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| epoch | uint64 | Epoch number for which container size estimation was produced. |
+| container_id | ContainerID | Identifier of the container. |
+| used_space | uint64 | Used space is a sum of object payload sizes of specified container, stored in the node. It must not include inhumed objects. |
+                               
 ### Message Container
 
 Container is a structure that defines object placement behaviour. Objects can

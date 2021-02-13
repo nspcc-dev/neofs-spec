@@ -305,6 +305,10 @@ properties:
   Returns only objects physically stored in the system. This filter is
   activated if the `key` exists, disregarding the value and matcher type.
 
+Note: using filters with a key with prefix `$Object:` and match type
+`NOT_PRESENT `is not recommended since this is not a cross-version approach.
+Behavior when processing this kind of filters is undefined.
+
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 | match_type | MatchType | Match type to use |
@@ -427,6 +431,8 @@ Type of match expression
 | ------ | ---- | ----------- |
 | 0 | MATCH_TYPE_UNSPECIFIED | Unknown. Not used |
 | 1 | STRING_EQUAL | Full string match |
+| 2 | STRING_NOT_EQUAL | Full string mismatch |
+| 3 | NOT_PRESENT | Lack of key |
 
 ### Emun ObjectType
 
