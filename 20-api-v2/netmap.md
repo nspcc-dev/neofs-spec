@@ -24,7 +24,7 @@ __Request Body:__ LocalNodeInfoRequest.Body
 
 LocalNodeInfo request body is empty.
 
-        
+            
 
 __Response Body__ LocalNodeInfoResponse.Body
 
@@ -34,7 +34,27 @@ Local Node Info, including API Version in use.
 | ----- | ---- | ----------- |
 | version | Version | Latest NeoFS API version in use |
 | node_info | NodeInfo | NodeInfo structure with recent information from node itself |
-          
+        
+### Method NetworkInfo
+
+Read recent information about the NeoFS network.
+
+     
+
+__Request Body:__ NetworkInfoRequest.Body
+
+NetworkInfo request body is empty.
+
+            
+
+__Response Body__ NetworkInfoResponse.Body
+
+Information about the network.
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| network_info | NetworkInfo | NetworkInfo structure with recent information. |
+              
 ### Message Filter
 
 Filter will return the subset of nodes from `NetworkMap` or another filter's
@@ -47,6 +67,15 @@ results, that will satisfy filter's conditions.
 | op | Operation | Filtering operation |
 | value | string | Value to match |
 | filters | Filter | List of inner filters. Top level operation will be applied to the whole list. |
+   
+### Message NetworkInfo
+
+Information about NeoFS network
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| current_epoch | uint64 | Number of the current epoch in the NeoFS network. |
+| magic_number | uint64 | Magic number of the sidechain of the NeoFS network. |
    
 ### Message NodeInfo
 
