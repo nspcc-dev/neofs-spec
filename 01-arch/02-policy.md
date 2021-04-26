@@ -1,17 +1,29 @@
 ## Storage Policy
 
 In NeoFS, storage policy is a flexible way to specify rules for storing objects.
-Depending on the context, the term "placement policy" can be used
-to denote the same thing.
-It consists of 4 parts described in detail below:
+The result of storage policy rules application to the network maps is a set of
+storage nodes, able to store the data according to the requested policy. This
+result maybe called "placement", hence sometime you may find the term "placement
+policy" used to denote the same thing as the "storage policy".
+
+Because Storage Policy is attached to the container structure there is a compact
+definition for system's internal use and some higher level language definitions
+for humans to use, that are translated to internal representation. For example
+there is SQL-like language to use by humans, JSON notation to be used in
+software and there may be more, for example a graphical language using
+[Blockly](https://developers.google.com/blockly).
+
+Storage Policy internal definition consists of four parts:
 1. Filters
 2. Selectors
 3. Replicas
 4. Container Backup Factor.
 
-The result of applying a storage policy to the netmap is a set of nodes structured
-by `Replicas`. It is called (`Container`)[./05-containers.md] and
-is used to select candidates to put objects on.
+The result of applying a storage policy to the netmap is a set of nodes
+structured by `Replicas` and is used to select candidates to put objects on. The
+selection algorithm is deterministic, hence on different nodes or clients the
+same Storage Policy applied to the same version on netmap will give the
+identical result.
 
 ### Filters
 Filter is a mechanism to specify which nodes are allowed to store an object.
