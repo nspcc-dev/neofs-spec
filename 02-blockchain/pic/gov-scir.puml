@@ -6,7 +6,7 @@ node "IR Ⰱ" as IRBuky
 node "IR Ⰲ" as IRVedi
 node "IR Ⰳ" as IRGlagoli
 node "IR Ⰴ" as IRDobro
-node "IR Ⰵ" as IRJest
+node "IR Ⰵ" as IRYest
 node "IR Ⰶ" as IRZhivete
 
 node "IR" as IR
@@ -21,7 +21,7 @@ artifact "SC Ⰱ" as SCBuky
 artifact "SC Ⰲ" as SCVedi
 artifact "SC Ⰳ" as SCGlagoli
 artifact "SC Ⰴ" as SCDobro
-artifact "SC Ⰵ" as SCJest
+artifact "SC Ⰵ" as SCYest
 artifact "SC Ⰶ" as SCZhivete
 
 artifact "SC Netmap" as NetmapSC
@@ -35,6 +35,6 @@ IRBuky -->      SCBuky
 IRVedi -->      SCVedi
 IRGlagoli -->   SCGlagoli
 IRDobro -->     SCDobro
-IRJest -->      SCJest
+IRYest -->      SCYest
 IRZhivete -->   SCZhivete
 @enduml

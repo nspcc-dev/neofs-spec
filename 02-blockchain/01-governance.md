@@ -2,7 +2,7 @@
 
 NeoFS uses the sidechain as a database to store meta-information about the
 network: network map, audit results, containers, key mappings and network
-settings and several supplementary thins.
+settings and several supplementary things.
 
 The sidechain works on the same principles as the mainnet: there are no free
 transactions, the committee chooses the consensus nodes, etc. It gives many
@@ -27,7 +27,7 @@ the sidechain committee.
 Alphabet contracts are seven smart contracts deployed in the sidechain, named
 after the first seven
 [Glagolitic](https://en.wikipedia.org/wiki/Glagolitic_script) script letters:
-Az(Ⰰ), Buky(Ⰱ), Vedi(Ⰲ), Glagoli(Ⰳ), Dobro(Ⰴ), Jest(Ⰵ), Zhivete(Ⰶ). These
+Az(Ⰰ), Buky(Ⰱ), Vedi(Ⰲ), Glagoli(Ⰳ), Dobro(Ⰴ), Yest(Ⰵ), Zhivete(Ⰶ). These
 contracts hold 100,000,000 sidechain \Gls{NEO} on their accounts (approximately
 14,285,000 for each). By storing \Gls{NEO} on the contract accounts, we protect
 it from unauthorized use by malicious sidechain nodes. Contracts do not transfer
