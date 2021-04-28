@@ -38,11 +38,11 @@ ENV PLANTUML_BIN java -jar /usr/bin/plantuml.jar
 RUN wget -q http://downloads.sourceforge.net/project/plantuml/1.2020.15/plantuml.1.2020.15.jar -O /usr/bin/plantuml.jar
 
 # Install python stuff
-RUN pip3 install pandocfilters
-RUN pip3 install pyyaml
-RUN pip3 install pandoc-plantuml-filter
-RUN pip3 install panflute
-RUN pip3 install pandoc-img-glob
+# I know about requirements.txt, but it didn't work as expected
+RUN pip3 install panflute==1.12.5
+RUN pip3 install pandoc-img-glob==0.1.3
+RUN pip3 install pandoc-plantuml-filter==0.1.2
+RUN pip3 install pandocfilters==1.4.2
 
 # Cleanup
 RUN rm -rf /tmp/*
