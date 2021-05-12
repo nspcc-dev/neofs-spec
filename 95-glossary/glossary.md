@@ -2,7 +2,8 @@
 # Terms and definitions
 
 Object
- : The immutable piece of data with a metadata in form of a set of key-value headers. Object has a globally unique identifier.
+ : An immutable piece of data with metadata in the form of a set of key-value
+ headers. Object has a globally unique identifier.
 
 HRW
  : HRW stands for (Rendezvous hashing)[https://en.wikipedia.org/wiki/Rendezvous_hashing]. It helps to achieve 3 goals:
