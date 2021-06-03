@@ -2,6 +2,11 @@
 
 NeoFS reputation system is a subsystem for calculating trust in a node. It is based on a reputation model for assessing trust, which is, in turn, based on the EigenTrust algorithm designed for peer-to-peer reputation management. The algorithm ensures that there is a uniquely defined manager (parent node) for each network participant at each specified time (epoch). Based on the information received from its child node and other managers, it iteratively puts a complex general (Global) Trust of the entire network into the applicable child node.
 
+The reputation system allows introducing nodes performance quality metric (trust). In a situation when most of the nodes make an honest assessment of the actions of other nodes, the system lets you calculate this metric quite accurately. This metric can be used for:
+
+1. Filtering the list of nodes where the user intends to store information. For example, one can use only those nodes whose scores are higher than the minimum acceptable for the user.
+2. Making a decision to exclude untrusted hosts from the network. For example, one can suspend a node in case it comes to the minimum level of quality in the network.
+
 ### Trust
 
 Trust in a NeoFS node is its quantitative (numerical) assessment based on the experience of interacting with that node. The higher the score is, the higher is the trust in the node and vice versa. Since the system uses a reputation-based trust model, the terms “trust” and “reputation” are considered synonymous in this document.
