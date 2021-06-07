@@ -1,7 +1,7 @@
 ## Global Trust
 
 *Global Trust*
-: the result of the [EigenTrust](http://ilpubs.stanford.edu:8090/562/1/2002-56.pdf) algorithm is the trust in the network participant, which has been obtained regarding *all* Local Trusts of *all* nodes.
+: the result of the EigenTrust algorithm is the trust in the network participant, which has been obtained regarding *all* Local Trusts of *all* nodes.
 
 ### Subject and Object of a trust
 
