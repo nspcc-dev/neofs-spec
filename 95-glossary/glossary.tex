@@ -68,3 +68,37 @@
   \end{itemize}
   }
 }
+
+\newglossaryentry{EigenTrust}{
+  name=EigenTrust,
+  description={
+    EigenTrust algorithm is a reputation management \href{http://ilpubs.stanford.edu:8090/562/1/2002-56.pdf}{algorithm} for peer-to-peer networks.
+  }
+}
+
+\newglossaryentry{HRW}{
+  name=HRW,
+  description={
+    HRW stands for \href{https://en.wikipedia.org/wiki/Rendezvous_hashing}{Rendezvous hashing}. It helps to achieve 3 goals:
+    \begin{enumerate}
+      \item Select nodes uniformly from the whole netmap. This means that every node has a chance to be included in container nodes set.
+      \item Select nodes deterministically. Identical (netmap, storage policy) pair results in the same placement set on every storage node.
+      \item Prioritize nodes providing better conditions.
+    \end{enumerate}
+    Nodes having more space, better price or better rating are to be selected with higher probability. Specific weighting algorithm is defined for NeoFS network as a whole and is beyond scope of this document. See \href{https://github.com/nspcc-dev/hrw}{NeoFS HRW implementation} for details.
+  }
+}
+
+\newglossaryentry{LocalTrust}{
+  name=Local Trust,
+  description={
+    trust of one node to another, calculated using \textit{only} statistical information of their peer-to-peer network interactions. The Subject and Object of such a trust are peer-to-peer nodes.
+  }
+}
+
+\newglossaryentry{GlobalTrust}{
+  name=Global Trust,
+  description={
+    the result of the \Gls{EigenTrust} algorithm is the trust in the network participant, which has been obtained regarding \textit{all} \Gls{LocalTrust}s of \textit{all} nodes.
+  }
+}

@@ -9,7 +9,7 @@ Managers are required to assess the trust of a child node considering its reputa
 To unambiguously determine the manager for the current node, the following rule is used:
 
 1. For the current epoch, a network map (a list of active participants) is obtained from the `Netmap` of the contract.
-2. The resulting array is sorted using [HRW](https://github.com/nspcc-dev/hrw) hashing, which takes into account the current epoch number.
+2. The resulting array is sorted using \Gls{HRW} hashing, which takes into account the current epoch number.
 3. The index of the current node is determined in a uniquely sorted array - `i`.
 4. The `i+1`-th node is taken as a manager of the `i`-th node.
 

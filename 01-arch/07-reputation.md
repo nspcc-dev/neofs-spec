@@ -1,6 +1,6 @@
 ## Reputation system
 
-NeoFS reputation system is a subsystem for calculating trust in a node. It is based on a reputation model for assessing trust, which is, in turn, based on the EigenTrust algorithm designed for peer-to-peer reputation management. The algorithm ensures that there is a uniquely defined manager (parent node) for each network participant at each specified time (epoch). Based on the information received from its child node and other managers, it iteratively puts a complex general (Global) Trust of the entire network into the applicable child node.
+NeoFS reputation system is a subsystem for calculating trust in a node. It is based on a reputation model for assessing trust, which is, in turn, based on the \Gls{EigenTrust} algorithm designed for peer-to-peer reputation management. The algorithm ensures that there is a uniquely defined manager (parent node) for each network participant at each specified time (epoch). Based on the information received from its child node and other managers, it iteratively puts a complex general (Global) Trust of the entire network into the applicable child node.
 
 The reputation system allows introducing nodes performance quality metric (trust). In a situation when most of the nodes make an honest assessment of the actions of other nodes, the system lets you calculate this metric quite accurately. This metric can be used for:
 
@@ -25,21 +25,15 @@ Trust in a NeoFS in a node is formed based on its interactions with the Subjects
 
 *General problem statement:* the Subject of assessment needs to calculate the reputation of the Object of trust assessment at a specific point of time (specific epoch).
 
-*Local Trust*
-: trust of one node to another, calculated using *only* statistical information of their peer-to-peer network interactions. The Subject and Object of such trust are peer-to-peer nodes.
+\Gls{EigenTrust} is based on the notion of transitive trust: peer `i` will have a high opinion of those peers who have provided it with authentic information. Moreover, peer `i` is likely to trust the opinions of those peers, since peers who are honest about the information they provide are also likely to be honest in reporting their \Gls{LocalTrust} values.
 
-*Global Trust*
-: the result of the [EigenTrust](http://ilpubs.stanford.edu:8090/562/1/2002-56.pdf) algorithm -- the trust in the network participant, which was obtained regarding *all* Local Trusts of *all* nodes. The Subject is the *entire* network as a whole, the Object is a separate node.
-
-EigenTrust is based on the notion of transitive trust: peer `i` will have a high opinion of those peers who have provided it with authentic information. Moreover, peer `i` is likely to trust the opinions of those peers, since peers who are honest about the information they provide are also likely to be honest in reporting their Local Trust values.
-
-Global (collective) Trust is calculated in 3 main stages:
+\Gls{GlobalTrust} is calculated in 3 main stages:
 
 1. Each network member collects local statistics of network interactions with other peers, acting as the Subject of reputation assessment.
 2. At the end of an epoch, each node announces its local statistics to its manager.
 3. Managers exchange received information iteratively and, based on the updated data, make adjustments to the trust obtained in the previous iteration.
 
-The algorithm uses configuration parameters that affect the result of the Global Trust calculation. To synchronize all network participants in terms of the values of these parameters, the nodes "read" these parameters from the `Netmap` contract.
+The algorithm uses configuration parameters that affect the result of the \Gls{GlobalTrust} calculation. To synchronize all network participants in terms of the values of these parameters, the nodes "read" these parameters from the `Netmap` contract.
 
 ### Subjects and Objects of Trust in NeoFS
 
