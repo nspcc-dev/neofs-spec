@@ -11,6 +11,10 @@ OUT_DIR = output
 APIV2_DIR = "../neofs-api"
 APIV2_DOC_DIR = "20-api-v2"
 
+CONTRACTS_DIR = "../neofs-contract"
+CONTRACTS = $(shell echo "${CONTRACTS_DIR}/alphabet")
+CONTRACTS_DOC_DIR = "06-blockchain"
+
 PDF_NAME?= "neofs-spec-${VERSION}.pdf"
 TEX_NAME?= "neofs-spec-${VERSION}.tex"
 PARTS = $(shell find . -mindepth 2 -maxdepth 2 -type f -name '*.md' | sort)
@@ -105,6 +109,20 @@ update_api_v2:
 	done
 
 update_api: update_api_v2
+
+.PHONY: update_contracts
+
+.ONESHELL:
+update_contracts:
+	@for f in `find ${CONTRACTS_DIR} -mindepth 2 -maxdepth 2 -type f ! -path '*/nns/*' -name '*_contract.go'  -exec dirname {} \; | sort -u `;
+	do
+		echo "Documentation for $$(basename $$f)";
+		gomarkdoc --template-file file=templates/contracts-file.tmpl \
+			--template-file package=templates/contracts-package.tmpl \
+			--template-file func=templates/contracts-func.tmpl \
+			--template-file doc=templates/contracts-doc.tmpl \
+			$$f > ${CONTRACTS_DOC_DIR}/03-$$(basename $$f).md
+	done
 
 .PHONY: image docker_build
 

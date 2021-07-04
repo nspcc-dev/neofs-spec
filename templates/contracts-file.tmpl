@@ -1,0 +1,7 @@
+{{.Header -}}
+
+{{- range .Packages -}}
+	{{- template "package" . -}}
+{{- end -}}
+
+{{- .Footer}}

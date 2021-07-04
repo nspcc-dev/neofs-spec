@@ -1,0 +1,17 @@
+{{- if eq .Name "main" -}}
+	{{- header .Level .Dirname -}}
+{{- else -}}
+	{{- .Name | printf "%s contract" | header (add .Level 2)  -}}
+{{- end -}}
+
+{{- template "doc" .Doc -}}
+
+{{- range .Examples -}}
+	{{- template "example" . -}}
+{{- end -}}
+
+{{- header (add .Level 3) "Contract methods" -}}
+
+{{- range .Funcs -}}
+	{{- template "func" . -}}
+{{- end -}}

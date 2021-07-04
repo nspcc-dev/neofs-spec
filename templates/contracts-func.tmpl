@@ -1,0 +1,9 @@
+{{- .Name | rawHeader (add .Level 3) -}}
+
+{{- codeBlock "go" .Signature -}}
+
+{{- template "doc" .Doc -}}
+
+{{- range .Examples -}}
+	{{- template "example" . -}}
+{{- end -}}
