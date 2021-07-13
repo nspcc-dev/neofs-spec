@@ -1,1 +1,0 @@
-## NeoFS.ID and NeoID

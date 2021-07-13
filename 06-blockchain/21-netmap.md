@@ -1,3 +1,0 @@
-## Network Map Contract
-
-Netmap
