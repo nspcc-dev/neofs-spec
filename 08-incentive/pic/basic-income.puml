@@ -1,0 +1,33 @@
+@startuml
+participant "Storage\nnodes" as sn
+participant "Netmap\ncontract" as netmap
+participant "Container\ncontract" as cnr
+participant "Inner Ring\nNodes" as ir
+participant "Balance\ncontract" as bln
+
+netmap --> ir: New epoch notification
+group 1\3 of epoch
+ir -> cnr: Start estimation
+cnr --> sn: Start estimation notification
+sn -> sn: Exchange estimations
+...
+ir -> cnr: Stop estimation
+cnr --> sn: Stop estimation notification
+sn -> cnr: Estimate container sizes
+...
+end
+
+group 2\3 of epoch
+ir -> cnr: Get estimations
+ir -> bln: Transfer to bank account
+...
+end
+
+group 3\3 of epoch
+ir -> bln: Get balance of bank account
+ir -> bln: Transfer to Storage Node accounts
+...
+end
+
+ir -> netmap: New epoch
+@enduml
