@@ -15,7 +15,7 @@
   name={N3 Test Net},
   description={
     N3 Main Network Blockchain.
-    See \href{https://docs.neo.org/v3/docs/en-us/network/testnet.html}{Neo Documentation.}
+    See \href{https://docs.neo.org/v3/docs/en-us/network/testnet.html}{Neo Documentation}
   }
 }
 
@@ -30,7 +30,7 @@
   name={Neo Virtual Machine},
   description={
     NeoVM is a lightweight virtual machine for executing Neo smart contracts. As the core component of Neo, NeoVM has Turing completeness and high consistency, which can implement arbitrary execution logic and ensure consistent execution results of any node in distributed network, providing strong support for decentralized applications.
-    See \href{https://docs.neo.org/docs/en-us/basic/technology/neovm.html}{Neo Documentation.}
+    See \href{https://docs.neo.org/docs/en-us/basic/technology/neovm.html}{Neo Documentation}
   }
 }
 
@@ -45,7 +45,7 @@
 \newglossaryentry{validator}{
   name={validator node},
   description={
-    In the NEO network, NEO holders can enroll themselves to be validators (consensus node candidates), and then be voted as consensus nodes. The voting status of validators and number of consensus nodes are stored in blockchain.
+    In the NEO network, NEO holders can enroll themselves to be validators (consensus node candidates), and then be voted as consensus nodes. The voting status of validators and number of consensus nodes are stored in blockchain
   }
 }
 
@@ -72,7 +72,7 @@
 \newglossaryentry{EigenTrust}{
   name=EigenTrust,
   description={
-    EigenTrust algorithm is a reputation management \href{http://ilpubs.stanford.edu:8090/562/1/2002-56.pdf}{algorithm} for peer-to-peer networks.
+    EigenTrust algorithm is a reputation management \href{http://ilpubs.stanford.edu:8090/562/1/2002-56.pdf}{algorithm} for peer-to-peer networks
   }
 }
 
@@ -85,7 +85,7 @@
       \item Select nodes deterministically. Identical (netmap, storage policy) pair results in the same placement set on every storage node.
       \item Prioritize nodes providing better conditions.
     \end{enumerate}
-    Nodes having more space, better price or better rating are to be selected with higher probability. Specific weighting algorithm is defined for NeoFS network as a whole and is beyond scope of this document. See \href{https://github.com/nspcc-dev/hrw}{NeoFS HRW implementation} for details.
+    Nodes having more space, better price or better rating are to be selected with higher probability. Specific weighting algorithm is defined for NeoFS network as a whole and is beyond scope of this document. See \href{https://github.com/nspcc-dev/hrw}{NeoFS HRW implementation} for details
   }
 }
 
@@ -95,7 +95,7 @@
     \href{https://multiformats.io/multiaddr/}{Multiaddress} is a format for encoding addresses from various well-established network protocols. It has two forms:
     \begin{enumerate}
       \item a human-readable version to be used when printing to the user (UTF-8);
-      \item a binary-packed version to be used in storage, transmissions on the wire, and as a primitive in other formats.
+      \item a binary-packed version to be used in storage, transmissions on the wire, and as a primitive in other formats
     \end{enumerate}
   }
 }
@@ -103,14 +103,14 @@
 \newglossaryentry{LocalTrust}{
   name=Local Trust,
   description={
-    trust of one node to another, calculated using \textit{only} statistical information of their peer-to-peer network interactions. The Subject and Object of such a trust are peer-to-peer nodes.
+    trust of one node to another, calculated using \textit{only} statistical information of their peer-to-peer network interactions. The Subject and Object of such a trust are peer-to-peer nodes
   }
 }
 
 \newglossaryentry{GlobalTrust}{
   name=Global Trust,
   description={
-    the result of the \Gls{EigenTrust} algorithm is the trust in the network participant, which has been obtained regarding \textit{all} \Gls{LocalTrust}s of \textit{all} nodes.
+    the result of the \Gls{EigenTrust} algorithm is the trust in the network participant, which has been obtained regarding \textit{all} \Gls{LocalTrust}s of \textit{all} nodes
   }
 }
 
