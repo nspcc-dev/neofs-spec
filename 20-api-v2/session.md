@@ -35,6 +35,16 @@ Session creation response body
 | id | bytes | Identifier of a newly created session |
 | session_key | bytes | Public key used for session |
           
+### Message ContainerSessionContext
+
+Context information for Session Tokens related to ContainerService requests.
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| verb | Verb | Type of request for which the token is issued |
+| wildcard | bool | Spreads the action to all owner containers. If set, container_id field is ignored. |
+| container_id | ContainerID | Particular container to which the action applies. Ignored if wildcard flag is set. |
+   
 ### Message ObjectSessionContext
 
 Context information for Session Tokens related to ObjectService requests
@@ -113,6 +123,7 @@ Session Token body
 | lifetime | TokenLifetime | Lifetime of the session |
 | session_key | bytes | Public key used in session |
 | object | ObjectSessionContext | ObjectService session context |
+| container | ContainerSessionContext | ContainerService session context |
    
 ### Message SessionToken.Body.TokenLifetime
 
@@ -151,6 +162,17 @@ affect system behaviour:
 | key | string | Key of the X-Header |
 | value | string | Value of the X-Header |
     
+### Emun ContainerSessionContext.Verb
+
+Container request verbs
+
+| Number | Name | Description |
+| ------ | ---- | ----------- |
+| 0 | VERB_UNSPECIFIED | Unknown verb |
+| 1 | PUT | Refers to container.Put RPC call |
+| 2 | DELETE | Refers to container.Delete RPC call |
+| 3 | SETEACL | Refers to container.SetExtendedACL RPC call |
+
 ### Emun ObjectSessionContext.Verb
 
 Object request verbs

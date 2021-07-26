@@ -94,6 +94,8 @@ was already verified on container creation.
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 | container | Container | Requested container structure |
+| signature | Signature | Signature of a stable-marshalled container according to RFC-6979 |
+| session_token | SessionToken | Session token if the container was created within a session |
                 
 ### Method List
 
@@ -170,6 +172,7 @@ container creation.
 | ----- | ---- | ----------- |
 | eacl | EACLTable | Extended ACL requested, if available |
 | signature | Signature | Signature of stable-marshalled Extended ACL according to RFC-6979 |
+| session_token | SessionToken | Session token if Extended ACL was set within a session |
                     
 ### Method AnnounceUsedSpace
 
