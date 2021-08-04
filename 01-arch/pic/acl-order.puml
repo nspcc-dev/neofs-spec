@@ -1,0 +1,48 @@
+@startuml
+
+start
+partition "BasicACL Check" {
+:SelectNibbleMask;
+if (isSystem?) then (yes)
+ if (isIR?) then (yes)
+  :CheckIR;
+ else (isContainer)
+  :CheckContainer;
+endif
+
+else (no)
+  if (isOwner?) then (yes)
+    :CheckOwner;
+  else (isOthers)
+    :CheckOthers;
+  endif
+  if (isSticky?) then (yes)
+    :CheckObjectRequestOwnerMatch;
+  endif
+endif
+}
+
+partition "Bearer Check" {
+if (hasBearerEnabled?) then (yes)
+  if (hasBearer?) then (yes)
+    :CheckBearer;
+    stop
+  else (no)
+  endif
+endif
+
+if (isFinal?) then (yes)
+  stop
+endif
+}
+
+partition "ExtendedACL Check" {
+if (isSystem) then (yes)
+end
+else
+:CheckExtendedACL;
+endif
+stop
+}
+
+@enduml
