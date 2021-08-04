@@ -1,0 +1,31 @@
+@startuml
+
+start
+
+while (NextACLRule?)
+  if (matchedOP?) then (no)
+  elseif (matchedTarget?) then (no)
+  elseif (emptyFilters?) then (no)
+    while (NextFilter?)
+        if (matchedFilter?) then (yes)
+        else (no)
+          if (errorMatchingFilter?) then (yes)
+            :return "Can't Check eACL";
+            end
+          endif
+
+         :goto next ACLRule;
+         end
+        endif
+    endwhile(no)
+    :return permission from "Action";
+    stop
+  else (yes)
+    :return permission from "Action";
+    stop
+  endif
+
+endwhile (no)
+:return permission from "Basic ACL";
+stop
+@enduml
