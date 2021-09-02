@@ -60,16 +60,6 @@ func Epoch() int
 
 Epoch method returns current epoch number\.
 
-##### InitConfig
-
-```go
-func InitConfig(args [][]byte)
-```
-
-InitConfig method sets up initial key\-value configuration pair\. Can be invoked only once\.
-
-Arguments should contain even number of byte arrays\. First byte array is a configuration key and the second is configuration value\.
-
 ##### InnerRingList
 
 ```go

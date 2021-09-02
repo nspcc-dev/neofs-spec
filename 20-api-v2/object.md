@@ -440,18 +440,18 @@ Type of match expression
 | 1 | STRING_EQUAL | Full string match |
 | 2 | STRING_NOT_EQUAL | Full string mismatch |
 | 3 | NOT_PRESENT | Lack of key |
+| 4 | COMMON_PREFIX | String prefix match |
 
 ### Emun ObjectType
 
 Type of the object payload content. Only `REGULAR` type objects can be split,
-hence `TOMBSTONE` and `STORAGEGROUP` payload is limited by maximal object
+hence `TOMBSTONE` and `STORAGE_GROUP` payload is limited by maximal object
 size.
 
-String presentation of object type is PascalCased `ObjectType` enumeration
-item name:
-* Regular
-* Tombstone
-* StorageGroup
+String presentation of object type is the same as definition:
+* REGULAR
+* TOMBSTONE
+* STORAGE_GROUP
 
 | Number | Name | Description |
 | ------ | ---- | ----------- |

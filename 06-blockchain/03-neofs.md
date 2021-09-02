@@ -148,16 +148,6 @@ func Config(key []byte) interface{}
 
 Config returns configuration value of NeoFS configuration\. If key does not exists\, returns nil\.
 
-##### InitConfig
-
-```go
-func InitConfig(args [][]byte)
-```
-
-InitConfig method sets up initial key\-value configuration pair\. Can be invoked only once\.
-
-Arguments should contain even number of byte arrays\. First byte array is a configuration key and the second is configuration value\.
-
 ##### InnerRingCandidateAdd
 
 ```go
