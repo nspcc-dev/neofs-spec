@@ -16,20 +16,21 @@ Basic ACL is a part of the container structure, and it is always created simulta
 
 ![BasicALC bit field](pic/acl-basic)
 
-| Symbol | Meaning | Description                                                                                   |
-|--------|:--------|-----------------------------------------------------------------------------------------------|
-| **B**  | Bearer  | Allows using Bear Token ACL rules to replace eACL rules                                       |
-| **U**  | User    | The owner of the container identified by the public key linked to the container               |
-| **S**  | System  | Inner Ring and/or container nodes in the current version of network map                       |
-|        |         | IR nodes can only perform `GetRangeHash`, `Head`, and `Search` necessary for data audit.      |
-|        |         | Container nodes can only do things required for the replication.                              |
-| **O**  | Others  | Clients that do not match any of the categories above                                         |
-| **F**  | Final   | Flag denying Extended ACL. If set, Basic ACL check is final, Extended ACL is ignored          |
-| **X**  | Sticky  | Flag denying different owners of the request and the object                                   |
-|        |         | If set, object in `Put` request must have one `Owner` and be signed with the same signature   |
-|        |         | If not set, the object must be correct but can be of any owner.                               |
-| **0**  | Deny    | Denies operation of the identified category                                                   |
-| **1**  | Allow   | Allows operation of the identified category                                                   |
+| Symbol | Meaning | Description                                                                                    |
+|--------|:--------|------------------------------------------------------------------------------------------------|
+| **B**  | Bearer  | Allows using Bear Token ACL rules to replace eACL rules                                        |
+| **U**  | User    | The owner of the container identified by the public key linked to the container                |
+| **S**  | System  | Inner Ring and/or container nodes in the current version of network map                        |
+|        |         | IR nodes can only perform `GetRangeHash`, `Head`, and `Search` necessary for data audit.       |
+|        |         | Container nodes can only do things required for the replication.                               |
+| **O**  | Others  | Clients that do not match any of the categories above                                          |
+| **F**  | Final   | Flag denying Extended ACL. If set, Basic ACL check is final, Extended ACL is ignored           |
+| **X**  | Sticky  | Flag denying different owners of the request and the object                                    |
+|        |         | If set, object in `Put` request must have one `Owner` and be signed with the same signature    |
+|        |         | If not set, the object must be correct but can be of any owner.                                |
+|        |         | The nodes falling for `SYSTEM` role are exception from this rule. For them the bit is ignored. |
+| **0**  | Deny    | Denies operation of the identified category                                                    |
+| **1**  | Allow   | Allows operation of the identified category                                                    |
 
 Basic ACL was designed to be processed and verified really fast. It's simple enough, but covers the majority of access restriction use cases, especially when combined with a carefully tailored Storage Policy.
 
