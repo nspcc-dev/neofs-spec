@@ -14,7 +14,7 @@ NeoFS solves this by using \Gls{acl} rules from the combination of sources:
 
 Basic ACL is a part of the container structure, and it is always created simultaneously with the container. Therefore, it is never subject to any changes. It is a 32-bit integer with a bit field in the following format:
 
-![BasicALC bit field](pic/acl-basic)
+![BasicALC bit field](pic/acl-basic.svg)
 
 | Symbol | Meaning | Description                                                                                    |
 |--------|:--------|------------------------------------------------------------------------------------------------|
@@ -38,15 +38,15 @@ There are well-known Basic ACLs:
 
 `private`: 0x1C8C8CCC
 
-![Basic ACL `private`](pic/acl-basic-private)
+![Basic ACL `private`](pic/acl-basic-private.svg)
 
 `public-read`: 0x1FBF8CFF
 
-![Basic ACL `public-read`](pic/acl-basic-public-read)
+![Basic ACL `public-read`](pic/acl-basic-public-read.svg)
 
 `public-read-write`: 0x1FBFBFFF
 
-![Basic ACL `public-read-write`](pic/acl-basic-public-read-write)
+![Basic ACL `public-read-write`](pic/acl-basic-public-read-write.svg)
 
 ### Extended ACL
 
@@ -60,7 +60,7 @@ To get the latest eACL version, a Storage Node needs to request it via RPC from 
 
 Extended ACL rules get processed on-by-one, from the beginning of the table, based on the request operation, until matching the rule found. It means that there is no separate rule for setting denying or allowing policy. Final fallback rules must be provided by the user, if needed.
 
-![Extended ACL rules check](pic/acl-ext-apply)
+![Extended ACL rules check](pic/acl-ext-apply.svg)
 
 Extended ACL rules and table format may change depending on the version of NeoFS API used. Please see the corresponding API specification section for details.'
 
@@ -163,5 +163,5 @@ NeoFS tries to start with local Basic ACL checks that are fast and cheap in term
 
 The resulting ACL check algorithm is the following:
 
-![ACL check order](pic/acl-order)
+![ACL check order](pic/acl-order.svg)
 
