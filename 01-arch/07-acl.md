@@ -48,6 +48,10 @@ There are well-known Basic ACLs:
 
 ![Basic ACL `public-read-write`](pic/acl-basic-public-read-write)
 
+`public-append`: 0x1FBF8FFF
+
+![Basic ACL `public-append`](pic/acl-basic-public-append)
+
 ### Extended ACL
 
 Extended ACL is stored in the container smart contract in NeoFS Sidechain. This means it can be changed during container lifetime and there will be only one latest version of it in use. Only the container owner, or the bearer of a SessionToken with a Container context signed by the container owner, can change the Extended ACL rules. Since it is stored in a form of a stable serialized protobuf structure, eACL table can be only replaced with a new version, not altered or changed in-place in any way.
