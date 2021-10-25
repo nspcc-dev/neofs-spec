@@ -48,7 +48,7 @@ There are well-known Basic ACLs:
 
 ![Basic ACL `public-read-write`](pic/acl-basic-public-read-write)
 
-`public-append`: 0x1FBF8FFF
+`public-append`: 0x1FBF9FFF
 
 ![Basic ACL `public-append`](pic/acl-basic-public-append)
 
