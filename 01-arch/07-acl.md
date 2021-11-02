@@ -56,7 +56,7 @@ There are well-known Basic ACLs:
 
 Extended ACL is stored in the container smart contract in NeoFS Sidechain. This means it can be changed during container lifetime and there will be only one latest version of it in use. Only the container owner, or the bearer of a SessionToken with a Container context signed by the container owner, can change the Extended ACL rules. Since it is stored in a form of a stable serialized protobuf structure, eACL table can be only replaced with a new version, not altered or changed in-place in any way.
 
-Extended ACL can only specify Basic ACL rules and make them more restitutive, but it can never ease them. Extended ACL rules can never conflict with Basic ACL rules, or cancel them. If something is denied at Basic ACL level it can never be allowed again by eACL. If Basic ACL contains Allow, eALC may specify the rule to a finite list of allowed keys and Deny all the others. If Basic ACL already contains Deny, eALC can do nothing. Deny in Basic ACL cannot be changed to Allow in eACL. Therefore, the records with denied `GET`, `GETRANGE`, `PUT`, `SEARCH`, `HEAD` for `System` target must be ignored. This reduces to ignoring any `System` target rules.
+Extended ACL can only specify Basic ACL rules and make them more restitutive, but it can never ease them. Extended ACL rules can never conflict with Basic ACL rules or cancel them. If something is denied at Basic ACL level, it can never be allowed again by eACL. If Basic ACL contains Allow, eALC may specify the rule to a finite list of allowed keys and Deny all others. If Basic ACL already contains Deny, eALC can do nothing. Deny in Basic ACL cannot be changed to Allow in eACL. Therefore, the records with denied `GET`, `GETRANGE`, `PUT`, `SEARCH`, `HEAD` for `System` target must be ignored. This reduces to ignoring any `System` target rules.
 
 When a user creates a container with the F-bit of Basic ACL set to 0, they do not need to settle the rules immediately. For a non-existing Extended ACL request, Container contract will return a null byte array. It will be interpreted as a table with no rules.
 
@@ -102,6 +102,34 @@ and can be presented in different intermediate formats, like JSON, for the users
   ]
 }
 ```
+
+Note that some filters with `$Object` prefix are not suitable for making denying rules on certain operations. There may be an undefined behaviour on some combinations of NeoFS verbs and object attributes when eACL is set.
+
+|$Object:       |   GET   |  HEAD   |   PUT   | DELETE  | SEARCH  |  RANGE  |RANGEHASH|
+|---------------|---------|---------|---------|---------|---------|---------|---------|
+|version        |    v    |    v    |    v    |    -    |    -    |    -    |    -    |
+|objectID       |    v    |    v    |    v    |    v    |    -    |    v    |    v    |
+|containerID    |    v    |    v    |    v    |    v    |    v    |    v    |    v    |
+|ownerID        |    v    |    v    |    v    |    -    |    -    |    -    |    -    |
+|creationEpoch  |    v    |    v    |    v    |    -    |    -    |    -    |    -    |
+|payloadLength  |    v    |    v    |    v    |    -    |    -    |    -    |    -    |
+|payloadHash    |    v    |    v    |    v    |    -    |    -    |    -    |    -    |
+|objectType     |    v    |    v    |    v    |    -    |    -    |    -    |    -    |
+|homomorphicHash|    v    |    v    |    v    |    -    |    -    |    -    |    -    |
+|// User headers|    v    |    v    |    v    |    -    |    -    |    -    |    -    |
+
+Let us make an example. `Delete` and `Range` operations are likely to show undefined behavior if `Head` has been denied for objects with particular `payloadLength`. They fail because they need to produce `HEAD` requests upon execution. If a user cannot `Head`, those operations cannot work properly.
+The full table of spawning object requests is given below.
+
+|Base/Gen |   PUT   | DELETE  |  HEAD   |  RANGE  |   GET   |  HASH   | SEARCH  |
+|---------|---------|---------|---------|---------|---------|---------|---------|
+|PUT      |    v    |    -    |    -    |    -    |    -    |    -    |    -    |
+|DELETE   |    v    |    -    |    v    |    -    |    -    |    -    |    v    |
+|HEAD     |    -    |    -    |    v    |    -    |    -    |    -    |    -    |
+|RANGE    |    -    |    -    |    v    |    v    |    -    |    -    |    -    |
+|GET      |    -    |    -    |    v    |    -    |    v    |    -    |    -    |
+|HASH     |    -    |    -    |    v    |    v    |    -    |    -    |    -    |
+|SEARCH   |    -    |    -    |    -    |    -    |    -    |    -    |    v    |
 
 ### Bearer Token
 
