@@ -103,33 +103,32 @@ and can be presented in different intermediate formats, like JSON, for the users
 }
 ```
 
-Note that some filters with `$Object` prefix are not suitable for making denying rules on certain operations. There may be an undefined behaviour on some combinations of NeoFS verbs and object attributes when eACL is set.
+Note that some filters with `$Object` prefix are not suitable for making denying rules on certain operations. There may be an undefined behaviour on some combinations of NeoFS verbs and object attributes when eACL is set. In the table below, `+` means allowed to be used and `-` means undefined behaviour, hence not allowed.
 
-|$Object:       |   GET   |  HEAD   |   PUT   | DELETE  | SEARCH  |  RANGE  |RANGEHASH|
-|---------------|---------|---------|---------|---------|---------|---------|---------|
-|version        |    v    |    v    |    v    |    -    |    -    |    -    |    -    |
-|objectID       |    v    |    v    |    v    |    v    |    -    |    v    |    v    |
-|containerID    |    v    |    v    |    v    |    v    |    v    |    v    |    v    |
-|ownerID        |    v    |    v    |    v    |    -    |    -    |    -    |    -    |
-|creationEpoch  |    v    |    v    |    v    |    -    |    -    |    -    |    -    |
-|payloadLength  |    v    |    v    |    v    |    -    |    -    |    -    |    -    |
-|payloadHash    |    v    |    v    |    v    |    -    |    -    |    -    |    -    |
-|objectType     |    v    |    v    |    v    |    -    |    -    |    -    |    -    |
-|homomorphicHash|    v    |    v    |    v    |    -    |    -    |    -    |    -    |
-|// User headers|    v    |    v    |    v    |    -    |    -    |    -    |    -    |
+| $Object:        | GET | HEAD | PUT | DELETE | SEARCH | RANGE | RANGEHASH |
+|-----------------|:---:|:----:|:---:|:------:|:------:|:-----:|:---------:|
+| version         | +   | +    | +   | -      | -      | -     | -         |
+| objectID        | +   | +    | +   | +      | -      | +     | +         |
+| containerID     | +   | +    | +   | +      | +      | +     | +         |
+| ownerID         | +   | +    | +   | -      | -      | -     | -         |
+| creationEpoch   | +   | +    | +   | -      | -      | -     | -         |
+| payloadLength   | +   | +    | +   | -      | -      | -     | -         |
+| payloadHash     | +   | +    | +   | -      | -      | -     | -         |
+| objectType      | +   | +    | +   | -      | -      | -     | -         |
+| homomorphicHash | +   | +    | +   | -      | -      | -     | -         |
+| User headers    | +   | +    | +   | -      | -      | -     | -         |
 
-Let us make an example. `Delete` and `Range` operations are likely to show undefined behavior if `Head` has been denied for objects with particular `payloadLength`. They fail because they need to produce `HEAD` requests upon execution. If a user cannot `Head`, those operations cannot work properly.
-The full table of spawning object requests is given below.
+Let us make an example. `Delete` and `Range` operations are likely to show undefined behavior if `Head` has been denied for objects with particular `payloadLength`. They fail because they need to produce `HEAD` requests upon execution. If a user cannot `Head`, those operations cannot work properly. The full table of spawning object requests is given below.
 
-|Base/Gen |   PUT   | DELETE  |  HEAD   |  RANGE  |   GET   |  HASH   | SEARCH  |
-|---------|---------|---------|---------|---------|---------|---------|---------|
-|PUT      |    v    |    -    |    -    |    -    |    -    |    -    |    -    |
-|DELETE   |    v    |    -    |    v    |    -    |    -    |    -    |    v    |
-|HEAD     |    -    |    -    |    v    |    -    |    -    |    -    |    -    |
-|RANGE    |    -    |    -    |    v    |    v    |    -    |    -    |    -    |
-|GET      |    -    |    -    |    v    |    -    |    v    |    -    |    -    |
-|HASH     |    -    |    -    |    v    |    v    |    -    |    -    |    -    |
-|SEARCH   |    -    |    -    |    -    |    -    |    -    |    -    |    v    |
+| Base/Gen | PUT | DELETE | HEAD | RANGE | GET | HASH | SEARCH |
+|----------|:---:|:------:|:----:|:-----:|:---:|:----:|:------:|
+| PUT      | +   | -      | -    | -     | -   | -    | -      |
+| DELETE   | +   | -      | +    | -     | -   | -    | +      |
+| HEAD     | -   | -      | +    | -     | -   | -    | -      |
+| RANGE    | -   | -      | +    | +     | -   | -    | -      |
+| GET      | -   | -      | +    | -     | +   | -    | -      |
+| HASH     | -   | -      | +    | +     | -   | -    | -      |
+| SEARCH   | -   | -      | -    | -     | -   | -    | +      |
 
 ### Bearer Token
 
