@@ -136,6 +136,7 @@ Enumeration of possible sources of Headers to apply filters.
 | 0 | HEADER_UNSPECIFIED | Unspecified header, default value. |
 | 1 | REQUEST | Filter request headers |
 | 2 | OBJECT | Filter object headers |
+| 3 | SERVICE | Filter service headers. These are not processed by NeoFS nodes and exist for service use only. |
 
 ### Emun MatchType
 

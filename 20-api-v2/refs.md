@@ -106,6 +106,18 @@ Signature of something in NeoFS.
 | key | bytes | Public key used for signing |
 | sign | bytes | Signature |
    
+### Message SubnetID
+
+NeoFS subnetwork identifier.
+
+String representation of a value is base-10 integer.
+
+JSON representation is an object containing single `value` number field.
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| value | fixed32 | 4-byte integer subnetwork identifier. |
+   
 ### Message Version
 
 API version used by a node.

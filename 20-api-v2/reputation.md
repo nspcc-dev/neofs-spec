@@ -15,6 +15,11 @@ final result is recorded.
 
 Announce local client trust information to any node in NeoFS network.
 
+Statuses:
+- **OK** (0, SECTION_SUCCESS):
+local trust has been successfully announced;
+- Common failures (SECTION_FAILURE_COMMON).
+
      
 
 __Request Body:__ AnnounceLocalTrustRequest.Body
@@ -38,6 +43,11 @@ will not pass sanity checks it is silently ignored.
 
 Announces the intermediate result of the iterative algorithm for
 calculating the global reputation of the node in NeoFS network.
+
+Statuses:
+- **OK** (0, SECTION_SUCCESS):
+intermediate trust estimation has been successfully announced;
+- Common failures (SECTION_FAILURE_COMMON).
 
  
 

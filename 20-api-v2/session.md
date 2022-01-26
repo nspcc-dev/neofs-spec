@@ -14,6 +14,11 @@ section of NeoFS Technical Specification for details.
 
 Opens a new session between two peers.
 
+Statuses:
+- **OK** (0, SECTION_SUCCESS):
+session has been successfully opened;
+- Common failures (SECTION_FAILURE_COMMON).
+
  
 
 __Request Body:__ CreateRequest.Body
@@ -68,6 +73,7 @@ request meta headers are folded in matryoshka style.
 | session_token | SessionToken | Session token within which the request is sent |
 | bearer_token | BearerToken | `BearerToken` with eACL overrides for the request |
 | origin | RequestMetaHeader | `RequestMetaHeader` of the origin request |
+| magic_number | uint64 | NeoFS network magic. Must match the value for the network that the server belongs to. |
    
 ### Message RequestVerificationHeader
 
@@ -91,6 +97,7 @@ Information about the response
 | ttl | uint32 | Maximum number of intermediate nodes in the request route |
 | x_headers | XHeader | Response X-Headers |
 | origin | ResponseMetaHeader | `ResponseMetaHeader` of the origin request |
+| status | Status | Status return |
    
 ### Message ResponseVerificationHeader
 

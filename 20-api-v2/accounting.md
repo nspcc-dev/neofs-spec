@@ -15,6 +15,11 @@ accounts are possible, if both use the same token type.
 
 Returns the amount of funds in GAS token for the requested NeoFS account.
 
+Statuses:
+- **OK** (0, SECTION_SUCCESS):
+balance has been successfully read;
+- Common failures (SECTION_FAILURE_COMMON).
+
  
 
 __Request Body:__ BalanceRequest.Body
