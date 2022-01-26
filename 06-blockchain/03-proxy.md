@@ -12,14 +12,6 @@ Proxy contract does not produce notifications to process\.
 
 #### Contract methods
 
-##### Migrate
-
-```go
-func Migrate(script []byte, manifest []byte, data interface{}) bool
-```
-
-Migrate method updates contract source code and manifest\. Can be invoked only by contract owner\.
-
 ##### OnNEP17Payment
 
 ```go
@@ -27,6 +19,14 @@ func OnNEP17Payment(from interop.Hash160, amount int, data interface{})
 ```
 
 OnNEP17Payment is a callback for NEP\-17 compatible native GAS contract\.
+
+##### Update
+
+```go
+func Update(script []byte, manifest []byte, data interface{})
+```
+
+Update method updates contract source code and manifest\. Can be invoked only by committee\.
 
 ##### Verify
 

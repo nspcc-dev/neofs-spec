@@ -42,7 +42,7 @@ func AddPeer(nodeInfo []byte)
 
 AddPeer method adds new candidate to the next network map if it was invoked by Alphabet node\. If it was invoked by node candidate\, it produces AddPeer notification\. Otherwise method throws panic\.
 
-NodeInfo argument contains stable marshaled version of netmap\.NodeInfo structure\.
+If the candidate already exists\, it's info is updated\. NodeInfo argument contains stable marshaled version of netmap\.NodeInfo structure\.
 
 ##### Config
 
@@ -78,14 +78,6 @@ func LastEpochBlock() int
 
 LastEpochBlock method returns block number when current epoch was applied\.
 
-##### Migrate
-
-```go
-func Migrate(script []byte, manifest []byte, data interface{}) bool
-```
-
-Migrate method updates contract source code and manifest\. Can be invoked only by contract owner\.
-
 ##### NewEpoch
 
 ```go
@@ -98,6 +90,14 @@ When epoch number updated\, contract sets storage node candidates as current net
 
 Produces NewEpoch notification\.
 
+##### Register
+
+```go
+func Register(nodeInfo []byte)
+```
+
+Register method tries to add new candidate to the network map by emitting AddPeer notification\. Should be invoked by the registree\.
+
 ##### SetConfig
 
 ```go
@@ -105,6 +105,14 @@ func SetConfig(id, key, val []byte)
 ```
 
 SetConfig key\-value pair as a NeoFS runtime configuration value\. Can be invoked only by Alphabet nodes\.
+
+##### Update
+
+```go
+func Update(script []byte, manifest []byte, data interface{})
+```
+
+Update method updates contract source code and manifest\. Can be invoked only by committee\.
 
 ##### UpdateInnerRing
 

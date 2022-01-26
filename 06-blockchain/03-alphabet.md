@@ -32,14 +32,6 @@ func Gas() int
 
 GAS returns amount of side chain GAS stored in contract account\.
 
-##### Migrate
-
-```go
-func Migrate(script []byte, manifest []byte, data interface{}) bool
-```
-
-Migrate method updates contract source code and manifest\. Can be invoked only by contract owner\.
-
 ##### Name
 
 ```go
@@ -63,6 +55,14 @@ func OnNEP17Payment(from interop.Hash160, amount int, data interface{})
 ```
 
 OnNEP17Payment is a callback for NEP\-17 compatible native GAS and NEO contracts\.
+
+##### Update
+
+```go
+func Update(script []byte, manifest []byte, data interface{})
+```
+
+Update method updates contract source code and manifest\. Can be invoked only by committee\.
 
 ##### Version
 

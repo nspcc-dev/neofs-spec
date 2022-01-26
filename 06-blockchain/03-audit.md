@@ -54,14 +54,6 @@ func ListByNode(epoch int, cid []byte, key interop.PublicKey) [][]byte
 
 ListByNode method returns list of DataAuditResult IDs generated in specified epoch for specified container by specified Inner Ring node\.
 
-##### Migrate
-
-```go
-func Migrate(script []byte, manifest []byte, data interface{}) bool
-```
-
-Migrate method updates contract source code and manifest\. Can be invoked only by contract owner\.
-
 ##### Put
 
 ```go
@@ -71,6 +63,14 @@ func Put(rawAuditResult []byte)
 Put method stores stable marshalled \`DataAuditResult\` structure\. Can be invoked only by Inner Ring nodes\.
 
 Inner Ring nodes perform audit of the containers and produce \`DataAuditResult\` structures\. They are being stored in audit contract and used for settlements in later epochs\.
+
+##### Update
+
+```go
+func Update(script []byte, manifest []byte, data interface{})
+```
+
+Update method updates contract source code and manifest\. Can be invoked only by committee\.
 
 ##### Version
 

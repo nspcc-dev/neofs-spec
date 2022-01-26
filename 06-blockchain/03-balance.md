@@ -114,14 +114,6 @@ Produces Lock\, Transfer and TransferX notifications\.
 
 Lock method invoked by Alphabet nodes of the Inner Ring when they process Withdraw notification from NeoFS contract\. This should transfer assets to new lock account that won't be used for anything besides Unlock and Burn\.
 
-##### Migrate
-
-```go
-func Migrate(script []byte, manifest []byte, data interface{}) bool
-```
-
-Migrate method updates contract source code and manifest\. Can be invoked only by contract owner\.
-
 ##### Mint
 
 ```go
@@ -181,6 +173,14 @@ TransferX is a method for NeoFS balance transfers from one account to another\. 
 Produces Transfer and TransferX notifications\.
 
 TransferX method expands Transfer method by having extra details argument\. Also TransferX method allows to transfer assets by Alphabet nodes of the Inner Ring with multi signature\.
+
+##### Update
+
+```go
+func Update(script []byte, manifest []byte, data interface{})
+```
+
+Update method updates contract source code and manifest\. Can be invoked only by committee\.
 
 ##### Version
 
