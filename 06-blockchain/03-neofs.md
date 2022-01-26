@@ -176,14 +176,6 @@ func InnerRingCandidates() []common.IRNode
 
 InnerRingCandidates returns array of structures that contain Inner Ring candidate node key\.
 
-##### Migrate
-
-```go
-func Migrate(script []byte, manifest []byte, data interface{}) bool
-```
-
-Migrate method updates contract source code and manifest\. Can be invoked only by contract owner\.
-
 ##### OnNEP17Payment
 
 ```go
@@ -209,6 +201,14 @@ func Unbind(user []byte, keys []interop.PublicKey)
 Unbind method produces notification to unbind specified public keys in NeoFSID contract in side chain\. Can be invoked only by specified user\.
 
 This method produces Unbind notification\. Method panics if keys are not 33 byte long\. User argument must be valid 20 byte script hash\.
+
+##### Update
+
+```go
+func Update(script []byte, manifest []byte, data interface{})
+```
+
+Update method updates contract source code and manifest\. Can be invoked only by side chain committee\.
 
 ##### Version
 

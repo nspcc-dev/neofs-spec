@@ -36,14 +36,6 @@ func ListByEpoch(epoch int) [][]byte
 
 ListByEpoch returns list of IDs that may be used to get reputation data with GetByID method\.
 
-##### Migrate
-
-```go
-func Migrate(script []byte, manifest []byte, data interface{}) bool
-```
-
-Migrate method updates contract source code and manifest\. Can be invoked only by contract owner\.
-
 ##### Put
 
 ```go
@@ -53,6 +45,14 @@ func Put(epoch int, peerID []byte, value []byte)
 Put method saves DataAuditResult in contract storage\. Can be invoked only by Inner Ring nodes\. Does not require multi signature invocations\.
 
 Epoch is an epoch number when DataAuditResult structure was generated\. PeerID contains public keys of Inner Ring node that produced DataAuditResult\. Value contains stable marshaled structure of DataAuditResult\.
+
+##### Update
+
+```go
+func Update(script []byte, manifest []byte, data interface{})
+```
+
+Update method updates contract source code and manifest\. Can be invoked only by committee\.
 
 ##### Version
 

@@ -74,6 +74,8 @@ Delete method removes container from contract storage if it was invoked by Alpha
 
 Signature is a RFC6979 signature of container ID\. Token is optional and should be stable marshaled SessionToken structure from API\.
 
+If a container doesn't exist it panics with NotFoundError\.
+
 ##### List
 
 ```go
@@ -90,14 +92,6 @@ func ListContainerSizes(epoch int) [][]byte
 
 ListContainerSizes method returns IDs of container size estimations that has been registered for specified epoch\.
 
-##### Migrate
-
-```go
-func Migrate(script []byte, manifest []byte, data interface{}) bool
-```
-
-Migrate method updates contract source code and manifest\. Can be invoked only by contract owner\.
-
 ##### NewEpoch
 
 ```go
@@ -106,6 +100,14 @@ func NewEpoch(epochNum int)
 
 NewEpoch method removes all container size estimations from epoch older than epochNum \+ 3\. Can be invoked only by NewEpoch method of the Netmap contract\.
 
+##### OnNEP11Payment
+
+```go
+func OnNEP11Payment(a interop.Hash160, b int, c []byte, d interface{})
+```
+
+OnNEP11Payment is needed for registration with contract as owner to work\.
+
 ##### Owner
 
 ```go
@@ -113,6 +115,8 @@ func Owner(containerID []byte) []byte
 ```
 
 Owner method returns 25 byte Owner ID of the container\.
+
+If a container doesn't exist it panics with NotFoundError\.
 
 ##### Put
 
@@ -132,6 +136,18 @@ func PutContainerSize(epoch int, cid []byte, usedSize int, pubKey interop.Public
 
 PutContainerSize method saves container size estimation in contract memory\. Can be invoked only by Storage nodes from the network map\. Method checks witness based on the provided public key of the Storage node\.
 
+If a container doesn't exist it panics with NotFoundError\.
+
+##### PutNamed
+
+```go
+func PutNamed(container []byte, signature interop.Signature,
+    publicKey interop.PublicKey, token []byte,
+    name, zone string)
+```
+
+PutNamed is similar to put but also sets a TXT record in nns contract\. Note that zone must exist\.
+
 ##### SetEACL
 
 ```go
@@ -141,6 +157,8 @@ func SetEACL(eACL []byte, signature interop.Signature, publicKey interop.PublicK
 SetEACL method sets new extended ACL table related to the contract if it was invoked by Alphabet nodes of the Inner Ring\. Otherwise it produces setEACL notification\.
 
 EACL should be stable marshaled EACLTable structure from API\. Signature is a RFC6979 signature of Container\. PublicKey contains public key of the signer\. Token is optional and should be stable marshaled SessionToken structure from API\.
+
+If a container doesn't exist it panics with NotFoundError\.
 
 ##### StartContainerEstimation
 
@@ -157,6 +175,14 @@ func StopContainerEstimation(epoch int)
 ```
 
 StopContainerEstimation method produces StopEstimation notification\. Can be invoked only by Alphabet nodes of the Inner Ring\.
+
+##### Update
+
+```go
+func Update(script []byte, manifest []byte, data interface{})
+```
+
+Update method updates contract source code and manifest\. Can be invoked only by committee\.
 
 ##### Version
 
