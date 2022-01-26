@@ -17,6 +17,11 @@ messages, except the first one, carry payload chunks. Requested object can
 be restored by concatenation of object message payload and all chunks
 keeping receiving order.
 
+Statuses:
+- **OK** (0, SECTION_SUCCESS):
+object has been successfully read;
+- Common failures (SECTION_FAILURE_COMMON).
+
              
 
 __Request Body:__ GetRequest.Body
@@ -48,6 +53,11 @@ session package). Chunk messages are considered by server as a part of an
 object payload. All messages, except first one, SHOULD be payload chunks.
 Chunk messages SHOULD be sent in direct order of fragmentation.
 
+Statuses:
+- **OK** (0, SECTION_SUCCESS):
+object has been successfully saved in the container;
+- Common failures (SECTION_FAILURE_COMMON).
+
                        
 
 __Request Body:__ PutRequest.Body
@@ -73,6 +83,11 @@ PUT Object response body
 Delete the object from a container. There is no immediate removal
 guarantee. Object will be marked for removal and deleted eventually.
 
+Statuses:
+- **OK** (0, SECTION_SUCCESS):
+object has been successfully marked to be removed from the container;
+- Common failures (SECTION_FAILURE_COMMON).
+
  
 
 __Request Body:__ DeleteRequest.Body
@@ -97,6 +112,11 @@ Object DELETE Response has an empty body.
 Returns the object Headers without data payload. By default full header is
 returned. If `main_only` request field is set, the short header with only
 the very minimal information would be returned instead.
+
+Statuses:
+- **OK** (0, SECTION_SUCCESS):
+object header has been successfully read;
+- Common failures (SECTION_FAILURE_COMMON).
 
                   
 
@@ -127,6 +147,11 @@ Search objects in container. Search query allows to match by Object
 Header's filed values. Please see the corresponding NeoFS Technical
 Specification section for more details.
 
+Statuses:
+- **OK** (0, SECTION_SUCCESS):
+objects have been successfully selected;
+- Common failures (SECTION_FAILURE_COMMON).
+
                              
 
 __Request Body:__ SearchRequest.Body
@@ -154,6 +179,11 @@ Get byte range of data payload. Range is set as an (offset, length) tuple.
 Like in `Get` method, the response uses gRPC stream. Requested range can be
 restored by concatenation of all received payload chunks keeping receiving
 order.
+
+Statuses:
+- **OK** (0, SECTION_SUCCESS):
+data range of the object payload has been successfully read;
+- Common failures (SECTION_FAILURE_COMMON).
 
          
 
@@ -186,6 +216,11 @@ Returns homomorphic or regular hash of object's payload range after
 applying XOR operation with the provided `salt`. Ranges are set of (offset,
 length) tuples. Hashes order in response corresponds to ranges order in
 request. Note that hash is calculated for XORed data.
+
+Statuses:
+- **OK** (0, SECTION_SUCCESS):
+data range of the object payload has been successfully hashed;
+- Common failures (SECTION_FAILURE_COMMON).
 
      
 

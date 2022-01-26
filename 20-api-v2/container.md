@@ -17,6 +17,11 @@ response immediately. After a new block is issued in sidechain, request is
 verified by Inner Ring nodes. After one more block in sidechain, container
 is added into smart contract storage.
 
+Statuses:
+- **OK** (0, SECTION_SUCCESS):
+request to save the container has been sent to the sidechain;
+- Common failures (SECTION_FAILURE_COMMON).
+
                       
 
 __Request Body:__ PutRequest.Body
@@ -51,6 +56,11 @@ response immediately. After a new block is issued in sidechain, request is
 verified by Inner Ring nodes. After one more block in sidechain, container
 is added into smart contract storage.
 
+Statuses:
+- **OK** (0, SECTION_SUCCESS):
+request to remove the container has been sent to the sidechain;
+- Common failures (SECTION_FAILURE_COMMON).
+
       
 
 __Request Body:__ DeleteRequest.Body
@@ -74,6 +84,11 @@ and done via consensus in Inner Ring nodes.
 ### Method Get
 
 Returns container structure from `Container` smart contract storage.
+
+Statuses:
+- **OK** (0, SECTION_SUCCESS):
+container has been successfully read;
+- Common failures (SECTION_FAILURE_COMMON).
 
               
 
@@ -101,6 +116,11 @@ was already verified on container creation.
 
 Returns all owner's containers from 'Container` smart contract' storage.
 
+Statuses:
+- **OK** (0, SECTION_SUCCESS):
+container list has been successfully read;
+- Common failures (SECTION_FAILURE_COMMON).
+
                   
 
 __Request Body:__ ListRequest.Body
@@ -126,6 +146,11 @@ Invokes 'SetEACL' method of 'Container` smart contract and returns response
 immediately. After one more block in sidechain, Extended ACL changes are
 added into smart contract storage.
 
+Statuses:
+- **OK** (0, SECTION_SUCCESS):
+request to save container eACL has been sent to the sidechain;
+- Common failures (SECTION_FAILURE_COMMON).
+
                           
 
 __Request Body:__ SetExtendedACLRequest.Body
@@ -150,6 +175,11 @@ storage after next block is issued in sidechain.
 
 Returns Extended ACL table and signature from `Container` smart contract
 storage.
+
+Statuses:
+- **OK** (0, SECTION_SUCCESS):
+container eACL has been successfully read;
+- Common failures (SECTION_FAILURE_COMMON).
 
           
 
@@ -177,6 +207,11 @@ container creation.
 ### Method AnnounceUsedSpace
 
 Announce container used space values for P2P synchronization.
+
+Statuses:
+- **OK** (0, SECTION_SUCCESS):
+estimation of used space has been successfully announced;
+- Common failures (SECTION_FAILURE_COMMON).
 
  
 
@@ -236,6 +271,12 @@ There are some "well-known" attributes affecting system behaviour:
 * __NEOFS__SUBNET \
   String ID of container's storage subnet. Container can be attached to
   only one subnet.
+* __NEOFS__NAME \
+  String of human-friendly container name registered as the domain in
+  NNS contract.
+* __NEOFS__ZONE \
+  String of zone for `__NEOFS__NAME`. Used as TLD of domain name in NNS
+  contract. If zone is not specified, use default zone: `container`.
 
 And some well-known attributes used by applications only:
 
