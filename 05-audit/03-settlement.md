@@ -95,7 +95,7 @@ Then, the node signs KV pairs (key is container ID, V is the averaged value of d
 
 ### Event map
 
-![Container estimation](pic/2.png)
+![Container estimation](pic/estimation)
 
 ### Calculation of Inner Ring nodes pay-outs
 
@@ -131,4 +131,4 @@ Then, transmissions are sent.
 
 ### Event map
 
-![Basic income](pic/3.png)
+![Basic income](pic/basic_income)

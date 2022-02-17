@@ -37,7 +37,7 @@ On each new epoch notification inner ring node must:
 
 ### Audit processor component scheme
 
-![Audit processor](pic/4.png)
+![Audit processor](pic/audit_processor)
 
 ### Check
 
