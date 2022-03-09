@@ -1,0 +1,10 @@
+deploy:
+  site_container: Bf2A4HhYwoNXkER4ZVQFYZPqKeJnR1cHWHgsAU1iSagx # Container ID for the web site content
+  config_container: Bf2A4HhYwoNXkER4ZVQFYZPqKeJnR1cHWHgsAU1iSagx  # Container ID for the web site config
+  # This section will be used if you need to create new containers
+  new_container:
+    nicename: neofs-spec # Content container nicename
+    placement_policy: "REP 3" # Storage policy for all new containers
+    basic_acl: 0x1fbf8cff # Basic ACL for all new containers (public-read by default)
+source:
+  local: output # Site content path to upload from

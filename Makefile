@@ -130,7 +130,7 @@ image:
 	docker build -t 'nspccdev/neofs-spec' .
 
 docker/%:
-	docker run --rm -it -v `pwd`:/src -u `stat -c "%u:%g" .` nspccdev/neofs-spec:latest make $$(basename $@)
+	docker run --rm -v `pwd`:/src -u `stat -c "%u:%g" .` nspccdev/neofs-spec:latest make $$(basename $@)
 
 clean:
 	rm -rf $(BUILD_DIR)
