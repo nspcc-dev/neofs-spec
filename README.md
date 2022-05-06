@@ -18,7 +18,7 @@ Install pandoc and LaTeX base. Please see Dockerfile for the detailed list of wh
 After pandoc and LaTeX base are available, you can simply run `make`, which will generate the specification paper in pdf and html.
 
 ## Build using docker
-The easiest way to build specification document is by using [Docker](https://www.docker.com). Just add `docker/` to any Makefile target to run it inside a container having all required tools already available.
+The easiest way to build a specification document is to use [Docker](https://www.docker.com). Just add `docker/` to any Makefile target to run it inside a container having all required tools already available.
 
 * Compile the specification paper pdf using `make docker/pdf`
 * Output will be generated as `output/neofs-spec-<revision>.pdf`
@@ -31,7 +31,7 @@ If you know NeoFS technology and want to contribute, feel free to directly submi
 Initially, the idea is to create a broad and complete initial version of the document, which will be polished in the future.
 
 ## Adding pictures
-Pictures should be placed in `pic` directory of corresponding section. Vector formats are preferred and strongly recommended. Please always provide the source file for the picture to allow future edits.
+Pictures should be placed in `pic` directory of the corresponding section. Vector formats are preferred and strongly recommended. Please always provide the source file for the picture to allow future edits.
 
 Expected formats:
 * [PlantUML](plantuml.com)
@@ -53,7 +53,7 @@ To render all PlantUML files to SVG run `make puml2svg` or `make docker/puml2svg
 To convert all SVG files to PDF `make svg2pdf` or `make docker/svg2pdf`
 
 ### PlantUML
-Place [PlantUML](plantuml.com) files under `pic/` directory of corresponding section and name it with `.puml` or `.plantuml` file extension. It will be automatically rendered to SVG format by `puml2svg` make target.
+Place [PlantUML](plantuml.com) files under `pic/` directory of the corresponding section and name it with `.puml` or `.plantuml` file extension. It will be automatically rendered to SVG format by `puml2svg` make target.
 
 ### Draw.io
 [Draw.io](https://github.com/jgraph/drawio-desktop) diagrams must be exported to SVG format and saved under `pic/` directory of corresponding section. To avoid text rendering errors, please follow [this guide](https://desk.draw.io/support/solutions/articles/16000042487). Don't enable `Embed Images` checkbox, or raster image version will be saved in PDF instead of vector image version.
