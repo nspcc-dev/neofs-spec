@@ -13,7 +13,7 @@ To simplify accounting operations, lessen Main Net burden, and reduce the overal
 
 There are two types of NeoFS nodes. They are Storage nodes and Inner Ring nodes.
 
-The first type is responsible for receiving data from a user, reliably storing it as required by the storage policy, and providing access to the data according to the applicable \glspl{acl}. Such storage nodes are coordinated with Smart Contracts from the Side Chain.
+The first type is responsible for receiving data from a user, reliably storing it as required by the storage policy, and providing access to the data according to the applicable \glspl{acl}. Such storage nodes are coordinated with Smart Contracts from the Sidechain.
 
 The second type does not store user data. Inner Ring nodes monitor the NeoFS network health, aggregate Storage Nodes reputation ratings, and perform data
 auditing, issuing penalties and bounties depending on the audit results. Inner Ring nodes listen for both Main Net and Sidechain, providing a trusted and

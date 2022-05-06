@@ -1,15 +1,15 @@
 
 ## Data Audit cycle
 
-Data Audit cycle is triggered by the Epoch change. InnerRing nodes share the audit work between themselves and do as much audit sessions as they can. On the next round, if InnerRing nodes can't process everything, new nodes can be promoted from the candidate list. On the opposite, if the load is low enough, some InnerRing nodes can be demoted to maintain the balance.
+Data Audit cycle is triggered by Epoch change. InnerRing nodes share the audit work between themselves and do as much audit sessions as they can. On the next round, if InnerRing nodes can't process everything, new nodes can be promoted from the candidate list. On the opposite, if the load is low enough, some InnerRing nodes can be demoted to maintain the balance.
 
 ## Data Audit Game
 
-Each Epoch, Inner Ring nodes perform a data audit cycle. It is a two-stage game, in terms of the game theory. At the first stage, nodes serving the selected container are asked to collectively reconstruct a list of homomorphic hashes that form a composite hash stored in Storage Group. By doing that, nodes demonstrate that they have all necessary objects and are able to provide a hash of those objects. The provided list of hashes can be validated, but at the current stage, it's not known, if some nodes are lying.
+Each Epoch, Inner Ring nodes perform a data audit cycle. It is a two-stage game in terms of the game theory. At the first stage, nodes serving the selected container are asked to collectively reconstruct a list of homomorphic hashes that form a composite hash stored in the Storage Group. By doing that, nodes demonstrate that they have all necessary objects and are able to provide hashes of those objects. The provided list of hashes can be validated, but at the current stage it's not known whether some nodes are lying.
 
-At the second stage, it is necessary to make sure nodes are honest and do not fake check results. The Inner Ring nodes calculate a set of node pairs that store the same object and ask each node to provide thee homomorphic hashes of that object. Ranges are chosen in a way that the hash of a range asked from one node is the composite hash of ranges asked from another node in that pair. Nodes cannot predict objects or ranges that are chosen for the data audit session. They cannot even predict a pair node for the game. This stage discovers malicious nodes fast because each node is serving multiple containers and Storage Groups and participates in many data audit sessions in parallel during same Epoch. When a node is caught in a lie it get a reputation penalty and loses any rewards for the Epoch. So the price of faking checks and risks are too high and it is easier and cheaper for the node to be honest and behave correctly.
+At the second stage, it is necessary to make sure nodes are honest and do not fake check results. The Inner Ring nodes calculate a set of node pairs that store the same object and ask each node to provide the homomorphic hashes of that object. Ranges are chosen in a way that the hash of a range asked from one node is the composite hash of ranges asked from another node in that pair. Nodes cannot predict objects or ranges that are chosen for the data audit session. They cannot even predict a pair node for the game. This stage discovers malicious nodes fast because each node is serving multiple containers and Storage Groups and participates in many data audit sessions in parallel during same Epoch. When a node is caught in a lie, it gets a reputation penalty and loses any rewards for the Epoch. So the price of faking checks and risks are too high and it is easier and cheaper for a node to be honest and behave correctly.
 
-Combining the fact of nodes being able to reconstruct the Storage Group's composite hash and the fact of nodes honest behaviour, the system can consider that the data is safely stored, not corrupted, and available with a high probability.
+Combining the fact of nodes being able to reconstruct the Storage Group's composite hash and the fact of nodes honest behavior, the system can consider that the data is safely stored, not corrupted, and available with a high probability.
 
 In the case of a successful data audit result, the Inner Ring nodes initiate microtransactions between the accounts of the data owner and the owner of the storage node invoking the smart contract in the NeoFS N3 Sidechain.
 
@@ -17,7 +17,7 @@ In the case of a successful data audit result, the Inner Ring nodes initiate mic
 
 ### Audit tasks distribution
 
-InnerRing nodes select containers to audit from a list of all containers in the network, forming a ring of containers, and taking an offset shackle with its number among InnerRing nodes and by audit number.
+InnerRing nodes select containers to audit from a list of all containers in the network, forming a ring of containers and taking an offset shackle with its number among InnerRing nodes and by audit number.
 
 Each epoch, Inner Ring node performs data audit. One audit task is a one storage group to check. Storage groups from one container get merged into a single audit result structure that will be saved in the Audit smart contract in NeoFS Sidechain.
 
@@ -85,7 +85,7 @@ For all pairs after PoP, a Prove-of-Data-Possession is performed:
 
 ### Hash check
 
-For the hash check phase, the Inner Ring node gets the object information using `HEAD` request with the `short` flag toggled. Knowing the size of the object, the entire payload range is divided into four parts of a random length.
+For the hash check phase, the Inner Ring node gets the object information using `HEAD` request with the `short` flag toggled. With the size of the object known, the entire payload range is divided into four parts of a random length.
 
 ![Hash checking challenge](pic/hash_check)
 
@@ -101,7 +101,7 @@ $$ hash_{B.1} = TZHash(Range(0, p1)), $$
 $$ hash_{B.2} = TZHash(Range(p1, p2-p1)), $$
 $$ hash_{B.3} = TZHash(Range(p2, length-p2)) $$
 
-If the hashes obtained successfully, then the check considered passed if:
+Once the hashes obtained successfully, the check considered passed if:
 
 $$ hash{A.1} = hash{B.1} + hash{B.2}, $$
 $$ hash{B.3} = hash{A.2} + hash{A.3}, $$

@@ -1,26 +1,26 @@
 ## NeoFS Sidechain Governance
 
-NeoFS uses the sidechain as a database to store meta-information about the network: the network map, audit results, containers, key mappings, network settings, and several supplementary thins.
+NeoFS uses the sidechain as a database to store meta-information about the network: the network map, audit results, containers, key mappings, network settings, and several supplementary things.
 
-The sidechain operates on the same principles as the mainnet: there are no free transactions, the committee chooses the consensus nodes, etc. This structure provides a number of advantages, for example, one can use the same N3 tool stack to work with NeoFS sidechain information.
+The sidechain operates on the same principles as the mainnet -- there are no free transactions, the committee chooses the consensus nodes, etc. This structure provides a number of advantages. For example, one can use the same N3 tool stack to work with NeoFS sidechain information.
 
-To effectively work with sidechain we need to solve the following problems:
+To effectively work with the sidechain, we need to solve the following problems:
 
-* How can the mainnet committee can control Inner Ring nodes and the consensus nodes of the sidechain?
+* How can the mainnet committee control Inner Ring nodes and the consensus nodes of the sidechain?
 
 * How do Storage Nodes and Inner Ring nodes get sidechain \Gls{GAS} to send transactions?
 
-The NeoFS Governance model solves these problems with seven "Alphabet" sidechain contracts and the first seven Inner Ring nodes bound to those contracts, acting as the sidechain committee.
+NeoFS Governance model solves these problems with seven "Alphabet" sidechain contracts and the first seven Inner Ring nodes bound to those contracts, acting as the sidechain committee.
 
 ### Alphabet contracts
 
-Alphabet contracts are seven smart contracts deployed in the sidechain, named after the first seven [Glagolitic](https://en.wikipedia.org/wiki/Glagolitic_script) script letters: Az(Ⰰ), Buky(Ⰱ), Vedi(Ⰲ), Glagoli(Ⰳ), Dobro(Ⰴ), Yest(Ⰵ), Zhivete(Ⰶ). These contracts hold 100,000,000 sidechain \Gls{NEO} on their accounts (approximately 14,285,000 for each). By storing \Gls{NEO} on the contract accounts, we protect it from unauthorized use by malicious sidechain nodes. Contracts do not transfer NEO and use it to vote for sidechain \Glspl{validator} and to emit \Gls{GAS}.
+Alphabet contracts are seven smart contracts deployed in the sidechain. They are named after the first seven [Glagolitic](https://en.wikipedia.org/wiki/Glagolitic_script) script letters: Az(Ⰰ), Buky(Ⰱ), Vedi(Ⰲ), Glagoli(Ⰳ), Dobro(Ⰴ), Yest(Ⰵ), Zhivete(Ⰶ). These contracts hold 100,000,000 sidechain \Gls{NEO} on their accounts (approximately 14,285,000 for each). By storing \Gls{NEO} on the contract accounts, we protect it from unauthorized use by malicious sidechain nodes. Contracts do not transfer NEO and use it to vote for sidechain \Glspl{validator} and to emit \Gls{GAS}.
 
 ### Alphabet Inner Ring nodes
 
 Alphabet Inner Ring nodes are the first seven nodes in the Inner Ring list that are logically bound with one-to-one relation to the Alphabet contracts. They are the voting nodes, tasked with making the decisions in the NeoFS network. All other Inner Ring nodes take care of Data Audit, Storage Node attribute verification, and other technical tasks.
 
-Being an Alphabet node implies running the sidechain Consensus Node using the same key pair as the NeoFS Inner Ring node instance. Hence, Alphabet node candidate must:
+Being an Alphabet node implies running the sidechain Consensus Node using the same key pair as the NeoFS Inner Ring node instance. Hence, an Alphabet node candidate must:
 
 - Setup a NeoFS Inner Ring node instance
 - Setup a NeoFS sidechain full node using same key pair
@@ -29,7 +29,7 @@ Being an Alphabet node implies running the sidechain Consensus Node using the sa
 
 ### Alphabet contracts invocation
 
-Contracts cannot distribute the utility token or vote by themselves. To perform these operations, Inner Ring nodes invoke alphabet contract methods. An Alphabet Inner Ring node can invoke only its corresponding contract. One node invokes one contract.
+Contracts cannot distribute the utility token or vote by themselves. To perform these operations, Inner Ring nodes invoke alphabet contract methods. An Alphabet Inner Ring node can invoke its corresponding contract only. One node invokes one contract.
 
 ![Inner Ring to Alphabet SC relation](pic/gov-scir)
 
@@ -55,7 +55,7 @@ Storage nodes have a limited supply of \Gls{GAS} to prevent malicious actions an
 
 ### Changing sidechain validators
 
-Beforehand, Alphabet Inner Ring node candidates register validator keys in the list of candidates for the sidechain committee. When the sidechain Netmap smart contract sends a notification regarding Inner Ring nodes list updates, Alphabet Inner Ring nodes invoke the `Vote([]keys)` method of all Alphabet smart contracts in order to gather signatures and then make them vote for the sidechain Committee. Each Alphabet contract votes for the keys proposed by sending `VotesPerKey` votes for each key. Normally, there is just one key per node, hence `N` equals `1`.
+Beforehand, Alphabet Inner Ring node candidates register validator keys in the list of candidates for the sidechain committee. When the sidechain Netmap smart contract sends a notification regarding Inner Ring node list updates, Alphabet Inner Ring nodes invoke the `Vote([]keys)` method of all Alphabet smart contracts in order to gather signatures and then make them vote for the sidechain Committee. Each Alphabet contract votes for the keys proposed by sending `VotesPerKey` votes for each key. Normally, there is just one key per node, hence `N` equals `1`.
 
 $$
 VotesPerKey = \frac{\boldsymbol{A}}{\boldsymbol{N}}
@@ -66,7 +66,7 @@ $N$ - length of proposed keys list
 
 ### Changing the Inner Ring list
 
-Inner Ring nodes follow a self-regulation process, allowing them to vote to substitute dead or malfunctioning nodes with new ones from the candidate list. Only Alphabet nodes prepare new Inner Ring nodes lists and vote for it, but all nodes listed there must confirm their participation via the same voting mechanism.
+Inner Ring nodes follow a self-regulation process, allowing them to vote to substitute dead or malfunctioning nodes with new ones from the candidate list. Only Alphabet nodes prepare new Inner Ring node lists and vote for it, but all nodes listed there must confirm their participation via the same voting mechanism.
 
 The voting procedure uses the sidechain `Voting` smart contract, but the list of candidates is taken from mainnet NeoFS contract. When Inner Ring nodes agree on the updated list, it's submitted to the mainnet NeoFS smart contract and then mirrored back to Netmap smart contract on sidechain.
 
@@ -86,13 +86,13 @@ The voting algorithm is the same for each Inner Ring node and starts in the foll
 - Notification from mainnet DesignationContract on Inner Ring nodes list change
 - Notification from sidechain Netmap contract on inactive Inner Ring nodes list change
 
-All Inner Ring nodes listen for notifications from the Voting contract, and if they see themselves in the new Inner Ring nodes list, they confirm their participation by sending the same list in the `Prepare()` method. Only newly added nodes need to confirm their participation with a transaction. If the node is already in the active Inner Ring list, it doesn't need to send a confirmation.
+All Inner Ring nodes listen for notifications from the Voting contract. If they see themselves in the new Inner Ring nodes list, they confirm their participation by sending the same list in the `Prepare()` method. Only newly added nodes need to confirm their participation with a transaction. If the node is already in the active Inner Ring list, it doesn't need to send a confirmation.
 
 When there are enough Alphabet signatures and all required candidate signatures have been sent with the `Prepare()` method, the last invocation will update the list and finish voting round.
 
-Active Alphabet Inner Ring nodes will be waiting for the round to end and locally test invoke the `EndRound()` method. When the voting round timeout occurs and round has not finished succesfully through agreement on a new list, one of the Alphabet nodes will invoke `EndRound()` and settle the round's results.
+Active Alphabet Inner Ring nodes will be waiting for the round to end and locally test invoke the `EndRound()` method. When the voting round timeout occurs and the round has not finished successfully through agreement on a new list, one of the Alphabet nodes will invoke `EndRound()` and settle the round's results.
 
-If by the end of the voting round some newly added nodes didn't confirm their participation, they are added to the Netmap smart contract's inactive list. This will trigger a new voting round without those inactive nodes.
+If by the end of the voting round some newly added nodes haven't confirmed their participation, they are added to the Netmap smart contract's inactive list. This will trigger a new voting round without those inactive nodes.
 
 If there are not enough candidates, Inner Ring nodes will accept the best list they can gather.
 

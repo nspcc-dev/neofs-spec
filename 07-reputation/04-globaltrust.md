@@ -11,7 +11,7 @@ The evaluation criterion is the aggregate of Local Trust of *all* network partic
 
 ### Calculating trust
 
-Each manager retrieves the Local Trust value of its child at the end of each epoch and stores it in the `DaughterStorage`. The further task of each manager is to calculate the Global Trust of the system in its child node, and also to transfer all the information it has to other managers so that they, in turn, can perform a similar task.
+Each manager retrieves the Local Trust value of its child at the end of each epoch and stores it in the `DaughterStorage`. The further task of each manager is to calculate the Global Trust of the system in its child node, and also to transfer all the information it has to another managers so that they, in turn, can perform a similar task.
 
 Global Trust is calculated iteratively. While calculating `GlobalTrust`, according to the EigenTrust algorithm, managers should exchange “intermediate” trust values, the so-called `IntermediateTrust`. With the help of these values, managers at each iteration approximate (recalculate the results of the previous iteration) the value of the Global Trust to the common Global Value Limit: $T = [t_0, ..., t_n]$, where $t_i$ is the limiting Global Trust value in node `i`.
 

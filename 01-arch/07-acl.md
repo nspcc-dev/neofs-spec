@@ -123,7 +123,7 @@ and can be presented in different intermediate formats, like JSON, for the users
 }
 ```
 
-Note that some filters with `$Object` prefix are not suitable for making denying rules on certain operations. There may be an undefined behaviour on some combinations of NeoFS verbs and object attributes when eACL is set. In the table below, `+` means allowed to be used and `-` means undefined behaviour, hence not allowed.
+Note that some filters with `$Object` prefix are not suitable for making denying rules on certain operations. There may be an undefined behavior on some combinations of NeoFS verbs and object attributes when eACL is set. In the table below, `+` means allowed to be used and `-` means undefined behavior, hence not allowed.
 
 | $Object:        | GET | HEAD | PUT | DELETE | SEARCH | RANGE | RANGEHASH |
 |-----------------|:---:|:----:|:---:|:------:|:------:|:-----:|:---------:|
