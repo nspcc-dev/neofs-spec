@@ -29,19 +29,19 @@ Announce node's local trust information.
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 | epoch | uint64 | Trust assessment Epoch number |
-| trusts | Trust | List of normalized local trust values to other NeoFS nodes. The value is calculated according to EigenTrust++ algorithm and must be a floating point number in the [0;1] range. |
+| trusts | Trust | List of normalized local trust values to other NeoFS nodes. The value is calculated according to EigenTrust++ algorithm and must be a floating point number in [0;1] range. |
              
 
 __Response Body__ AnnounceLocalTrustResponse.Body
 
-Response to the node's local trust information announce has an empty body
+Response to the node's local trust information announcement has an empty body
 because the trust exchange operation is asynchronous. If Trust information
-will not pass sanity checks it is silently ignored.
+does not pass sanity checks, it is silently ignored.
 
    
 ### Method AnnounceIntermediateResult
 
-Announces the intermediate result of the iterative algorithm for
+Announce the intermediate result of the iterative algorithm for
 calculating the global reputation of the node in NeoFS network.
 
 Statuses:
@@ -64,9 +64,9 @@ Announce intermediate global trust information.
 
 __Response Body__ AnnounceIntermediateResultResponse.Body
 
-Response to the node's intermediate global trust information announce has
+Response to the node's intermediate global trust information announcement has
 an empty body because the trust exchange operation is asynchronous. If
-Trust information will not pass sanity checks it is silently ignored.
+Trust information does not pass sanity checks, it is silently ignored.
 
                  
 ### Message GlobalTrust
@@ -75,7 +75,7 @@ Global trust level to NeoFS node.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| version | Version | Message format version. Effectively the version of API library used to create the message. |
+| version | Version | Message format version. Effectively, the version of API library used to create the message. |
 | body | Body | Message body |
 | signature | Signature | Signature of the binary `body` field by the manager. |
    
@@ -90,13 +90,13 @@ Message body structure.
    
 ### Message PeerID
 
-NeoFS unique peer identifier is 33 byte long compressed public key of the
+NeoFS unique peer identifier is a 33 byte long compressed public key of the
 node, the same as the one stored in the network map.
 
-String presentation is
+String presentation is a
 [base58](https://tools.ietf.org/html/draft-msporny-base58-02) encoded string.
 
-JSON value will be the data encoded as a string using standard base64
+JSON value will be data encoded as a string using standard base64
 encoding with paddings. Either
 [standard](https://tools.ietf.org/html/rfc4648#section-4) or
 [URL-safe](https://tools.ietf.org/html/rfc4648#section-5) base64 encoding

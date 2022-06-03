@@ -1,12 +1,12 @@
 ### netmap contract
 
-Netmap contract is a contract deployed in NeoFS side chain\.
+Netmap contract is a contract deployed in NeoFS sidechain\.
 
-Netmap contract stores and manages NeoFS network map\, Storage node candidates and epoch number counter\. In notary disabled environment\, contract also stores list of Inner Ring node keys\.
+Netmap contract stores and manages NeoFS network map\, Storage node candidates and epoch number counter\. In notary disabled environment\, contract also stores a list of Inner Ring node keys\.
 
 #### Contract notifications
 
-AddPeer notification\. This notification is produced when Storage node sends bootstrap request by invoking AddPeer method\.
+AddPeer notification\. This notification is produced when a Storage node sends a bootstrap request by invoking AddPeer method\.
 
 ```
 AddPeer
@@ -14,7 +14,7 @@ AddPeer
     type: ByteArray
 ```
 
-UpdateState notification\. This notification is produced when Storage node wants to change it's state \(go offline\) by invoking UpdateState method\. Supported states: \(2\) \-\- offline\.
+UpdateState notification\. This notification is produced when a Storage node wants to change its state \(go offline\) by invoking UpdateState method\. Supported states: \(2\) \-\- offline\.
 
 ```
 UpdateState
@@ -24,7 +24,7 @@ UpdateState
     type: PublicKey
 ```
 
-NewEpoch notification\. This notification is produced when new epoch is applied in the network by invoking NewEpoch method\.
+NewEpoch notification\. This notification is produced when a new epoch is applied in the network by invoking NewEpoch method\.
 
 ```
 NewEpoch
@@ -40,9 +40,17 @@ NewEpoch
 func AddPeer(nodeInfo []byte)
 ```
 
-AddPeer method adds new candidate to the next network map if it was invoked by Alphabet node\. If it was invoked by node candidate\, it produces AddPeer notification\. Otherwise method throws panic\.
+AddPeer method adds a new candidate to the next network map if it was invoked by Alphabet node\. If it was invoked by a node candidate\, it produces AddPeer notification\. Otherwise\, the method throws panic\.
 
-If the candidate already exists\, it's info is updated\. NodeInfo argument contains stable marshaled version of netmap\.NodeInfo structure\.
+If the candidate already exists\, its info is updated\. NodeInfo argument contains a stable marshaled version of netmap\.NodeInfo structure\.
+
+##### AddPeerIR
+
+```go
+func AddPeerIR(nodeInfo []byte)
+```
+
+AddPeerIR method tries to add a new candidate to the network map\. It should only be invoked in notary\-enabled environment by the alphabet\.
 
 ##### Config
 
@@ -58,7 +66,7 @@ Config returns configuration value of NeoFS configuration\. If key does not exis
 func Epoch() int
 ```
 
-Epoch method returns current epoch number\.
+Epoch method returns the current epoch number\.
 
 ##### InnerRingList
 
@@ -66,9 +74,9 @@ Epoch method returns current epoch number\.
 func InnerRingList() []common.IRNode
 ```
 
-InnerRingList method returns slice of structures that contains public key of Inner Ring node\. Should be used only in notary disabled environment\.
+InnerRingList method returns a slice of structures that contains the public key of an Inner Ring node\. It should be used in notary disabled environment only\.
 
-If notary enabled\, then look to NeoFSAlphabet role in native RoleManagement contract of the side chain\.
+If notary is enabled\, look to NeoFSAlphabet role in native RoleManagement contract of the sidechain\.
 
 ##### LastEpochBlock
 
@@ -76,7 +84,7 @@ If notary enabled\, then look to NeoFSAlphabet role in native RoleManagement con
 func LastEpochBlock() int
 ```
 
-LastEpochBlock method returns block number when current epoch was applied\.
+LastEpochBlock method returns the block number when the current epoch was applied\.
 
 ##### NewEpoch
 
@@ -84,19 +92,11 @@ LastEpochBlock method returns block number when current epoch was applied\.
 func NewEpoch(epochNum int)
 ```
 
-NewEpoch method changes epoch number up to provided epochNum argument\. Can be invoked only by Alphabet nodes\. If provided epoch number is less or equal current epoch number\, method throws panic\.
+NewEpoch method changes the epoch number up to the provided epochNum argument\. It can be invoked only by Alphabet nodes\. If provided epoch number is less than the current epoch number or equals it\, the method throws panic\.
 
-When epoch number updated\, contract sets storage node candidates as current network map\. Also contract invokes NewEpoch method on Balance and Container contracts\.
+When epoch number is updated\, the contract sets storage node candidates as the current network map\. The contract also invokes NewEpoch method on Balance and Container contracts\.
 
-Produces NewEpoch notification\.
-
-##### Register
-
-```go
-func Register(nodeInfo []byte)
-```
-
-Register method tries to add new candidate to the network map by emitting AddPeer notification\. Should be invoked by the registree\.
+It produces NewEpoch notification\.
 
 ##### SetConfig
 
@@ -104,7 +104,7 @@ Register method tries to add new candidate to the network map by emitting AddPee
 func SetConfig(id, key, val []byte)
 ```
 
-SetConfig key\-value pair as a NeoFS runtime configuration value\. Can be invoked only by Alphabet nodes\.
+SetConfig key\-value pair as a NeoFS runtime configuration value\. It can be invoked only by Alphabet nodes\.
 
 ##### Update
 
@@ -112,7 +112,7 @@ SetConfig key\-value pair as a NeoFS runtime configuration value\. Can be invoke
 func Update(script []byte, manifest []byte, data interface{})
 ```
 
-Update method updates contract source code and manifest\. Can be invoked only by committee\.
+Update method updates contract source code and manifest\. It can be invoked only by committee\.
 
 ##### UpdateInnerRing
 
@@ -120,9 +120,17 @@ Update method updates contract source code and manifest\. Can be invoked only by
 func UpdateInnerRing(keys []interop.PublicKey)
 ```
 
-UpdateInnerRing method updates list of Inner Ring node keys\. Should be used only in notary disabled environment\. Can be invoked only by Alphabet nodes\.
+UpdateInnerRing method updates a list of Inner Ring node keys\. It should be used only in notary disabled environment\. It can be invoked only by Alphabet nodes\.
 
-If notary enabled\, then update NeoFSAlphabet role in native RoleManagement contract of the side chain\. Use notary service to collect multi signature\.
+If notary is enabled\, update NeoFSAlphabet role in native RoleManagement contract of the sidechain\. Use notary service to collect multisignature\.
+
+##### UpdateSnapshotCount
+
+```go
+func UpdateSnapshotCount(count int)
+```
+
+UpdateSnapshotCount updates the number of the stored snapshots\. If a new number is less than the old one\, old snapshots are removed\. Otherwise\, history is extended with empty snapshots\, so \`Snapshot\` method can return invalid results for \`diff = new\-old\` epochs until \`diff\` epochs have passed\.
 
 ##### UpdateState
 
@@ -130,11 +138,21 @@ If notary enabled\, then update NeoFSAlphabet role in native RoleManagement cont
 func UpdateState(state int, publicKey interop.PublicKey)
 ```
 
-UpdateState method updates state of node from the network map candidate list if it was invoked by Alphabet node\. If it was invoked by public key owner\, then it produces UpdateState notification\. Otherwise method throws panic\.
+UpdateState method updates the state of a node from the network map candidate list\. For notary\-ENABLED environment\, tx must be signed by both storage node and alphabet\. To force update without storage node signature\, see \`UpdateStateIR\`\.
 
-State argument defines node state\. The only supported state now is \(2\) \-\- offline state\. Node is removed from network map candidate list\.
+For notary\-DISABLED environment\, the behaviour depends on who signed the transaction: 1\. If it was signed by alphabet\, go into voting\. 2\. If it was signed by a storage node\, emit \`UpdateState\` notification\. 2\. Fail in any other case\.
+
+The behaviour can be summarized in the following table: | notary \\ Signer | Storage node | Alphabet | Both                  | | ENABLED         | FAIL         | FAIL     | OK                    | | DISABLED        | NOTIFICATION | OK       | OK \(same as alphabet\) | State argument defines node state\. The only supported state now is \(2\) \-\- offline state\. Node is removed from the network map candidate list\.
 
 Method panics when invoked with unsupported states\.
+
+##### UpdateStateIR
+
+```go
+func UpdateStateIR(state nodeState, publicKey interop.PublicKey)
+```
+
+UpdateStateIR method tries to change the node state in the network map\. Should only be invoked in notary\-enabled environment by alphabet\.
 
 ##### Version
 
@@ -142,6 +160,6 @@ Method panics when invoked with unsupported states\.
 func Version() int
 ```
 
-Version returns version of the contract\.
+Version returns the version of the contract\.
 
 
