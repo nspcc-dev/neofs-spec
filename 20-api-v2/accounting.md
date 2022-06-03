@@ -8,7 +8,7 @@ Accounting service provides methods for interaction with NeoFS sidechain via
 other NeoFS nodes to get information about the account balance. Deposit and
 Withdraw operations can't be implemented here, as they require Mainnet NeoFS
 smart contract invocation. Transfer operations between internal NeoFS
-accounts are possible, if both use the same token type.
+accounts are possible if both use the same token type.
 
 
 ### Method Balance
@@ -24,7 +24,7 @@ balance has been successfully read;
 
 __Request Body:__ BalanceRequest.Body
 
-To indicate the account for which the balance is requested, it's identifier
+To indicate the account for which the balance is requested, its identifier
 is used. It can be any existing account in NeoFS sidechain `Balance` smart
 contract. If omitted, client implementation MUST set it to the request's
 signer `OwnerID`.
@@ -37,7 +37,7 @@ signer `OwnerID`.
 __Response Body__ BalanceResponse.Body
 
 The amount of funds in GAS token for the `OwnerID`'s account requested.
-Balance is `Decimal` format to avoid precision issues with rounding.
+Balance is given in the `Decimal` format to avoid precision issues with rounding.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
@@ -55,6 +55,6 @@ description.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| value | int64 | Number in smallest Token fractions. |
+| value | int64 | Number in the smallest Token fractions. |
 | precision | uint32 | Precision value indicating how many smallest fractions can be in one integer. |
      

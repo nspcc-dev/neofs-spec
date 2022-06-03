@@ -1,12 +1,12 @@
 ### subnet contract
 
-Subnet contract is a contract deployed in NeoFS side chain\.
+Subnet contract is a contract deployed in NeoFS sidechain\.
 
-Subnet contract stores and manages NeoFS subnetwork states\. It allows registering and deleting subnetworks\, limiting access to them and defining a list of the Storage Nodes that can be included in them\.
+Subnet contract stores and manages NeoFS subnetwork states\. It allows registering and deleting subnetworks\, limiting access to them\, and defining a list of the Storage Nodes that can be included in them\.
 
 #### Contract notifications
 
-Put notification\. This notification is produced when new subnetwork is registered by invoking Put method\.
+Put notification\. This notification is produced when a new subnetwork is registered by invoking Put method\.
 
 ```
 Put
@@ -44,7 +44,7 @@ RemoveNode
 func AddClientAdmin(subnetID []byte, groupID []byte, adminPublicKey interop.PublicKey)
 ```
 
-AddClientAdmin adds new client administrator of the specified group in the specified subnetwork\. Must be called by owner only\.
+AddClientAdmin adds a new client administrator of the specified group in the specified subnetwork\. Must be called by the owner only\.
 
 ##### AddNode
 
@@ -52,7 +52,7 @@ AddClientAdmin adds new client administrator of the specified group in the speci
 func AddNode(subnetID []byte, node interop.PublicKey)
 ```
 
-AddNode adds node to the specified subnetwork\. Must be called by subnet's owner or node administrator only\.
+AddNode adds a node to the specified subnetwork\. Must be called by the subnet's owner or the node administrator only\.
 
 ##### AddNodeAdmin
 
@@ -60,7 +60,7 @@ AddNode adds node to the specified subnetwork\. Must be called by subnet's owner
 func AddNodeAdmin(subnetID []byte, adminKey interop.PublicKey)
 ```
 
-AddNodeAdmin adds new node administrator to the specified subnetwork\.
+AddNodeAdmin adds a new node administrator to the specified subnetwork\.
 
 ##### AddUser
 
@@ -76,7 +76,7 @@ AddUser adds user to the specified subnetwork and group\. Must be called by the 
 func Delete(id []byte)
 ```
 
-Delete deletes subnet with the specified id\.
+Delete deletes the subnet with the specified id\.
 
 ##### Get
 
@@ -84,7 +84,7 @@ Delete deletes subnet with the specified id\.
 func Get(id []byte) []byte
 ```
 
-Get returns info about subnet with the specified id\.
+Get returns info about the subnet with the specified id\.
 
 ##### NodeAllowed
 
@@ -92,7 +92,7 @@ Get returns info about subnet with the specified id\.
 func NodeAllowed(subnetID []byte, node interop.PublicKey) bool
 ```
 
-NodeAllowed checks if node is included in the specified subnet or not\.
+NodeAllowed checks if a node is included in the specified subnet\.
 
 ##### Put
 
@@ -100,7 +100,7 @@ NodeAllowed checks if node is included in the specified subnet or not\.
 func Put(id []byte, ownerKey interop.PublicKey, info []byte)
 ```
 
-Put creates new subnet with the specified owner and info\.
+Put creates a new subnet with the specified owner and info\.
 
 ##### RemoveClientAdmin
 
@@ -108,7 +108,7 @@ Put creates new subnet with the specified owner and info\.
 func RemoveClientAdmin(subnetID []byte, groupID []byte, adminPublicKey interop.PublicKey)
 ```
 
-RemoveClientAdmin removes client administrator from the specified group in the specified subnetwork\. Must be called by owner only\.
+RemoveClientAdmin removes client administrator from the specified group in the specified subnetwork\. Must be called by the owner only\.
 
 ##### RemoveNode
 
@@ -116,7 +116,7 @@ RemoveClientAdmin removes client administrator from the specified group in the s
 func RemoveNode(subnetID []byte, node interop.PublicKey)
 ```
 
-RemoveNode removes node from the specified subnetwork\. Must be called by subnet's owner or node administrator only\.
+RemoveNode removes a node from the specified subnetwork\. Must be called by the subnet's owner or the node administrator only\.
 
 ##### RemoveNodeAdmin
 
@@ -124,7 +124,7 @@ RemoveNode removes node from the specified subnetwork\. Must be called by subnet
 func RemoveNodeAdmin(subnetID []byte, adminKey interop.PublicKey)
 ```
 
-RemoveNodeAdmin removes node administrator from the specified subnetwork\. Must be called by subnet owner only\.
+RemoveNodeAdmin removes node administrator from the specified subnetwork\. Must be called by the subnet owner only\.
 
 ##### RemoveUser
 
@@ -132,7 +132,7 @@ RemoveNodeAdmin removes node administrator from the specified subnetwork\. Must 
 func RemoveUser(subnetID []byte, groupID []byte, userID []byte)
 ```
 
-RemoveUser removes user from the specified subnetwork and group\. Must be called by the owner or the group's admin only\.
+RemoveUser removes a user from the specified subnetwork and group\. Must be called by the owner or the group's admin only\.
 
 ##### Update
 
@@ -140,7 +140,7 @@ RemoveUser removes user from the specified subnetwork and group\. Must be called
 func Update(script []byte, manifest []byte, data interface{})
 ```
 
-Update method updates contract source code and manifest\. Can be invoked only by committee\.
+Update method updates contract source code and manifest\. It can be invoked only by committee\.
 
 ##### UserAllowed
 
@@ -148,7 +148,7 @@ Update method updates contract source code and manifest\. Can be invoked only by
 func UserAllowed(subnetID []byte, user []byte) bool
 ```
 
-UserAllowed returns bool that indicates if node is included in the specified subnet or not\.
+UserAllowed returns bool that indicates if a node is included in the specified subnet\.
 
 ##### Version
 
@@ -156,6 +156,6 @@ UserAllowed returns bool that indicates if node is included in the specified sub
 func Version() int
 ```
 
-Version returns version of the contract\.
+Version returns the version of the contract\.
 
 

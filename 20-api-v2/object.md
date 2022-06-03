@@ -5,22 +5,43 @@
 ### Service "ObjectService"
 
 `ObjectService` provides API for manipulating objects. Object operations do
-not interact with sidechain and are only served by nodes in p2p style.
+not affect the sidechain and are only served by nodes in p2p style.
 
 
 ### Method Get
 
 Receive full object structure, including Headers and payload. Response uses
-gRPC stream. First response message carries object with requested address.
+gRPC stream. First response message carries the object with the requested address.
 Chunk messages are parts of the object's payload if it is needed. All
-messages, except the first one, carry payload chunks. Requested object can
+messages, except the first one, carry payload chunks. The requested object can
 be restored by concatenation of object message payload and all chunks
-keeping receiving order.
+keeping the receiving order.
+
+Extended headers can change `Get` behaviour:
+* __NEOFS__NETMAP_EPOCH \
+  Will use the requsted version of Network Map for object placement
+  calculation.
+* __NEOFS__NETMAP_LOOKUP_DEPTH \
+  Will try older versions (starting from `__NEOFS__NETMAP_EPOCH` if specified or
+  the latest one otherwise) of Network Map to find an object until the depth
+  limit is reached.
+
+Please refer to detailed `XHeader` description.
 
 Statuses:
-- **OK** (0, SECTION_SUCCESS):
-object has been successfully read;
-- Common failures (SECTION_FAILURE_COMMON).
+- **OK** (0, SECTION_SUCCESS): \
+  object has been successfully read;
+- Common failures (SECTION_FAILURE_COMMON);
+- **CONTAINER_NOT_FOUND** (3072, SECTION_CONTAINER): \
+  object container not found;
+- **ACCESS_DENIED** (2048, SECTION_OBJECT): \
+  read access to the object is denied;
+- **OBJECT_NOT_FOUND** (2049, SECTION_OBJECT): \
+  object not found in container;
+- **TOKEN_EXPIRED** (4097, SECTION_SESSION): \
+  provided session token has expired;
+- **OBJECT_ALREADY_REMOVED** (2052, SECTION_OBJECT): \
+  the requested object has been marked as deleted.
 
              
 
@@ -51,12 +72,34 @@ SHOULD be of PutHeader type. `ContainerID` and `OwnerID` of an object
 SHOULD be set. Session token SHOULD be obtained before `PUT` operation (see
 session package). Chunk messages are considered by server as a part of an
 object payload. All messages, except first one, SHOULD be payload chunks.
-Chunk messages SHOULD be sent in direct order of fragmentation.
+Chunk messages SHOULD be sent in the direct order of fragmentation.
+
+Extended headers can change `Put` behaviour:
+* __NEOFS__NETMAP_EPOCH \
+  Will use the requsted version of Network Map for object placement
+  calculation.
+
+Please refer to detailed `XHeader` description.
 
 Statuses:
-- **OK** (0, SECTION_SUCCESS):
-object has been successfully saved in the container;
-- Common failures (SECTION_FAILURE_COMMON).
+- **OK** (0, SECTION_SUCCESS): \
+  object has been successfully saved in the container;
+- Common failures (SECTION_FAILURE_COMMON);
+- **LOCKED** (2050, SECTION_OBJECT): \
+  placement of an object of type TOMBSTONE that includes at least one locked
+  object is prohibited;
+- **LOCK_NON_REGULAR_OBJECT** (2051, SECTION_OBJECT): \
+  placement of an object of type LOCK that includes at least one object of
+  type other than REGULAR is prohibited;
+- **CONTAINER_NOT_FOUND** (3072, SECTION_CONTAINER): \
+  object storage container not found;
+- **ACCESS_DENIED** (2048, SECTION_OBJECT): \
+  write access to the container is denied;
+- **TOKEN_NOT_FOUND** (4096, SECTION_SESSION): \
+  (for trusted object preparation) session private key does not exist or has
+been deleted;
+- **TOKEN_EXPIRED** (4097, SECTION_SESSION): \
+  provided session token has expired.
 
                        
 
@@ -83,10 +126,25 @@ PUT Object response body
 Delete the object from a container. There is no immediate removal
 guarantee. Object will be marked for removal and deleted eventually.
 
+Extended headers can change `Delete` behaviour:
+* __NEOFS__NETMAP_EPOCH \
+  Will use the requsted version of Network Map for object placement
+  calculation.
+
+Please refer to detailed `XHeader` description.
+
 Statuses:
-- **OK** (0, SECTION_SUCCESS):
-object has been successfully marked to be removed from the container;
-- Common failures (SECTION_FAILURE_COMMON).
+- **OK** (0, SECTION_SUCCESS): \
+  object has been successfully marked to be removed from the container;
+- Common failures (SECTION_FAILURE_COMMON);
+- **LOCKED** (2050, SECTION_OBJECT): \
+  deleting a locked object is prohibited;
+- **CONTAINER_NOT_FOUND** (3072, SECTION_CONTAINER): \
+  object container not found;
+- **ACCESS_DENIED** (2048, SECTION_OBJECT): \
+  delete access to the object is denied;
+- **TOKEN_EXPIRED** (4097, SECTION_SESSION): \
+  provided session token has expired.
 
  
 
@@ -111,12 +169,29 @@ Object DELETE Response has an empty body.
 
 Returns the object Headers without data payload. By default full header is
 returned. If `main_only` request field is set, the short header with only
-the very minimal information would be returned instead.
+the very minimal information will be returned instead.
+
+Extended headers can change `Head` behaviour:
+* __NEOFS__NETMAP_EPOCH \
+  Will use the requsted version of Network Map for object placement
+  calculation.
+
+Please refer to detailed `XHeader` description.
 
 Statuses:
-- **OK** (0, SECTION_SUCCESS):
-object header has been successfully read;
-- Common failures (SECTION_FAILURE_COMMON).
+- **OK** (0, SECTION_SUCCESS): \
+  object header has been successfully read;
+- Common failures (SECTION_FAILURE_COMMON);
+- **CONTAINER_NOT_FOUND** (3072, SECTION_CONTAINER): \
+  object container not found;
+- **ACCESS_DENIED** (2048, SECTION_OBJECT): \
+  access to operation HEAD of the object is denied;
+- **OBJECT_NOT_FOUND** (2049, SECTION_OBJECT): \
+  object not found in container;
+- **TOKEN_EXPIRED** (4097, SECTION_SESSION): \
+  provided session token has expired;
+- **OBJECT_ALREADY_REMOVED** (2052, SECTION_OBJECT): \
+  the requested object has been marked as deleted.
 
                   
 
@@ -147,10 +222,23 @@ Search objects in container. Search query allows to match by Object
 Header's filed values. Please see the corresponding NeoFS Technical
 Specification section for more details.
 
+Extended headers can change `Search` behaviour:
+* __NEOFS__NETMAP_EPOCH \
+  Will use the requsted version of Network Map for object placement
+  calculation.
+
+Please refer to detailed `XHeader` description.
+
 Statuses:
-- **OK** (0, SECTION_SUCCESS):
-objects have been successfully selected;
-- Common failures (SECTION_FAILURE_COMMON).
+- **OK** (0, SECTION_SUCCESS): \
+  objects have been successfully selected;
+- Common failures (SECTION_FAILURE_COMMON);
+- **CONTAINER_NOT_FOUND** (3072, SECTION_CONTAINER): \
+  search container not found;
+- **ACCESS_DENIED** (2048, SECTION_OBJECT): \
+  access to operation SEARCH of the object is denied;
+- **TOKEN_EXPIRED** (4097, SECTION_SESSION): \
+  provided session token has expired.
 
                              
 
@@ -177,13 +265,35 @@ Object Search response body
 
 Get byte range of data payload. Range is set as an (offset, length) tuple.
 Like in `Get` method, the response uses gRPC stream. Requested range can be
-restored by concatenation of all received payload chunks keeping receiving
+restored by concatenation of all received payload chunks keeping the receiving
 order.
 
+Extended headers can change `GetRange` behaviour:
+* __NEOFS__NETMAP_EPOCH \
+  Will use the requsted version of Network Map for object placement
+  calculation.
+* __NEOFS__NETMAP_LOOKUP_DEPTH \
+  Will try older versions of Network Map to find an object until the depth
+  limit is reached.
+
+Please refer to detailed `XHeader` description.
+
 Statuses:
-- **OK** (0, SECTION_SUCCESS):
-data range of the object payload has been successfully read;
-- Common failures (SECTION_FAILURE_COMMON).
+- **OK** (0, SECTION_SUCCESS): \
+  data range of the object payload has been successfully read;
+- Common failures (SECTION_FAILURE_COMMON);
+- **CONTAINER_NOT_FOUND** (3072, SECTION_CONTAINER): \
+  object container not found;
+- **ACCESS_DENIED** (2048, SECTION_OBJECT): \
+  access to operation RANGE of the object is denied;
+- **OBJECT_NOT_FOUND** (2049, SECTION_OBJECT): \
+  object not found in container;
+- **TOKEN_EXPIRED** (4097, SECTION_SESSION): \
+  provided session token has expired;
+- **OBJECT_ALREADY_REMOVED** (2052, SECTION_OBJECT): \
+  the requested object has been marked as deleted.
+- **OUT_OF_RANGE** (2053, SECTION_OBJECT): \
+  the requested range is out of bounds.
 
          
 
@@ -214,13 +324,33 @@ chunks.
 
 Returns homomorphic or regular hash of object's payload range after
 applying XOR operation with the provided `salt`. Ranges are set of (offset,
-length) tuples. Hashes order in response corresponds to ranges order in
-request. Note that hash is calculated for XORed data.
+length) tuples. Hashes order in response corresponds to the ranges order in
+the request. Note that hash is calculated for XORed data.
+
+Extended headers can change `GetRangeHash` behaviour:
+* __NEOFS__NETMAP_EPOCH \
+  Will use the requsted version of Network Map for object placement
+  calculation.
+* __NEOFS__NETMAP_LOOKUP_DEPTH \
+  Will try older versions of Network Map to find an object until the depth
+  limit is reached.
+
+Please refer to detailed `XHeader` description.
 
 Statuses:
-- **OK** (0, SECTION_SUCCESS):
-data range of the object payload has been successfully hashed;
-- Common failures (SECTION_FAILURE_COMMON).
+- **OK** (0, SECTION_SUCCESS): \
+  data range of the object payload has been successfully hashed;
+- Common failures (SECTION_FAILURE_COMMON);
+- **CONTAINER_NOT_FOUND** (3072, SECTION_CONTAINER): \
+  object container not found;
+- **ACCESS_DENIED** (2048, SECTION_OBJECT): \
+  access to operation RANGEHASH of the object is denied;
+- **OBJECT_NOT_FOUND** (2049, SECTION_OBJECT): \
+  object not found in container;
+- **OUT_OF_RANGE** (2053, SECTION_OBJECT): \
+  the requested range is out of bounds.
+- **TOKEN_EXPIRED** (4097, SECTION_SESSION): \
+  provided session token has expired.
 
      
 
@@ -258,12 +388,12 @@ set of all `Object` structure's fields except `payload`.
        
 ### Message HeaderWithSignature
 
-Tuple of full object header and signature of `ObjectID`. \
+Tuple of a full object header and signature of an `ObjectID`. \
 Signed `ObjectID` is present to verify full header's authenticity through the
 following steps:
 
-1. Calculate `SHA-256` of marshalled `Header` structure
-2. Check if the resulting hash matched `ObjectID`
+1. Calculate `SHA-256` of the marshalled `Header` structure
+2. Check if the resulting hash matches `ObjectID`
 3. Check if `ObjectID` signature in `signature` field is correct
 
 | Field | Type | Description |
@@ -294,13 +424,13 @@ Object payload range.Ranges of zero length SHOULD be considered as invalid.
      
 ### Message SearchRequest.Body.Filter
 
-Filter structure checks if object header field or attribute content
+Filter structure checks if the object header field or the attribute content
 matches a value.
 
-If no filters set, search request will return all objects of the
+If no filters are set, search request will return all objects of the
 container, including Regular object, Tombstones and Storage Group
 objects. Most human users expect to get only object they can directly
-work with. In that case the `$Object:ROOT` filter should be used.
+work with. In that case, `$Object:ROOT` filter should be used.
 
 By default `key` field refers to the corresponding object's `Attribute`.
 Some Object's header fields can also be accessed by adding `$Object:`
@@ -333,10 +463,10 @@ There are some well-known filter aliases to match objects by certain
 properties:
 
 * $Object:ROOT \
-  Returns only `REGULAR` type objects that are not split or are the top
+  Returns only `REGULAR` type objects that are not split or that are the top
   level root objects in a split hierarchy. This includes objects not
   present physically, like large objects split into smaller objects
-  without separate top-level root object. Other type objects like
+  without a separate top-level root object. Objects of other types like
   StorageGroups and Tombstones will not be shown. This filter may be
   useful for listing objects like `ls` command of some virtual file
   system. This filter is activated if the `key` exists, disregarding the
@@ -361,7 +491,7 @@ Object Header
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| version | Version | Object format version. Effectively the version of API library used to create particular object |
+| version | Version | Object format version. Effectively, the version of API library used to create particular object |
 | container_id | ContainerID | Object's container |
 | owner_id | OwnerID | Object's owner |
 | creation_epoch | uint64 | Object creation Epoch |
@@ -375,10 +505,10 @@ Object Header
    
 ### Message Header.Attribute
 
-`Attribute` is a user-defined Key-Value metadata pair attached to the
+`Attribute` is a user-defined Key-Value metadata pair attached to an
 object.
 
-Key name must be a object-unique valid UTF-8 string. Value can't be empty.
+Key name must be an object-unique valid UTF-8 string. Value can't be empty.
 Objects with duplicated attribute names or attributes with empty values
 will be considered invalid.
 
@@ -389,6 +519,13 @@ that affect system behaviour:
   Marks smaller parts of a split bigger object
 * __NEOFS__EXPIRATION_EPOCH \
   Tells GC to delete object after that epoch
+* __NEOFS__TICK_EPOCH \
+  Decimal number that defines what epoch must produce
+  object notification with UTF-8 object address in a
+  body (`0` value produces notification right after
+  object put)
+* __NEOFS__TICK_TOPIC \
+  UTF-8 string topic ID that is used for object notification
 
 And some well-known attributes used by applications only:
 
@@ -402,7 +539,7 @@ And some well-known attributes used by applications only:
   MIME Content Type of object's payload
 
 For detailed description of each well-known attribute please see the
-corresponding section in NeoFS Technical specification.
+corresponding section in NeoFS Technical Specification.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
@@ -428,8 +565,11 @@ must be within the same container.
 ### Message Object
 
 Object structure. Object is immutable and content-addressed. It means
-`ObjectID` will change if header or payload changes. It's calculated as a
-hash of header field, which contains hash of object's payload.
+`ObjectID` will change if the header or the payload changes. It's calculated as a
+hash of header field which contains hash of the object's payload.
+
+For non-regular object types payload format depends on object type specified
+in the header.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
@@ -444,7 +584,7 @@ Short header fields
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| version | Version | Object format version. Effectively the version of API library used to create particular object. |
+| version | Version | Object format version. Effectively, the version of API library used to create particular object. |
 | creation_epoch | uint64 | Epoch when the object was created |
 | owner_id | OwnerID | Object's owner |
 | object_type | ObjectType | Type of the object payload content |
@@ -454,16 +594,16 @@ Short header fields
    
 ### Message SplitInfo
 
-Meta information of split hierarchy for object assembly. With last part
-one can traverse linked list of split hierarchy back to first part and
-assemble original object. With linking object one can assembly object
-straight away from the object parts.
+Meta information of split hierarchy for object assembly. With the last part
+one can traverse linked list of split hierarchy back to the first part and
+assemble the original object. With a linking object one can assemble an object
+right from the object parts.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 | split_id | bytes | 16 byte UUID used to identify the split object hierarchy parts. |
-| last_part | ObjectID | Identifier of the last object in split hierarchy parts. It contains split header with original object header. |
-| link | ObjectID | Identifier of linking object for split hierarchy parts. It contains split header with original object header and sorted list of object parts. |
+| last_part | ObjectID | The identifier of the last object in split hierarchy parts. It contains split header with the original object header. |
+| link | ObjectID | The identifier of a linking object for split hierarchy parts. It contains split header with the original object header and a sorted list of object parts. |
     
 ### Emun MatchType
 
@@ -480,17 +620,19 @@ Type of match expression
 ### Emun ObjectType
 
 Type of the object payload content. Only `REGULAR` type objects can be split,
-hence `TOMBSTONE` and `STORAGE_GROUP` payload is limited by maximal object
-size.
+hence `TOMBSTONE`, `STORAGE_GROUP` and `LOCK` payload is limited by the maximum
+object size.
 
 String presentation of object type is the same as definition:
 * REGULAR
 * TOMBSTONE
 * STORAGE_GROUP
+* LOCK
 
 | Number | Name | Description |
 | ------ | ---- | ----------- |
 | 0 | REGULAR | Just a normal object |
 | 1 | TOMBSTONE | Used internally to identify deleted objects |
 | 2 | STORAGE_GROUP | StorageGroup information |
+| 3 | LOCK | Object lock |
  

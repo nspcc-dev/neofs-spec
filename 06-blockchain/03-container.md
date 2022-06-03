@@ -1,12 +1,12 @@
 ### container contract
 
-Container contract is a contract deployed in NeoFS side chain\.
+Container contract is a contract deployed in NeoFS sidechain\.
 
-Container contract stores and manages containers\, extended ACLs and container size estimations\. Contract does not perform sanity or signature checks of the containers or extended ACLs\, it is done by Alphabet nodes of the Inner Ring\. Alphabet nodes approve it by invoking the same Put or SetEACL methods with the same arguments\.
+Container contract stores and manages containers\, extended ACLs and container size estimations\. Contract does not perform sanity or signature checks of containers or extended ACLs\, it is done by Alphabet nodes of the Inner Ring\. Alphabet nodes approve it by invoking the same Put or SetEACL methods with the same arguments\.
 
 #### Contract notifications
 
-containerPut notification\. This notification is produced when user wants to create new container\. Alphabet nodes of the Inner Ring catch notification and validate container data\, signature and token if it is present\.
+containerPut notification\. This notification is produced when a user wants to create a new container\. Alphabet nodes of the Inner Ring catch the notification and validate container data\, signature and token if present\.
 
 ```
 containerPut:
@@ -20,7 +20,7 @@ containerPut:
     type: ByteArray
 ```
 
-containerDelete notification\. This notification is produced when container owner wants to delete container\. Alphabet nodes of the Inner Ring catch notification and validate container ownership\, signature and token if it is present\.
+containerDelete notification\. This notification is produced when a container owner wants to delete a container\. Alphabet nodes of the Inner Ring catch the notification and validate container ownership\, signature and token if present\.
 
 ```
 containerDelete:
@@ -32,7 +32,7 @@ containerDelete:
     type: ByteArray
 ```
 
-setEACL notification\. This notification is produced when container owner wants to update extended ACL of the container\. Alphabet nodes of the Inner Ring catch notification and validate container ownership\, signature and token if it is present\.
+setEACL notification\. This notification is produced when a container owner wants to update an extended ACL of a container\. Alphabet nodes of the Inner Ring catch the notification and validate container ownership\, signature and token if present\.
 
 ```
 setEACL:
@@ -64,17 +64,25 @@ StopEstimation:
 
 #### Contract methods
 
+##### Count
+
+```go
+func Count() int
+```
+
+Count method returns the number of registered containers\.
+
 ##### Delete
 
 ```go
 func Delete(containerID []byte, signature interop.Signature, token []byte)
 ```
 
-Delete method removes container from contract storage if it was invoked by Alphabet nodes of the Inner Ring\. Otherwise it produces containerDelete notification\.
+Delete method removes a container from the contract storage if it has been invoked by Alphabet nodes of the Inner Ring\. Otherwise\, it produces containerDelete notification\.
 
-Signature is a RFC6979 signature of container ID\. Token is optional and should be stable marshaled SessionToken structure from API\.
+Signature is a RFC6979 signature of the container ID\. Token is optional and should be a stable marshaled SessionToken structure from API\.
 
-If a container doesn't exist it panics with NotFoundError\.
+If the container doesn't exist\, it panics with NotFoundError\.
 
 ##### List
 
@@ -82,7 +90,7 @@ If a container doesn't exist it panics with NotFoundError\.
 func List(owner []byte) [][]byte
 ```
 
-List method returns list of all container IDs owned by specified owner\.
+List method returns a list of all container IDs owned by the specified owner\.
 
 ##### ListContainerSizes
 
@@ -90,7 +98,7 @@ List method returns list of all container IDs owned by specified owner\.
 func ListContainerSizes(epoch int) [][]byte
 ```
 
-ListContainerSizes method returns IDs of container size estimations that has been registered for specified epoch\.
+ListContainerSizes method returns the IDs of container size estimations that has been registered for the specified epoch\.
 
 ##### NewEpoch
 
@@ -98,7 +106,7 @@ ListContainerSizes method returns IDs of container size estimations that has bee
 func NewEpoch(epochNum int)
 ```
 
-NewEpoch method removes all container size estimations from epoch older than epochNum \+ 3\. Can be invoked only by NewEpoch method of the Netmap contract\.
+NewEpoch method removes all container size estimations from epoch older than epochNum \+ 3\. It can be invoked only by NewEpoch method of the Netmap contract\.
 
 ##### OnNEP11Payment
 
@@ -106,7 +114,7 @@ NewEpoch method removes all container size estimations from epoch older than epo
 func OnNEP11Payment(a interop.Hash160, b int, c []byte, d interface{})
 ```
 
-OnNEP11Payment is needed for registration with contract as owner to work\.
+OnNEP11Payment is needed for registration with contract as the owner to work\.
 
 ##### Owner
 
@@ -114,9 +122,9 @@ OnNEP11Payment is needed for registration with contract as owner to work\.
 func Owner(containerID []byte) []byte
 ```
 
-Owner method returns 25 byte Owner ID of the container\.
+Owner method returns a 25 byte Owner ID of the container\.
 
-If a container doesn't exist it panics with NotFoundError\.
+If the container doesn't exist\, it panics with NotFoundError\.
 
 ##### Put
 
@@ -124,9 +132,9 @@ If a container doesn't exist it panics with NotFoundError\.
 func Put(container []byte, signature interop.Signature, publicKey interop.PublicKey, token []byte)
 ```
 
-Put method creates new container if it was invoked by Alphabet nodes of the Inner Ring\. Otherwise it produces containerPut notification\.
+Put method creates a new container if it has been invoked by Alphabet nodes of the Inner Ring\. Otherwise\, it produces containerPut notification\.
 
-Container should be stable marshaled Container structure from API\. Signature is a RFC6979 signature of Container\. PublicKey contains public key of the signer\. Token is optional and should be stable marshaled SessionToken structure from API\.
+Container should be a stable marshaled Container structure from API\. Signature is a RFC6979 signature of the Container\. PublicKey contains the public key of the signer\. Token is optional and should be a stable marshaled SessionToken structure from API\.
 
 ##### PutContainerSize
 
@@ -134,16 +142,14 @@ Container should be stable marshaled Container structure from API\. Signature is
 func PutContainerSize(epoch int, cid []byte, usedSize int, pubKey interop.PublicKey)
 ```
 
-PutContainerSize method saves container size estimation in contract memory\. Can be invoked only by Storage nodes from the network map\. Method checks witness based on the provided public key of the Storage node\.
+PutContainerSize method saves container size estimation in contract memory\. It can be invoked only by Storage nodes from the network map\. This method checks witness based on the provided public key of the Storage node\.
 
-If a container doesn't exist it panics with NotFoundError\.
+If the container doesn't exist\, it panics with NotFoundError\.
 
 ##### PutNamed
 
 ```go
-func PutNamed(container []byte, signature interop.Signature,
-    publicKey interop.PublicKey, token []byte,
-    name, zone string)
+func PutNamed(container []byte, signature interop.Signature, publicKey interop.PublicKey, token []byte, name, zone string)
 ```
 
 PutNamed is similar to put but also sets a TXT record in nns contract\. Note that zone must exist\.
@@ -154,11 +160,11 @@ PutNamed is similar to put but also sets a TXT record in nns contract\. Note tha
 func SetEACL(eACL []byte, signature interop.Signature, publicKey interop.PublicKey, token []byte)
 ```
 
-SetEACL method sets new extended ACL table related to the contract if it was invoked by Alphabet nodes of the Inner Ring\. Otherwise it produces setEACL notification\.
+SetEACL method sets a new extended ACL table related to the contract if it was invoked by Alphabet nodes of the Inner Ring\. Otherwise\, it produces setEACL notification\.
 
-EACL should be stable marshaled EACLTable structure from API\. Signature is a RFC6979 signature of Container\. PublicKey contains public key of the signer\. Token is optional and should be stable marshaled SessionToken structure from API\.
+EACL should be a stable marshaled EACLTable structure from API\. Signature is a RFC6979 signature of the Container\. PublicKey contains the public key of the signer\. Token is optional and should be a stable marshaled SessionToken structure from API\.
 
-If a container doesn't exist it panics with NotFoundError\.
+If the container doesn't exist\, it panics with NotFoundError\.
 
 ##### StartContainerEstimation
 
@@ -166,7 +172,7 @@ If a container doesn't exist it panics with NotFoundError\.
 func StartContainerEstimation(epoch int)
 ```
 
-StartContainerEstimation method produces StartEstimation notification\. Can be invoked only by Alphabet nodes of the Inner Ring\.
+StartContainerEstimation method produces StartEstimation notification\. It can be invoked only by Alphabet nodes of the Inner Ring\.
 
 ##### StopContainerEstimation
 
@@ -174,7 +180,7 @@ StartContainerEstimation method produces StartEstimation notification\. Can be i
 func StopContainerEstimation(epoch int)
 ```
 
-StopContainerEstimation method produces StopEstimation notification\. Can be invoked only by Alphabet nodes of the Inner Ring\.
+StopContainerEstimation method produces StopEstimation notification\. It can be invoked only by Alphabet nodes of the Inner Ring\.
 
 ##### Update
 
@@ -182,7 +188,7 @@ StopContainerEstimation method produces StopEstimation notification\. Can be inv
 func Update(script []byte, manifest []byte, data interface{})
 ```
 
-Update method updates contract source code and manifest\. Can be invoked only by committee\.
+Update method updates contract source code and manifest\. It can be invoked by committee only\.
 
 ##### Version
 
@@ -190,6 +196,6 @@ Update method updates contract source code and manifest\. Can be invoked only by
 func Version() int
 ```
 
-Version returns version of the contract\.
+Version returns the version of the contract\.
 
 

@@ -1,14 +1,14 @@
 ### audit contract
 
-Audit contract is a contract deployed in NeoFS side chain\.
+Audit contract is a contract deployed in NeoFS sidechain\.
 
-Inner Ring nodes perform an audit of the registered containers in every epoch\. If container contains StorageGroup objects\, then the Inner Ring node initializes a series of audit checks\. Based on the results of these checks\, the Inner Ring node creates a DataAuditResult structure for the container\. The content of this structure makes it possible to determine which storage nodes were examined and the status of these checks\. Based on this information\, container owner is charged for data storage\.
+Inner Ring nodes perform audit of the registered containers during every epoch\. If a container contains StorageGroup objects\, an Inner Ring node initializes a series of audit checks\. Based on the results of these checks\, the Inner Ring node creates a DataAuditResult structure for the container\. The content of this structure makes it possible to determine which storage nodes have been examined and see the status of these checks\. Regarding this information\, the container owner is charged for data storage\.
 
-Audit contract is used as reliable and verifiable storage for all DataAuditResult structures\. At the end of the data audit routine\, the Inner Ring nodes send a stable marshaled version of the DataAuditResult structure to the contract\. When Alphabet nodes of the Inner Ring perform settlement operations\, they list and get these AuditResultStructures from the audit contract\.
+Audit contract is used as a reliable and verifiable storage for all DataAuditResult structures\. At the end of data audit routine\, Inner Ring nodes send a stable marshaled version of the DataAuditResult structure to the contract\. When Alphabet nodes of the Inner Ring perform settlement operations\, they make a list and get these AuditResultStructures from the audit contract\.
 
 #### Contract notifications
 
-Alphabet contract does not produce notifications to process\.
+Audit contract does not produce notifications to process\.
 
 #### Contract methods
 
@@ -18,9 +18,9 @@ Alphabet contract does not produce notifications to process\.
 func Get(id []byte) []byte
 ```
 
-Get method returns stable marshaled DataAuditResult structure\.
+Get method returns a stable marshaled DataAuditResult structure\.
 
-ID of the DataAuditResult can be obtained from listing methods\.
+The ID of the DataAuditResult can be obtained from listing methods\.
 
 ##### List
 
@@ -28,7 +28,7 @@ ID of the DataAuditResult can be obtained from listing methods\.
 func List() [][]byte
 ```
 
-List method returns list of all available DataAuditResult IDs from contract storage\.
+List method returns a list of all available DataAuditResult IDs from the contract storage\.
 
 ##### ListByCID
 
@@ -36,7 +36,7 @@ List method returns list of all available DataAuditResult IDs from contract stor
 func ListByCID(epoch int, cid []byte) [][]byte
 ```
 
-ListByCID method returns list of DataAuditResult IDs generated in specified epoch for specified container\.
+ListByCID method returns a list of DataAuditResult IDs generated during the specified epoch for the specified container\.
 
 ##### ListByEpoch
 
@@ -44,7 +44,7 @@ ListByCID method returns list of DataAuditResult IDs generated in specified epoc
 func ListByEpoch(epoch int) [][]byte
 ```
 
-ListByEpoch method returns list of DataAuditResult IDs generated in specified epoch\.
+ListByEpoch method returns a list of DataAuditResult IDs generated during the specified epoch\.
 
 ##### ListByNode
 
@@ -52,7 +52,7 @@ ListByEpoch method returns list of DataAuditResult IDs generated in specified ep
 func ListByNode(epoch int, cid []byte, key interop.PublicKey) [][]byte
 ```
 
-ListByNode method returns list of DataAuditResult IDs generated in specified epoch for specified container by specified Inner Ring node\.
+ListByNode method returns a list of DataAuditResult IDs generated in the specified epoch for the specified container by the specified Inner Ring node\.
 
 ##### Put
 
@@ -60,9 +60,9 @@ ListByNode method returns list of DataAuditResult IDs generated in specified epo
 func Put(rawAuditResult []byte)
 ```
 
-Put method stores stable marshalled \`DataAuditResult\` structure\. Can be invoked only by Inner Ring nodes\.
+Put method stores a stable marshalled \`DataAuditResult\` structure\. It can be invoked only by Inner Ring nodes\.
 
-Inner Ring nodes perform audit of the containers and produce \`DataAuditResult\` structures\. They are being stored in audit contract and used for settlements in later epochs\.
+Inner Ring nodes perform audit of containers and produce \`DataAuditResult\` structures\. They are stored in audit contract and used for settlements in later epochs\.
 
 ##### Update
 
@@ -70,7 +70,7 @@ Inner Ring nodes perform audit of the containers and produce \`DataAuditResult\`
 func Update(script []byte, manifest []byte, data interface{})
 ```
 
-Update method updates contract source code and manifest\. Can be invoked only by committee\.
+Update method updates contract source code and manifest\. It can be invoked only by committee\.
 
 ##### Version
 
@@ -78,6 +78,6 @@ Update method updates contract source code and manifest\. Can be invoked only by
 func Version() int
 ```
 
-Version returns version of the contract\.
+Version returns the version of the contract\.
 
 

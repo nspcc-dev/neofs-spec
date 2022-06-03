@@ -1,16 +1,16 @@
 ### neofs contract
 
-NeoFS contract is a contract deployed in NeoFS main chain\.
+NeoFS contract is a contract deployed in NeoFS mainchain\.
 
-NeoFS contract is an entry point to NeoFS users\. This contract stores all NeoFS related GAS\, registers new Inner Ring candidates and produces notifications to control side chain\.
+NeoFS contract is an entry point to NeoFS users\. This contract stores all NeoFS related GAS\, registers new Inner Ring candidates and produces notifications to control the sidechain\.
 
-While main chain committee controls list of Alphabet nodes in native RoleManagement contract\, NeoFS can't change more than 1\\3 keys at a time\. NeoFS contract contains actual list of Alphabet nodes in the side chain\.
+While mainchain committee controls the list of Alphabet nodes in native RoleManagement contract\, NeoFS can't change more than 1\\3 keys at a time\. NeoFS contract contains the actual list of Alphabet nodes in the sidechain\.
 
-Network configuration also stored in NeoFS contract\. All the changes in configuration are mirrored in side chain with notifications\.
+Network configuration is also stored in NeoFS contract\. All changes in configuration are mirrored in the sidechain with notifications\.
 
 #### Contract notifications
 
-Deposit notification\. This notification is produced when user transfers native GAS to the NeoFS contract address\. The same amount of NEOFS token will be minted in Balance contract in the side chain\.
+Deposit notification\. This notification is produced when user transfers native GAS to the NeoFS contract address\. The same amount of NEOFS token will be minted in Balance contract in the sidechain\.
 
 ```
 Deposit:
@@ -24,7 +24,7 @@ Deposit:
     type: Hash256
 ```
 
-Withdraw notification\. This notification is produced when user wants to withdraw GAS from internal NeoFS balance and has payed fee for that\.
+Withdraw notification\. This notification is produced when a user wants to withdraw GAS from the internal NeoFS balance and has paid fee for that\.
 
 ```
 Withdraw:
@@ -36,7 +36,7 @@ Withdraw:
     type: Hash256
 ```
 
-Cheque notification\. This notification is produced when NeoFS contract successfully transferred assets back to the user after withdraw\.
+Cheque notification\. This notification is produced when NeoFS contract has successfully transferred assets back to the user after withdraw\.
 
 ```
 Cheque:
@@ -50,7 +50,7 @@ Cheque:
     type: ByteArray
 ```
 
-Bind notification\. This notification is produced when user wants to bind public keys with user account \(OwnerID\)\. Keys argument is array of ByteArray\.
+Bind notification\. This notification is produced when a user wants to bind public keys with the user account \(OwnerID\)\. Keys argument is an array of ByteArray\.
 
 ```
 Bind:
@@ -60,7 +60,7 @@ Bind:
     type: Array
 ```
 
-Unbind notification\. This notification is produced when user wants to unbind public keys with user account \(OwnerID\)\. Keys argument is an array of ByteArray\.
+Unbind notification\. This notification is produced when a user wants to unbind public keys with the user account \(OwnerID\)\. Keys argument is an array of ByteArray\.
 
 ```
 Unbind:
@@ -70,7 +70,7 @@ Unbind:
     type: Array
 ```
 
-AlphabetUpdate notification\. This notification is produced when Alphabet nodes updated it's list in the contract\. Alphabet argument is an array of ByteArray\. It contains public keys of new alphabet nodes\.
+AlphabetUpdate notification\. This notification is produced when Alphabet nodes have updated their lists in the contract\. Alphabet argument is an array of ByteArray\. It contains public keys of new alphabet nodes\.
 
 ```
 AlphabetUpdate:
@@ -100,7 +100,7 @@ SetConfig
 func AlphabetAddress() interop.Hash160
 ```
 
-AlphabetAddress returns 2\\3n\+1 multi signature address of alphabet nodes\. Used in side chain notary disabled environment\.
+AlphabetAddress returns 2\\3n\+1 multisignature address of alphabet nodes\. It is used in sidechain notary disabled environment\.
 
 ##### AlphabetList
 
@@ -108,7 +108,7 @@ AlphabetAddress returns 2\\3n\+1 multi signature address of alphabet nodes\. Use
 func AlphabetList() []common.IRNode
 ```
 
-AlphabetList returns array of alphabet node keys\. Use in side chain notary disabled environment\.
+AlphabetList returns an array of alphabet node keys\. It is used in sidechain notary disabled environment\.
 
 ##### AlphabetUpdate
 
@@ -116,9 +116,9 @@ AlphabetList returns array of alphabet node keys\. Use in side chain notary disa
 func AlphabetUpdate(id []byte, args []interop.PublicKey)
 ```
 
-AlphabetUpdate updates list of alphabet nodes with provided list of public keys\. Can be invoked only by alphabet nodes\.
+AlphabetUpdate updates a list of alphabet nodes with the provided list of public keys\. It can be invoked only by alphabet nodes\.
 
-This method used in notary disabled side chain environment\. In this case actual alphabet list should be stored in the NeoFS contract\.
+This method is used in notary disabled sidechain environment\. In this case\, the actual alphabet list should be stored in the NeoFS contract\.
 
 ##### Bind
 
@@ -126,9 +126,9 @@ This method used in notary disabled side chain environment\. In this case actual
 func Bind(user []byte, keys []interop.PublicKey)
 ```
 
-Bind method produces notification to bind specified public keys in NeoFSID contract in side chain\. Can be invoked only by specified user\.
+Bind method produces notification to bind the specified public keys in NeoFSID contract in the sidechain\. It can be invoked only by specified user\.
 
-This method produces Bind notification\. Method panics if keys are not 33 byte long\. User argument must be valid 20 byte script hash\.
+This method produces Bind notification\. This method panics if keys are not 33 byte long\. User argument must be a valid 20 byte script hash\.
 
 ##### Cheque
 
@@ -136,9 +136,9 @@ This method produces Bind notification\. Method panics if keys are not 33 byte l
 func Cheque(id []byte, user interop.Hash160, amount int, lockAcc []byte)
 ```
 
-Cheque transfers GAS back to the user from contract account\, if assets were successfully locked in NeoFS balance contract\. Can be invoked only by Alphabet nodes\.
+Cheque transfers GAS back to the user from the contract account\, if assets were successfully locked in NeoFS balance contract\. It can be invoked only by Alphabet nodes\.
 
-This method produces Cheque notification to burn assets in side chain\.
+This method produces Cheque notification to burn assets in sidechain\.
 
 ##### Config
 
@@ -146,7 +146,7 @@ This method produces Cheque notification to burn assets in side chain\.
 func Config(key []byte) interface{}
 ```
 
-Config returns configuration value of NeoFS configuration\. If key does not exists\, returns nil\.
+Config returns configuration value of NeoFS configuration\. If the key does not exists\, returns nil\.
 
 ##### InnerRingCandidateAdd
 
@@ -154,9 +154,9 @@ Config returns configuration value of NeoFS configuration\. If key does not exis
 func InnerRingCandidateAdd(key interop.PublicKey)
 ```
 
-InnerRingCandidateAdd adds key to the list of Inner Ring candidates\. Can be invoked only by candidate itself\.
+InnerRingCandidateAdd adds a key to a list of Inner Ring candidates\. It can be invoked only by the candidate itself\.
 
-This method transfers fee from candidate to contract account\. Fee value specified in NeoFS network config with the key InnerRingCandidateFee\.
+This method transfers fee from a candidate to the contract account\. Fee value is specified in NeoFS network config with the key InnerRingCandidateFee\.
 
 ##### InnerRingCandidateRemove
 
@@ -164,9 +164,9 @@ This method transfers fee from candidate to contract account\. Fee value specifi
 func InnerRingCandidateRemove(key interop.PublicKey)
 ```
 
-InnerRingCandidateRemove removes key from the list of Inner Ring candidates\. Can be invoked by Alphabet nodes or candidate itself\.
+InnerRingCandidateRemove removes a key from a list of Inner Ring candidates\. It can be invoked by Alphabet nodes or the candidate itself\.
 
-Method does not return fee back to the candidate\.
+This method does not return fee back to the candidate\.
 
 ##### InnerRingCandidates
 
@@ -174,7 +174,7 @@ Method does not return fee back to the candidate\.
 func InnerRingCandidates() []common.IRNode
 ```
 
-InnerRingCandidates returns array of structures that contain Inner Ring candidate node key\.
+InnerRingCandidates returns an array of structures that contain an Inner Ring candidate node key\.
 
 ##### OnNEP17Payment
 
@@ -182,7 +182,7 @@ InnerRingCandidates returns array of structures that contain Inner Ring candidat
 func OnNEP17Payment(from interop.Hash160, amount int, data interface{})
 ```
 
-OnNEP17Payment is a callback for NEP\-17 compatible native GAS contract\. It takes no more than 9000\.0 GAS\. Native GAS has precision 8 and NeoFS balance contract has precision 12\. Values bigger than 9000\.0 can break JSON limits for integers when precision is converted\.
+OnNEP17Payment is a callback for NEP\-17 compatible native GAS contract\. It takes no more than 9000\.0 GAS\. Native GAS has precision 8\, and NeoFS balance contract has precision 12\. Values bigger than 9000\.0 can break JSON limits for integers when precision is converted\.
 
 ##### SetConfig
 
@@ -190,7 +190,7 @@ OnNEP17Payment is a callback for NEP\-17 compatible native GAS contract\. It tak
 func SetConfig(id, key, val []byte)
 ```
 
-SetConfig key\-value pair as a NeoFS runtime configuration value\. Can be invoked only by Alphabet nodes\.
+SetConfig key\-value pair as a NeoFS runtime configuration value\. It can be invoked only by Alphabet nodes\.
 
 ##### Unbind
 
@@ -198,9 +198,9 @@ SetConfig key\-value pair as a NeoFS runtime configuration value\. Can be invoke
 func Unbind(user []byte, keys []interop.PublicKey)
 ```
 
-Unbind method produces notification to unbind specified public keys in NeoFSID contract in side chain\. Can be invoked only by specified user\.
+Unbind method produces notification to unbind the specified public keys in NeoFSID contract in the sidechain\. It can be invoked only by the specified user\.
 
-This method produces Unbind notification\. Method panics if keys are not 33 byte long\. User argument must be valid 20 byte script hash\.
+This method produces Unbind notification\. This method panics if keys are not 33 byte long\. User argument must be a valid 20 byte script hash\.
 
 ##### Update
 
@@ -208,7 +208,7 @@ This method produces Unbind notification\. Method panics if keys are not 33 byte
 func Update(script []byte, manifest []byte, data interface{})
 ```
 
-Update method updates contract source code and manifest\. Can be invoked only by side chain committee\.
+Update method updates contract source code and manifest\. It can be invoked only by sidechain committee\.
 
 ##### Version
 
@@ -224,8 +224,8 @@ Version returns version of the contract\.
 func Withdraw(user interop.Hash160, amount int)
 ```
 
-Withdraw initialize gas asset withdraw from NeoFS\. Can be invoked only by the specified user\.
+Withdraw initializes gas asset withdraw from NeoFS\. It can be invoked only by the specified user\.
 
-This method produces Withdraw notification to lock assets in side chain and transfers withdraw fee from user account to each Alphabet node\. If notary is enabled in main chain\, fee is transferred to Processing contract\. Fee value specified in NeoFS network config with the key WithdrawFee\.
+This method produces Withdraw notification to lock assets in the sidechain and transfers withdraw fee from a user account to each Alphabet node\. If notary is enabled in the mainchain\, fee is transferred to Processing contract\. Fee value is specified in NeoFS network config with the key WithdrawFee\.
 
 

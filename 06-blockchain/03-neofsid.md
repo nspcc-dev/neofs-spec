@@ -1,10 +1,10 @@
 ### neofsid contract
 
-NeoFSID contract is a contract deployed in NeoFS side chain\.
+NeoFSID contract is a contract deployed in NeoFS sidechain\.
 
-NeoFSID contract used to store connection between OwnerID and it's public keys\. OwnerID is a 25\-byte N3 wallet address that can be produced from public key\. It is one\-way conversion\. In simple cases NeoFS verifies ownership by checking signature and relation between public key and OwnerID\.
+NeoFSID contract is used to store connection between an OwnerID and its public keys\. OwnerID is a 25\-byte N3 wallet address that can be produced from a public key\. It is one\-way conversion\. In simple cases\, NeoFS verifies ownership by checking signature and relation between a public key and an OwnerID\.
 
-In more complex cases\, user can use public keys unrelated to OwnerID to maintain secure access to the data\. NeoFSID contract stores relation between OwnerID and arbitrary public keys\. Data owner can bind or unbind public key with it's account by invoking Bind or Unbind methods of NeoFS contract in main chain\. After that\, Alphabet nodes produce multi signed AddKey and RemoveKey invocations of NeoFSID contract\.
+In more complex cases\, a user can use public keys unrelated to the OwnerID to maintain secure access to the data\. NeoFSID contract stores relation between an OwnerID and arbitrary public keys\. Data owner can bind a public key with its account or unbind it by invoking Bind or Unbind methods of NeoFS contract in the mainchain\. After that\, Alphabet nodes produce multisigned AddKey and RemoveKey invocations of NeoFSID contract\.
 
 #### Contract notifications
 
@@ -18,9 +18,9 @@ NeoFSID contract does not produce notifications to process\.
 func AddKey(owner []byte, keys []interop.PublicKey)
 ```
 
-AddKey binds list of provided public keys to OwnerID\. Can be invoked only by Alphabet nodes\.
+AddKey binds a list of the provided public keys to the OwnerID\. It can be invoked only by Alphabet nodes\.
 
-This method panics if OwnerID is not ownerSize byte or public key is not 33 byte long\. If key is already bound\, ignores it\.
+This method panics if the OwnerID is not an ownerSize byte or the public key is not 33 byte long\. If the key is already bound\, the method ignores it\.
 
 ##### Key
 
@@ -28,9 +28,9 @@ This method panics if OwnerID is not ownerSize byte or public key is not 33 byte
 func Key(owner []byte) [][]byte
 ```
 
-Key method returns list of 33\-byte public keys bound with OwnerID\.
+Key method returns a list of 33\-byte public keys bound with the OwnerID\.
 
-This method panics if owner is not ownerSize byte long\.
+This method panics if the owner is not ownerSize byte long\.
 
 ##### RemoveKey
 
@@ -38,9 +38,9 @@ This method panics if owner is not ownerSize byte long\.
 func RemoveKey(owner []byte, keys []interop.PublicKey)
 ```
 
-RemoveKey unbinds provided public keys from OwnerID\. Can be invoked only by Alphabet nodes\.
+RemoveKey unbinds the provided public keys from the OwnerID\. It can be invoked only by Alphabet nodes\.
 
-This method panics if OwnerID is not ownerSize byte or public key is not 33 byte long\. If key is already unbound\, ignores it\.
+This method panics if the OwnerID is not an ownerSize byte or the public key is not 33 byte long\. If the key is already unbound\, the method ignores it\.
 
 ##### Update
 
@@ -48,7 +48,7 @@ This method panics if OwnerID is not ownerSize byte or public key is not 33 byte
 func Update(script []byte, manifest []byte, data interface{})
 ```
 
-Update method updates contract source code and manifest\. Can be invoked only by committee\.
+Update method updates contract source code and manifest\. It can be invoked only by committee\.
 
 ##### Version
 
@@ -56,6 +56,6 @@ Update method updates contract source code and manifest\. Can be invoked only by
 func Version() int
 ```
 
-Version returns version of the contract\.
+Version returns the version of the contract\.
 
 
