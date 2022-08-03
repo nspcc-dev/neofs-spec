@@ -150,6 +150,9 @@ Let us make an example. `Delete` and `Range` operations are likely to show undef
 | HASH     | -   | -      | +    | +     | -   | -    | -      |
 | SEARCH   | -   | -      | -    | -     | -   | -    | +      |
 
+Also, note that user attributes cannot be used as filters in an eACL rule as it provokes an undefined behaviour. By design, when user attributes are set for a Complex Object, they are not inherited in the Part Objects and are only stored in the Link Object header. We cannot control the access for an Object of size more than `maxObjectSize`. To keep the system consistent we do not support eACL filters by user attributes for small Objects as well.
+
+
 ### Bearer Token
 
 `BearerToken` allows to use the Extended ACL rules table from the token attached to the request, instead of the Extended ACL table from the `Container` smart contract.
