@@ -44,6 +44,7 @@ to handle credentials) that will be used when the user sends requests via S3 Gat
 #### Handle S3 request
 
 On getting a request, S3 Gateway:
+
 1. Fetches the `access_key_id` from the `Authorization` header.
 2. Gets `AccessBox` from NeoFS by address (recall `access_key_id` is `CID/OID`)
 3. Using `s3gw_private_key_k` and `authmate_public_key` derives `symmetric_key_k` and decrypts `encrypted_token_k` that 
