@@ -20,5 +20,5 @@ deleted by Storage Nodes.
 | validation_data_size | uint64 | Total size of the payloads of objects in the storage group |
 | validation_hash | Checksum | Homomorphic hash from the concatenation of the payloads of the storage group members. The order of concatenation is the same as the order of the members in the `members` field. |
 | expiration_epoch | uint64 | DEPRECATED. Last NeoFS epoch number of the storage group lifetime |
-| members | ObjectID | Strictly ordered list of storage group member objects |
+| members | ObjectID | Strictly ordered list of storage group member objects. Members MUST be unique |
      

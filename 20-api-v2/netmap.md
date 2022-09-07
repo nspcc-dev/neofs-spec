@@ -29,7 +29,7 @@ __Request Body:__ LocalNodeInfoRequest.Body
 
 LocalNodeInfo request body is empty.
 
-            
+                
 
 __Response Body__ LocalNodeInfoResponse.Body
 
@@ -39,7 +39,7 @@ Local Node Info, including API Version in use.
 | ----- | ---- | ----------- |
 | version | Version | Latest NeoFS API version in use |
 | node_info | NodeInfo | NodeInfo structure with recent information from node itself |
-        
+            
 ### Method NetworkInfo
 
 Read recent information about the NeoFS network.
@@ -49,13 +49,13 @@ Statuses:
 information about the current network state has been successfully read;
 - Common failures (SECTION_FAILURE_COMMON).
 
-     
+         
 
 __Request Body:__ NetworkInfoRequest.Body
 
 NetworkInfo request body is empty.
 
-            
+                
 
 __Response Body__ NetworkInfoResponse.Body
 
@@ -64,7 +64,32 @@ Information about the network.
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 | network_info | NetworkInfo | NetworkInfo structure with recent information. |
-              
+    
+### Method NetmapSnapshot
+
+Returns network map snapshot of the current NeoFS epoch.
+
+Statuses:
+- **OK** (0, SECTION_SUCCESS):
+information about the current network map has been successfully read;
+- Common failures (SECTION_FAILURE_COMMON).
+
+     
+
+__Request Body:__ NetmapSnapshotRequest.Body
+
+Get netmap snapshot request body.
+
+                
+
+__Response Body__ NetmapSnapshotResponse.Body
+
+Get netmap snapshot response body
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| netmap | Netmap | Structure of the requested network map. |
+                      
 ### Message Filter
 
 This filter will return the subset of nodes from `NetworkMap` or another filter's
@@ -77,6 +102,15 @@ results that will satisfy filter's conditions.
 | op | Operation | Filtering operation |
 | value | string | Value to match |
 | filters | Filter | List of inner filters. Top level operation will be applied to the whole list. |
+   
+### Message Netmap
+
+Network map structure
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| epoch | uint64 | Network map revision number. |
+| nodes | NodeInfo | Nodes presented in network. |
    
 ### Message NetworkConfig
 

@@ -158,4 +158,5 @@ Signature scheme describes digital signing scheme used for (key, signature) pair
 | ------ | ---- | ----------- |
 | 0 | ECDSA_SHA512 | ECDSA with SHA-512 hashing (FIPS 186-3) |
 | 1 | ECDSA_RFC6979_SHA256 | Deterministic ECDSA with SHA-256 hashing (RFC 6979) |
+| 2 | ECDSA_RFC6979_SHA256_WALLET_CONNECT | Deterministic ECDSA with SHA-256 hashing using WalletConnect API. Here the algorithm is the same, but the message format differs. |
  

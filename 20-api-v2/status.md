@@ -59,6 +59,7 @@ Section of failed statuses independent of the operation.
 | ------ | ---- | ----------- |
 | 0 | INTERNAL | [**1024**] Internal server error, default failure. Not detailed. If the server cannot match failed outcome to the code, it should use this code. |
 | 1 | WRONG_MAGIC_NUMBER | [**1025**] Wrong magic of the NeoFS network. Details: - [**0**] Magic number of the served NeoFS network (big-endian 64-bit unsigned integer). |
+| 2 | SIGNATURE_VERIFICATION_FAIL | [**1026**] Signature verification failure. |
 
 ### Emun Container
 
@@ -67,6 +68,7 @@ Section of statuses for container-related operations.
 | Number | Name | Description |
 | ------ | ---- | ----------- |
 | 0 | CONTAINER_NOT_FOUND | [**3072**] Container not found. |
+| 1 | EACL_NOT_FOUND | [**3073**] eACL table not found. |
 
 ### Emun Object
 
