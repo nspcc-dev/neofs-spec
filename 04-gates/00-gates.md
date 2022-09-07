@@ -39,7 +39,7 @@ to handle credentials) that will be used when the user sends requests via S3 Gat
    4. For each `encypted_tokens_k` forms a struct called `gate_k` that contains `encrypted_tokens_k` and `s3gw_public_key_k`.
    5. Forms the final binary object `AccessBox` that contains `authmate_public_key`, `gate_1`, ..., `gate_k`.
    6. Puts the `AccessBox` object to NeoFS and saves its address `CID/OID` as `access_key_id`.
-   7. Returns the pair (`access_key_id`, `access_secret_key`) to the user.
+   7. Returns the pair (`access_key_id`, `secret_access_key`) to the user.
 
 #### Handle S3 request
 
