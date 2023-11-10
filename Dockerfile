@@ -11,7 +11,7 @@ RUN apt-get update && \
   latexmk \
   libgraphviz-dev \
   make \
-  openjdk-14-jre \
+  openjdk-16-jre \
   python3-pip \
   librsvg2-bin \
   texlive-fonts-extra \
