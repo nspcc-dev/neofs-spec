@@ -7,13 +7,15 @@ jobs:
   push-to-neofs:
     runs-on: ubuntu-latest
     steps:
+      - name: Check out code
+      - uses: actions/checkout@v4
+
       - name: Build Docker image
         run: make image
 
       - name: Get pdf file
         run: make docker/pdf
 
-      - uses: actions/checkout@v4
       - name: Publish to NeoFS
         uses: nspcc-dev/gh-push-to-neofs@v0.1.1
         with:
