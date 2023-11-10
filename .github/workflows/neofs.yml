@@ -1,0 +1,25 @@
+name: Publish to NeoFS
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  push-to-neofs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build Docker image
+        run: make image
+
+      - name: Get pdf file
+        run: make docker/pdf
+
+      - uses: actions/checkout@v4
+      - name: Publish to NeoFS
+        uses: nspcc-dev/gh-push-to-neofs@v0.1.1
+        with:
+          NEOFS_WALLET: ${{ secrets.NEOFS_WALLET }}
+          NEOFS_WALLET_PASSWORD: ${{ secrets.NEOFS_WALLET_PASSWORD }}
+          NEOFS_NETWORK_DOMAIN: ${{ env.NEOFS_NETWORK_DOMAIN }}
+          NEOFS_HTTP_GATE: ${{ env.NEOFS_HTTP_GATE }}
+          STORE_OBJECTS_CID: ${{ env.STORE_OBJECTS_CID }}
+          PATH_TO_FILES_DIR: output
