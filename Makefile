@@ -22,13 +22,16 @@ PUMLS = $(shell find . -mindepth 3 -maxdepth 4 -type f -name '*.puml' -o -name '
 SVGS = $(shell find . -mindepth 3 -maxdepth 4 -type f -name '*.svg' | sort)
 HTML_PIC = $(shell find . -mindepth 3 -maxdepth 3 ! -path './${OUT_DIR}/*' ! -path './${BUILD_DIR}/*' -type f -name '*.svg' -o -name '*.png' -o -name '*.jpg')
 
-.PHONY: all pdf html site directories view clean
+.PHONY: all pdf html site directories view clean pdf_file_name
 
 all: pdf site
 
 directories: $(OUT_DIR) $(BUILD_DIR)
 
 pdf: $(OUT_DIR)/$(PDF_NAME)
+
+pdf_file_name:
+	@echo $(PDF_NAME)
 
 view:
 	type xdg-open >/dev/null 2>&1 && xdg-open $(OUT_DIR)/$(PDF_NAME) || open $(OUT_DIR)/$(PDF_NAME)
