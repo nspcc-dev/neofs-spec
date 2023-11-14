@@ -41,4 +41,4 @@ jobs:
           context: 'Neofs spec pdf'
           state: 'success'
           sha: ${{github.event.pull_request.head.sha || github.sha}}
-          target_url: ${{ env.CONTAINER_URL }}/${{ env.SPEC_FILE }}
+          target_url: ${{ env.CONTAINER_URL }}${{ env.SPEC_FILE }}
