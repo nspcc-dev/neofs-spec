@@ -13,10 +13,15 @@ jobs:
       - name: Build Docker image
         run: make image
 
+      - name: Get pdf file name
+        run: |
+          echo "PDF_FILE_NAME=$(make pdf_file_name)" >> $GITHUB_ENV
+
       - name: Get pdf file
         run: make docker/pdf
 
       - name: Publish to NeoFS
+        id: publish_spec_pdf_to_neofs
         uses: nspcc-dev/gh-push-to-neofs@v0.1.2
         with:
           NEOFS_WALLET: ${{ secrets.NEOFS_WALLET }}
@@ -25,3 +30,15 @@ jobs:
           NEOFS_HTTP_GATE: ${{ vars.NEOFS_HTTP_GATE }}
           STORE_OBJECTS_CID: ${{ vars.STORE_OBJECTS_CID }}
           PATH_TO_FILES_DIR: output
+
+      - name: Post the link to the spec
+        env:
+          CONTAINER_URL: ${{ steps.publish_spec_pdf_to_neofs.outputs.OUTPUT_CONTAINER_URL }}
+          SPEC_FILE: ${{ env.PDF_FILE_NAME }}
+        uses: Sibz/github-status-action@v1
+        with:
+          authToken: ${{secrets.GITHUB_TOKEN}}
+          context: 'Neofs spec pdf'
+          state: 'success'
+          sha: ${{github.event.pull_request.head.sha || github.sha}}
+          target_url: ${{ env.CONTAINER_URL }}/${{ env.SPEC_FILE }}
