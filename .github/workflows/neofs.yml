@@ -17,7 +17,7 @@ jobs:
         run: make docker/pdf
 
       - name: Publish to NeoFS
-        uses: nspcc-dev/gh-push-to-neofs@v0.1.1
+        uses: nspcc-dev/gh-push-to-neofs@v0.1.2
         with:
           NEOFS_WALLET: ${{ secrets.NEOFS_WALLET }}
           NEOFS_WALLET_PASSWORD: ${{ secrets.NEOFS_WALLET_PASSWORD }}
