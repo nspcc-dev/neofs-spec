@@ -124,6 +124,8 @@ String representation of a value is base-10 integer.
 
 JSON representation is an object containing a single `value` number field.
 
+DEPRECATED. Kept for compatibility only.
+
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 | value | fixed32 | 4-byte integer subnetwork identifier. |

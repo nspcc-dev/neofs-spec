@@ -55,6 +55,9 @@ returned here to make sure everything has been done as expected.
 response immediately. After a new block is issued in sidechain, request is
 verified by Inner Ring nodes. After one more block in sidechain, the container
 is added into smart contract storage.
+NOTE: a container deletion leads to the removal of every object in that
+container, regardless of any restrictions on the object removal (e.g. lock/locked
+object would be also removed).
 
 Statuses:
 - **OK** (0, SECTION_SUCCESS): \
@@ -275,8 +278,8 @@ values will be considered invalid.
 There are some "well-known" attributes affecting system behaviour:
 
 * __NEOFS__SUBNET \
-  String ID of a container's storage subnet. Any container can be attached to
-  one subnet only.
+  DEPRECATED. Was used for a string ID of a container's storage subnet.
+  Currently doesn't affect anything.
 * __NEOFS__NAME \
   String of a human-friendly container name registered as a domain in
   NNS contract.
