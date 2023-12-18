@@ -57,7 +57,16 @@ Context information for Session Tokens related to ObjectService requests
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 | verb | Verb | Type of request for which the token is issued |
-| address | Address | Related Object address |
+| target | Target | Object session target. MUST be correctly formed and set. If `objects` field is not empty, then the session applies only to these elements, otherwise, to all objects from the specified container. |
+   
+### Message ObjectSessionContext.Target
+
+Carries objects involved in the object session.
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| container | ContainerID | Indicates which container the session is spread to. Field MUST be set and correct. |
+| objects | ObjectID | Indicates which objects the session is spread to. Objects are expected to be stored in the NeoFS container referenced by `container` field. Each element MUST have correct format. |
    
 ### Message RequestMetaHeader
 

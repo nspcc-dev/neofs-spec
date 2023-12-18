@@ -122,7 +122,47 @@ NeoFS network configuration
    
 ### Message NetworkConfig.Parameter
 
-Single configuration parameter
+Single configuration parameter. Key MUST be network-unique.
+
+System parameters:
+- **AuditFee** \
+  Fee paid by the storage group owner to the Inner Ring member.
+  Value: little-endian integer. Default: 0.
+- **BasicIncomeRate** \
+  Cost of storing one gigabyte of data for a period of one epoch. Paid by
+  container owner to container nodes.
+  Value: little-endian integer. Default: 0.
+- **ContainerAliasFee** \
+  Fee paid for named container's creation by the container owner.
+  Value: little-endian integer. Default: 0.
+- **ContainerFee** \
+  Fee paid for container creation by the container owner.
+  Value: little-endian integer. Default: 0.
+- **EigenTrustAlpha** \
+  Alpha parameter of EigenTrust algorithm used in the Reputation system.
+  Value: decimal floating-point number in UTF-8 string representation.
+  Default: 0.
+- **EigenTrustIterations** \
+  Number of EigenTrust algorithm iterations to pass in the Reputation system.
+  Value: little-endian integer. Default: 0.
+- **EpochDuration** \
+  NeoFS epoch duration measured in Sidechain blocks.
+  Value: little-endian integer. Default: 0.
+- **HomomorphicHashingDisabled** \
+  Flag of disabling the homomorphic hashing of objects' payload.
+  Value: true if any byte != 0. Default: false.
+- **InnerRingCandidateFee** \
+  Fee for entrance to the Inner Ring paid by the candidate.
+  Value: little-endian integer. Default: 0.
+- **MaintenanceModeAllowed** \
+  Flag allowing setting the MAINTENANCE state to storage nodes.
+  Value: true if any byte != 0. Default: false.
+- **MaxObjectSize** \
+  Maximum size of physically stored NeoFS object measured in bytes.
+  Value: little-endian integer. Default: 0.
+- **WithdrawFee** \
+  Fee paid for withdrawal of funds paid by the account owner.
+  Value: little-endian integer. Default: 0.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
@@ -183,12 +223,8 @@ explicitly set:
   point delimiter for decimal part. In the Network Map it will be saved as
   64-bit unsigned integer representing number of minimal token fractions.
 * __NEOFS__SUBNET_%s \
-  `True` or `False`. Defines if the node is included in the `%s` subnetwork
-  or not. `%s` must be an existing subnetwork's ID (non-negative integer number).
-  A node can be included in more than one subnetwork and, therefore, can contain
-  more than one subnet attribute. A missing attribute is equivalent to the
-  presence of the attribute with `False` value (except default zero subnetwork
-  (with `%s` == 0) for which missing attribute means inclusion in that network).
+  DEPRECATED. Defined if the node is included in the `%s` subnetwork
+  or not. Currently ignored.
 * UN-LOCODE \
   Node's geographic location in
   [UN/LOCODE](https://www.unece.org/cefact/codesfortrade/codes_index.html)
@@ -220,6 +256,24 @@ explicitly set:
   Node's continent name according to the [Seven-Continent model]
   (https://en.wikipedia.org/wiki/Continent#Number). Calculated
   automatically from `UN-LOCODE` attribute.
+* ExternalAddr
+  Node's preferred way for communications with external clients.
+  Clients SHOULD use these addresses if possible.
+  Must contain a comma-separated list of multi-addresses.
+* Version
+  Node implementation's version in a free string form.
+* VerifiedNodesDomain
+  Confirmation of admission to a group of storage nodes.
+  The value is the domain name registered in the NeoFS NNS. If attribute
+  is specified, the storage node requesting entry into the NeoFS network
+  map with this attribute must be included in the access list located on
+  the specified domain. The access list is represented by a set of TXT
+  records: Neo addresses resolved from public keys. To be admitted to the
+  network, Neo address of the node's public key declared in 'public_key'
+  field must be present in domain records. Otherwise, registration will be
+  denied.
+  Value must be a valid NeoFS NNS domain name. Note that if this attribute
+  is absent, this check is not carried out.
 
 For detailed description of each well-known attribute please see the
 corresponding section in NeoFS Technical Specification.
@@ -242,7 +296,7 @@ storage policy definition languages.
 | container_backup_factor | uint32 | Container backup factor controls how deep NeoFS will search for nodes alternatives to include into container's nodes subset |
 | selectors | Selector | Set of Selectors to form the container's nodes subset |
 | filters | Filter | List of named filters to reference in selectors |
-| subnet_id | SubnetID | Subnetwork ID to select nodes from. Zero subnet (default) represents all of the nodes which didn't explicitly opt out of membership. |
+| subnet_id | SubnetID | DEPRECATED. Was used for subnetwork ID to select nodes from, currently ignored. |
    
 ### Message Replica
 
@@ -289,6 +343,7 @@ Represents the enumeration of various states of the NeoFS node.
 | 0 | UNSPECIFIED | Unknown state |
 | 1 | ONLINE | Active state in the network |
 | 2 | OFFLINE | Network unavailable state |
+| 3 | MAINTENANCE | Maintenance state |
 
 ### Emun Operation
 
