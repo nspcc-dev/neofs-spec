@@ -374,7 +374,26 @@ Get hash of object's payload part response body.
 | ----- | ---- | ----------- |
 | type | ChecksumType | Checksum algorithm type |
 | hash_list | bytes | List of range hashes in a binary format |
-                                             
+
+### Method Replicate
+
+Save replica of the object on the NeoFS storage node. Both client and
+server must authenticate NeoFS storage nodes matching storage policy of
+the container referenced by the replicated object. Thus, this operation is
+purely system: regular users should not pay attention to it but use Put.
+
+Statuses:
+- **OK** (0, SECTION_SUCCESS): \
+  the object has been successfully replicated;
+- **INTERNAL_SERVER_ERROR** (1024, SECTION_FAILURE_COMMON): \
+  internal server error described in the text message;
+- **ACCESS_DENIED** (2048, SECTION_OBJECT): \
+  the client does not authenticate any NeoFS storage node matching storage
+  policy of the container referenced by the replicated object
+- **CONTAINER_NOT_FOUND** (3072, SECTION_CONTAINER): \
+  the container to which the replicated object is associated was not found.
+
+
 ### Message GetResponse.Body.Init
 
 Initial part of the `Object` structure stream. Technically it's a
