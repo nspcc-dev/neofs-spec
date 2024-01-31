@@ -117,7 +117,7 @@ update_api: update_api_v2
 
 .ONESHELL:
 update_contracts:
-	@for f in `find ${CONTRACTS_DIR} -mindepth 2 -maxdepth 2 -type f ! -path '*/nns/*' -name '*_contract.go'  -exec dirname {} \; | sort -u `;
+	@for f in `find ${CONTRACTS_DIR} -mindepth 3 -maxdepth 3 -type f ! -path '*/nns/*' -name 'contract.go'  -exec dirname {} \; | sort -u `;
 	do
 		echo "Documentation for $$(basename $$f)";
 		gomarkdoc --template-file file=templates/contracts-file.tmpl \
