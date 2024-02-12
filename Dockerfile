@@ -1,5 +1,5 @@
 FROM ubuntu:20.04
-MAINTAINER Stanislav Bogatyrev <stanislav@nspcc.ru>
+MAINTAINER NeoSPCC <info@nspcc.io>
 
 ENV DEBIAN_FRONTEND noninteractive
 
