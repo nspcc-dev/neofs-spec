@@ -143,7 +143,7 @@ Let us make an example. `Delete` and `Range` operations are likely to show undef
 | Base/Gen | PUT | DELETE | HEAD | RANGE | GET | HASH | SEARCH |
 |----------|:---:|:------:|:----:|:-----:|:---:|:----:|:------:|
 | PUT      | +   | -      | -    | -     | -   | -    | -      |
-| DELETE   | +   | -      | +    | -     | -   | -    | +      |
+| DELETE   | -   | -      | +    | -     | -   | -    | +      |
 | HEAD     | -   | -      | +    | -     | -   | -    | -      |
 | RANGE    | -   | -      | +    | +     | -   | -    | -      |
 | GET      | -   | -      | +    | -     | +   | -    | -      |
