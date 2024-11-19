@@ -9,14 +9,14 @@ NeoFS heavily relies on the Neo Blockchain and its features. This allows NeoFS n
 
 The \Gls{mainnet} hosts a NeoFS [Native Contract](https://medium.com/neo-smart-economy/native-contracts-in-neo-3-0-e786100abf6e) concerned with user deposits and withdrawals, network settings, and other maintenance operations such as listing the keys of trusted nodes.
 
-To simplify accounting operations, lessen Main Net burden, and reduce the overall network maintenance costs, NeoFS utilizes an N3-based [sidechain](https://en.wikipedia.org/wiki/Blockchain#Types). The NeoFS Sidechain runs Smart Contracts which control the NeoFS network structure, user settlements, balances, and other frequently changing data.
+To simplify accounting operations, lessen mainnet burden, and reduce the overall network maintenance costs, NeoFS utilizes an N3-based [sidechain](https://en.wikipedia.org/wiki/Blockchain#Types) aka "FS chain". FS chain runs smart contracts which control the NeoFS network structure, user settlements, balances, and other frequently changing data.
 
 There are two types of NeoFS nodes. They are Storage nodes and Inner Ring nodes.
 
-The first type is responsible for receiving data from a user, reliably storing it as required by the storage policy, and providing access to the data according to the applicable \glspl{acl}. Such storage nodes are coordinated with Smart Contracts from the Sidechain.
+The first type is responsible for receiving data from a user, reliably storing it as required by the storage policy, and providing access to the data according to the applicable \glspl{acl}. Such storage nodes are coordinated with smart contracts from the FS chain.
 
 The second type does not store user data. Inner Ring nodes monitor the NeoFS network health, aggregate Storage Nodes reputation ratings, and perform data
-auditing, issuing penalties and bounties depending on the audit results. Inner Ring nodes listen for both Main Net and Sidechain, providing a trusted and
+auditing, issuing penalties and bounties depending on the audit results. Inner Ring nodes listen for both mainnet and FS chain, providing a trusted and
 reliable way of data synchronization between the two Blockchains.
 
 Each Storage node in the system has a set of key-value attributes describing node properties such as it's geographical location, reputation rating, number of replicas, number of nodes, presence of SSD drives, etc. Inner Ring nodes generate a Network Map --- a multi-graph structure which enables Storage nodes to be selected and grouped based on those attributes.

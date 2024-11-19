@@ -6,7 +6,7 @@ NeoFS solves this by using \Gls{acl} rules from the combination of sources:
 
 - Basic ACL in the container structure,
 - BearerToken ACL rules in the request,
-- Extended ACL rules in the SideChain smart contract.
+- Extended ACL rules in the FS chain smart contract.
 
 \Glspl{acl} specifies a set of actions that a particular user or a group of users can do with objects in the container. Each request coming through a storage node gets verified against those rules and rejected if the requests's action is not allowed.
 
@@ -74,13 +74,13 @@ Non-final -- Extended ACL can be set:
 
 ### Extended ACL
 
-Extended ACL is stored in the container smart contract in NeoFS Sidechain. This means it can be changed during container lifetime and there will be only one latest version of it in use. Only the container owner, or the bearer of a SessionToken with a Container context signed by the container owner, can change the Extended ACL rules. Since it is stored in a form of a stable serialized protobuf structure, eACL table can be only replaced with a new version, not altered or changed in-place in any way.
+Extended ACL is stored in the container smart contract in FS chain. This means it can be changed during container lifetime and there will be only one latest version of it in use. Only the container owner, or the bearer of a SessionToken with a Container context signed by the container owner, can change the Extended ACL rules. Since it is stored in a form of a stable serialized protobuf structure, eACL table can be only replaced with a new version, not altered or changed in-place in any way.
 
 Extended ACL can only specify Basic ACL rules and make them more restitutive, but it can never ease them. Extended ACL rules can never conflict with Basic ACL rules or cancel them. If something is denied at Basic ACL level, it can never be allowed again by eACL. If Basic ACL contains Allow, eACL may specify the rule to a finite list of allowed keys and Deny all others. If Basic ACL already contains Deny, eACL can do nothing. Deny in Basic ACL cannot be changed to Allow in eACL. Therefore, the records with denied `GET`, `GETRANGE`, `PUT`, `SEARCH`, `HEAD` for `System` target must be ignored. This reduces to ignoring any `System` target rules.
 
 When a user creates a container with the F-bit of Basic ACL set to 0, they do not need to settle the rules immediately. For a non-existing Extended ACL request, Container contract will return a null byte array. It will be interpreted as a table with no rules.
 
-To get the latest eACL version, a Storage Node needs to request it via RPC from the SideChain node. If an eACL can't be retrieved, the access permissions check fails.
+To get the latest eACL version, a Storage Node needs to request it via RPC from the FS chain node. If an eACL can't be retrieved, the access permissions check fails.
 
 Extended ACL rules get processed on-by-one, from the beginning of the table, based on the request operation, until matching the rule found. It means that there is no separate rule for setting denying or allowing policy. Final fallback rules must be provided by the user, if needed.
 

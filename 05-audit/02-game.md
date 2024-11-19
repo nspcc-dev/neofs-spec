@@ -11,7 +11,7 @@ At the second stage, it is necessary to make sure nodes are honest and do not fa
 
 Combining the fact of nodes being able to reconstruct the Storage Group's composite hash and the fact of nodes honest behavior, the system can consider that the data is safely stored, not corrupted, and available with a high probability.
 
-In the case of a successful data audit result, the Inner Ring nodes initiate microtransactions between the accounts of the data owner and the owner of the storage node invoking the smart contract in the NeoFS N3 Sidechain.
+In the case of a successful data audit result, the Inner Ring nodes initiate microtransactions between the accounts of the data owner and the owner of the storage node invoking the smart contract in the FS chain.
 
 ![Data Audit](pic/1.png)
 
@@ -19,7 +19,7 @@ In the case of a successful data audit result, the Inner Ring nodes initiate mic
 
 InnerRing nodes select containers to audit from a list of all containers in the network, forming a ring of containers and taking an offset shackle with its number among InnerRing nodes and by audit number.
 
-Each epoch, Inner Ring node performs data audit. One audit task is a one storage group to check. Storage groups from one container get merged into a single audit result structure that will be saved in the Audit smart contract in NeoFS Sidechain.
+Each epoch, Inner Ring node performs data audit. One audit task is a one storage group to check. Storage groups from one container get merged into a single audit result structure that will be saved in the Audit smart contract in FS chain.
 
 Upon each new Epoch notification, Inner Ring node must:
 
