@@ -139,19 +139,19 @@ Count MUST NOT be negative.
 ##### UpdateState
 
 ```go
-func UpdateState(state NodeState, publicKey interop.PublicKey)
+func UpdateState(state nodestate.Type, publicKey interop.PublicKey)
 ```
 
 UpdateState proposes a new state of candidate for the next\-epoch network map. The candidate is identified by the given public key. Call transaction MUST be signed by the provided public key, i.e. by node itself. If the signature is correct, the Notary service will submit a request for signature by the NeoFS Alphabet. After collecting a sufficient number of signatures, the candidate's state will be switched to the given one \('UpdateStateSuccess' notification is thrown after that\).
 
-UpdateState panics if requested candidate is missing in the current candidate set. UpdateState drops candidate from the candidate set if it is switched to NodeStateOffline.
+UpdateState panics if requested candidate is missing in the current candidate set. UpdateState drops candidate from the candidate set if it is switched to \[nodestate.Offline\].
 
-State MUST be from the NodeState enum. Public key MUST be interop.PublicKeyCompressedLen bytes.
+State MUST be from the \[nodestate.Type\] enum. Public key MUST be interop.PublicKeyCompressedLen bytes.
 
 ##### UpdateStateIR
 
 ```go
-func UpdateStateIR(state NodeState, publicKey interop.PublicKey)
+func UpdateStateIR(state nodestate.Type, publicKey interop.PublicKey)
 ```
 
 UpdateStateIR is called by the NeoFS Alphabet instead of UpdateState when signature of the network candidate is inaccessible. In such cases, a new transaction will be required and therefore the candidate's signature is not verified by UpdateStateIR. Besides this, the behavior is similar.
