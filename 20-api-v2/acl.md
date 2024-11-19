@@ -30,6 +30,7 @@ owner with additional information preventing token abuse.
 | eacl_table | EACLTable | Table of Extended ACL rules to use instead of the ones attached to the container. If it contains `container_id` field, bearer token is only valid for this specific container. Otherwise, any container of the same owner is allowed. |
 | owner_id | OwnerID | `OwnerID` defines to whom the token was issued. It must match the request originator's `OwnerID`. If empty, any token bearer will be accepted. |
 | lifetime | TokenLifetime | Token expiration and valid time period parameters |
+| issuer | OwnerID | Token issuer's user ID in NeoFS. It must equal to the related container's owner. |
    
 ### Message BearerToken.Body.TokenLifetime
 
@@ -57,9 +58,14 @@ Describes a single eACL rule.
 
 Filter to check particular properties of the request or the object.
 
+The `value` field must be empty if `match_type` is an unary operator
+(e.g. `NOT_PRESENT`). If `match_type` field is numeric (e.g. `NUM_GT`),
+the `value` field must be a base-10 integer.
+
 By default `key` field refers to the corresponding object's `Attribute`.
 Some Object's header fields can also be accessed by adding `$Object:`
-prefix to the name. Here is the list of fields available via this prefix:
+prefix to the name. For such attributes, field 'match_type' must not be
+'NOT_PRESENT'. Here is the list of fields available via this prefix:
 
 * $Object:version \
   version
@@ -79,6 +85,9 @@ prefix to the name. Here is the list of fields available via this prefix:
   object_type
 * $Object:homomorphicHash \
   homomorphic_hash
+
+Numeric `match_type` field can only be used with `$Object:creationEpoch`
+and `$Object:payloadLength` system attributes.
 
 Please note, that if request or response does not have object's headers of
 full object (Range, RangeHash, Search, Delete), it will not be possible to
@@ -147,6 +156,11 @@ MatchType is an enumeration of match types.
 | 0 | MATCH_TYPE_UNSPECIFIED | Unspecified match type, default value. |
 | 1 | STRING_EQUAL | Return true if strings are equal |
 | 2 | STRING_NOT_EQUAL | Return true if strings are different |
+| 3 | NOT_PRESENT | Absence of attribute |
+| 4 | NUM_GT | Numeric 'greater than' |
+| 5 | NUM_GE | Numeric 'greater or equal than' |
+| 6 | NUM_LT | Numeric 'less than' |
+| 7 | NUM_LE | Numeric 'less or equal than' |
 
 ### Emun Operation
 

@@ -1,6 +1,6 @@
 ## Data storage payments
 
-Data storage payments are made once an epoch. Epochs are measured in sidechain blocks and can change their duration against real time. Thus, estimated profit and expense for an hour, week or month may vary depending on epoch duration. Payment operations are not specified in the protocol. Storage node owners should check payment details themselves and delete unpaid data if they want to free some storage space.
+Data storage payments are made once an epoch. Epochs are measured in FS chain blocks and can change their duration against real time. Thus, estimated profit and expense for an hour, week or month may vary depending on epoch duration. Payment operations are not specified in the protocol. Storage node owners should check payment details themselves and delete unpaid data if they want to free some storage space.
 
 Data storage payments are also made in two steps: 
 

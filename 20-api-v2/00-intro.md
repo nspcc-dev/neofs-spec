@@ -17,7 +17,7 @@ popular, simple, and time-tested tools relevant for most languages and
 platforms. Although gRPC is used now, we have everything to transfer structures
 through other protocols, e.g. JSON-RPC.
 
-The API described below corresponds to the [version 2.15.0](https://github.com/nspcc-dev/neofs-api/releases/tag/v2.15.0).
+The API described below corresponds to the [version 2.16.0](https://github.com/nspcc-dev/neofs-api/releases/tag/v2.16.0).
 
 ## Nodes and their identification
 
@@ -49,7 +49,7 @@ it happens in Neo 3.0.
 
 NeoFS is a peer-to-peer network, which means that the clients are equal and each
 of them needs a pair of asymmetric keys. To create a container and place an
-object, one should have \Gls{GAS} on NeoFS sidechain internal balance. When a
+object, one should have \Gls{GAS} on FS chain internal balance. When a
 user makes a deposit from his NEO Wallet, operations of container creation and
 object placement should be carried out with the same key (if no other keys have
 been associated with that OwnerID).

@@ -5,7 +5,7 @@ start
 
 /' Initial phase. Check if there is a need to change anything. '/
 
-:Take inactive list from  sidechain Netmap contract;
+:Take inactive list from FS chain Netmap contract;
 
 if (Are there inactive nodes in active IR list or need to change IR number?) then (yes)
 else (no)

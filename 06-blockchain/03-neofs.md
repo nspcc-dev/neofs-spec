@@ -125,7 +125,7 @@ This method is used in notary disabled sidechain environment. In this case, the 
 ##### Bind
 
 ```go
-func Bind(user []byte, keys []interop.PublicKey)
+func Bind(user interop.Hash160, keys []interop.PublicKey)
 ```
 
 Bind method produces notification to bind the specified public keys in NeoFSID contract in the sidechain. It can be invoked only by specified user.
@@ -197,7 +197,7 @@ SetConfig key\-value pair as a NeoFS runtime configuration value. It can be invo
 ##### Unbind
 
 ```go
-func Unbind(user []byte, keys []interop.PublicKey)
+func Unbind(user interop.Hash160, keys []interop.PublicKey)
 ```
 
 Unbind method produces notification to unbind the specified public keys in NeoFSID contract in the sidechain. It can be invoked only by the specified user.

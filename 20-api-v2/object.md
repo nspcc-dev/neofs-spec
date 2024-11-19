@@ -20,11 +20,11 @@ keeping the receiving order.
 Extended headers can change `Get` behaviour:
 * __NEOFS__NETMAP_EPOCH \
   Will use the requsted version of Network Map for object placement
-  calculation.
+  calculation. DEPRECATED: header ignored by servers.
 * __NEOFS__NETMAP_LOOKUP_DEPTH \
   Will try older versions (starting from `__NEOFS__NETMAP_EPOCH` if specified or
   the latest one otherwise) of Network Map to find an object until the depth
-  limit is reached.
+  limit is reached. DEPRECATED: header ignored by servers.
 
 Please refer to detailed `XHeader` description.
 
@@ -53,7 +53,7 @@ GET Object request body
 | ----- | ---- | ----------- |
 | address | Address | Address of the requested object |
 | raw | bool | If `raw` flag is set, request will work only with objects that are physically stored on the peer node |
-                                      
+                                        
 
 __Response Body__ GetResponse.Body
 
@@ -64,7 +64,7 @@ GET Object Response body
 | init | Init | Initial part of the object stream |
 | chunk | bytes | Chunked object payload |
 | split_info | SplitInfo | Meta information of split hierarchy for object assembly. |
-                     
+                       
 ### Method Put
 
 Put the object into container. Request uses gRPC stream. First message
@@ -77,7 +77,7 @@ Chunk messages SHOULD be sent in the direct order of fragmentation.
 Extended headers can change `Put` behaviour:
 * __NEOFS__NETMAP_EPOCH \
   Will use the requsted version of Network Map for object placement
-  calculation.
+  calculation. DEPRECATED: header ignored by servers.
 
 Please refer to detailed `XHeader` description.
 
@@ -111,7 +111,7 @@ PUT request body
 | ----- | ---- | ----------- |
 | init | Init | Initial part of the object stream |
 | chunk | bytes | Chunked object payload |
-                                       
+                                         
 
 __Response Body__ PutResponse.Body
 
@@ -120,7 +120,7 @@ PUT Object response body
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 | object_id | ObjectID | Identifier of the saved object |
-          
+            
 ### Method Delete
 
 Delete the object from a container. There is no immediate removal
@@ -129,7 +129,7 @@ guarantee. Object will be marked for removal and deleted eventually.
 Extended headers can change `Delete` behaviour:
 * __NEOFS__NETMAP_EPOCH \
   Will use the requsted version of Network Map for object placement
-  calculation.
+  calculation. DEPRECATED: header ignored by servers.
 
 Please refer to detailed `XHeader` description.
 
@@ -155,7 +155,7 @@ Object DELETE request body
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 | address | Address | Address of the object to be deleted |
-                                      
+                                        
 
 __Response Body__ DeleteResponse.Body
 
@@ -164,7 +164,7 @@ Object DELETE Response has an empty body.
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 | tombstone | Address | Address of the tombstone created for the deleted object |
-                                 
+                                   
 ### Method Head
 
 Returns the object Headers without data payload. By default full header is
@@ -204,7 +204,7 @@ Object HEAD request body
 | address | Address | Address of the object with the requested Header |
 | main_only | bool | Return only minimal header subset |
 | raw | bool | If `raw` flag is set, request will work only with objects that are physically stored on the peer node |
-                                      
+                                        
 
 __Response Body__ HeadResponse.Body
 
@@ -215,7 +215,7 @@ Object HEAD response body
 | header | HeaderWithSignature | Full object's `Header` with `ObjectID` signature |
 | short_header | ShortHeader | Short object header |
 | split_info | SplitInfo | Meta information of split hierarchy. |
-                
+                  
 ### Method Search
 
 Search objects in container. Search query allows to match by Object
@@ -240,7 +240,7 @@ Statuses:
 - **TOKEN_EXPIRED** (4097, SECTION_SESSION): \
   provided session token has expired.
 
-                             
+                               
 
 __Request Body:__ SearchRequest.Body
 
@@ -251,7 +251,7 @@ Object Search request body
 | container_id | ContainerID | Container identifier were to search |
 | version | uint32 | Version of the Query Language used |
 | filters | Filter | List of search expressions |
-                                       
+                                         
 
 __Response Body__ SearchResponse.Body
 
@@ -271,10 +271,10 @@ order.
 Extended headers can change `GetRange` behaviour:
 * __NEOFS__NETMAP_EPOCH \
   Will use the requsted version of Network Map for object placement
-  calculation.
+  calculation. DEPRECATED: header ignored by servers.
 * __NEOFS__NETMAP_LOOKUP_DEPTH \
   Will try older versions of Network Map to find an object until the depth
-  limit is reached.
+  limit is reached. DEPRECATED: header ignored by servers.
 
 Please refer to detailed `XHeader` description.
 
@@ -306,7 +306,7 @@ Byte range of object's payload request body
 | address | Address | Address of the object containing the requested payload range |
 | range | Range | Requested payload range |
 | raw | bool | If `raw` flag is set, request will work only with objects that are physically stored on the peer node. |
-                                      
+                                        
 
 __Response Body__ GetRangeResponse.Body
 
@@ -319,7 +319,7 @@ chunks.
 | ----- | ---- | ----------- |
 | chunk | bytes | Chunked object payload's range. |
 | split_info | SplitInfo | Meta information of split hierarchy. |
-                         
+                           
 ### Method GetRangeHash
 
 Returns homomorphic or regular hash of object's payload range after
@@ -330,10 +330,10 @@ the request. Note that hash is calculated for XORed data.
 Extended headers can change `GetRangeHash` behaviour:
 * __NEOFS__NETMAP_EPOCH \
   Will use the requsted version of Network Map for object placement
-  calculation.
+  calculation. DEPRECATED: header ignored by servers.
 * __NEOFS__NETMAP_LOOKUP_DEPTH \
   Will try older versions of Network Map to find an object until the depth
-  limit is reached.
+  limit is reached. DEPRECATED: header ignored by servers.
 
 Please refer to detailed `XHeader` description.
 
@@ -364,7 +364,7 @@ Get hash of object's payload part request body.
 | ranges | Range | List of object's payload ranges to calculate homomorphic hash |
 | salt | bytes | Binary salt to XOR object's payload ranges before hash calculation |
 | type | ChecksumType | Checksum algorithm type |
-                                      
+                                        
 
 __Response Body__ GetRangeHashResponse.Body
 
@@ -374,7 +374,7 @@ Get hash of object's payload part response body.
 | ----- | ---- | ----------- |
 | type | ChecksumType | Checksum algorithm type |
 | hash_list | bytes | List of range hashes in a binary format |
-
+                               
 ### Method Replicate
 
 Save replica of the object on the NeoFS storage node. Both client and
@@ -393,7 +393,7 @@ Statuses:
 - **CONTAINER_NOT_FOUND** (3072, SECTION_CONTAINER): \
   the container to which the replicated object is associated was not found.
 
-
+                                                                                        
 ### Message GetResponse.Body.Init
 
 Initial part of the `Object` structure stream. Technically it's a
@@ -429,7 +429,7 @@ are not set, they will be calculated by a peer node.
 | ----- | ---- | ----------- |
 | object_id | ObjectID | ObjectID if available. |
 | signature | Signature | Object signature if available |
-| header | Header | Object's Header |
+| header | Header | Object's Header. The maximum length is 16KB. The only exclusion are replication requests, i.e. requests sent by container nodes with 'meta_header.ttl=1': for such cases the limit is 4MB. |
 | copies_number | uint32 | Number of the object copies to store within the RPC call. By default object is processed according to the container's placement policy. |
      
 ### Message Range
@@ -440,7 +440,7 @@ Object payload range. Ranges of zero length SHOULD be considered as invalid.
 | ----- | ---- | ----------- |
 | offset | uint64 | Offset of the range from the object payload start |
 | length | uint64 | Length in bytes of the object payload range |
-     
+       
 ### Message SearchRequest.Body.Filter
 
 Filter structure checks if the object header field or the attribute content
@@ -450,6 +450,9 @@ If no filters are set, search request will return all objects of the
 container, including Regular object, Tombstones and Storage Group
 objects. Most human users expect to get only object they can directly
 work with. In that case, `$Object:ROOT` filter should be used.
+
+If `match_type` field is numerical, both `value` field and object
+attribute MUST be base-10 integers.
 
 By default `key` field refers to the corresponding object's `Attribute`.
 Some Object's header fields can also be accessed by adding `$Object:`
@@ -477,6 +480,8 @@ prefix to the name. Here is the list of fields available via this prefix:
   object_id of parent
 * $Object:split.splitID \
   16 byte UUIDv4 used to identify the split object hierarchy parts
+* $Object:split.first \
+  object_id of the first part in split chain; non-acceptable for deprecated V1 split scheme
 
 There are some well-known filter aliases to match objects by certain
 properties:
@@ -519,7 +524,7 @@ Object Header
 | object_type | ObjectType | Type of the object payload content |
 | homomorphic_hash | Checksum | Homomorphic hash of the object payload |
 | session_token | SessionToken | Session token, if it was used during Object creation. Need it to verify integrity and authenticity out of Request scope. |
-| attributes | Attribute | User-defined object attributes |
+| attributes | Attribute | User-defined object attributes. Attributes vary in length from object to object, so keep an eye on the entire Header limit depending on the context. |
 | split | Split | Position of the object in the split hierarchy |
    
 ### Message Header.Attribute
@@ -540,9 +545,11 @@ that affect system behaviour:
   Decimal number that defines what epoch must produce
   object notification with UTF-8 object address in a
   body (`0` value produces notification right after
-  object put)
+  object put).
+  DEPRECATED: attribute ignored by servers.
 * __NEOFS__TICK_TOPIC \
-  UTF-8 string topic ID that is used for object notification
+  UTF-8 string topic ID that is used for object notification.
+  DEPRECATED: attribute ignored by servers.
 
 And some well-known attributes used by applications only:
 
@@ -583,8 +590,9 @@ must be within the same container.
 | previous | ObjectID | Identifier of the left split neighbor |
 | parent_signature | Signature | `signature` field of the parent object. Used to reconstruct parent. |
 | parent_header | Header | `header` field of the parent object. Used to reconstruct parent. |
-| children | ObjectID | List of identifiers of the objects generated by splitting current one. |
-| split_id | bytes | 16 byte UUIDv4 used to identify the split object hierarchy parts. Must be unique inside container. All objects participating in the split must have the same `split_id` value. |
+| children | ObjectID | DEPRECATED. Was used before creating the separate LINK object type. Keep child objects list in the LINK object's payload. List of identifiers of the objects generated by splitting current one. |
+| split_id | bytes | DEPRECATED. Was used as an identifier of a split chain. Use the first part ID instead. 16 byte UUIDv4 used to identify the split object hierarchy parts. Must be unique inside container. All objects participating in the split must have the same `split_id` value. |
+| first | ObjectID | Identifier of the first part of the origin object. Known to all the split parts except the first one. Identifies the split and allows to differ them. |
    
 ### Message Object
 
@@ -625,9 +633,10 @@ right from the object parts.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| split_id | bytes | 16 byte UUID used to identify the split object hierarchy parts. |
+| split_id | bytes | DEPRECATED. Was used as an identifier of a split chain. Use the first part ID instead. 16 byte UUID used to identify the split object hierarchy parts. |
 | last_part | ObjectID | The identifier of the last object in split hierarchy parts. It contains split header with the original object header. |
 | link | ObjectID | The identifier of a linking object for split hierarchy parts. It contains split header with the original object header and a sorted list of object parts. |
+| first_part | ObjectID | Identifier of the first part of the origin object. Known to all the split parts except the first one. Identifies the split and allows to differ them. |
     
 ### Emun MatchType
 
@@ -640,6 +649,10 @@ Type of match expression
 | 2 | STRING_NOT_EQUAL | Full string mismatch |
 | 3 | NOT_PRESENT | Lack of key |
 | 4 | COMMON_PREFIX | String prefix match |
+| 5 | NUM_GT | Numerical 'greater than' |
+| 6 | NUM_GE | Numerical 'greater or equal than' |
+| 7 | NUM_LT | Numerical 'less than' |
+| 8 | NUM_LE | Numerical 'less or equal than' |
 
 ### Emun ObjectType
 
@@ -652,6 +665,7 @@ String presentation of object type is the same as definition:
 * TOMBSTONE
 * STORAGE_GROUP
 * LOCK
+* LINK
 
 | Number | Name | Description |
 | ------ | ---- | ----------- |
@@ -659,4 +673,5 @@ String presentation of object type is the same as definition:
 | 1 | TOMBSTONE | Used internally to identify deleted objects |
 | 2 | STORAGE_GROUP | StorageGroup information |
 | 3 | LOCK | Object lock |
+| 4 | LINK | Object that stores child object IDs for the split objects. |
  
