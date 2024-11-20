@@ -29,7 +29,7 @@ jobs:
 
       - name: Publish to NeoFS
         id: publish_spec_pdf_to_neofs
-        uses: nspcc-dev/gh-push-to-neofs@v0.1.2
+        uses: nspcc-dev/gh-push-to-neofs@v0.3.0
         with:
           NEOFS_WALLET: ${{ secrets.NEOFS_WALLET }}
           NEOFS_WALLET_PASSWORD: ${{ secrets.NEOFS_WALLET_PASSWORD }}
