@@ -39,8 +39,8 @@ Lifetime parameters of the token. Field names taken from
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| exp | uint64 | Expiration Epoch |
-| nbf | uint64 | Not valid before Epoch |
+| exp | uint64 | Expiration epoch, the last epoch when token is valid. |
+| nbf | uint64 | Not valid before epoch, the first epoch when token is valid. |
 | iat | uint64 | Issued at Epoch |
    
 ### Message EACLRecord
@@ -110,7 +110,7 @@ keys to match.
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 | role | Role | Target subject's role class |
-| keys | bytes | List of public keys to identify target subject |
+| keys | bytes | List of 25-byte accounts to identify target subjects. 33-byte public keys are also supported, however, they are deprecated and script hashes should be derived from them. |
    
 ### Message EACLTable
 

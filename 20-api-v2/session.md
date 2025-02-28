@@ -28,7 +28,7 @@ Session creation request body
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 | owner_id | OwnerID | Session initiating user's or node's key derived `OwnerID` |
-| expiration | uint64 | Session expiration `Epoch` |
+| expiration | uint64 | Session expiration epoch, the last epoch when session is valid. |
          
 
 __Response Body__ CreateResponse.Body
@@ -147,8 +147,8 @@ Lifetime parameters of the token. Field names taken from rfc7519.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| exp | uint64 | Expiration Epoch |
-| nbf | uint64 | Not valid before Epoch |
+| exp | uint64 | Expiration epoch, the last epoch when token is valid. |
+| nbf | uint64 | Not valid before epoch, the first epoch when token is valid. |
 | iat | uint64 | Issued at Epoch |
    
 ### Message XHeader
