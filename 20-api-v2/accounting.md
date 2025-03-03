@@ -4,7 +4,7 @@
 
 ### Service "AccountingService"
 
-Accounting service provides methods for interaction with NeoFS sidechain via
+Accounting service provides methods for interaction with FS chain via
 other NeoFS nodes to get information about the account balance. Deposit and
 Withdraw operations can't be implemented here, as they require Mainnet NeoFS
 smart contract invocation. Transfer operations between internal NeoFS
@@ -25,7 +25,7 @@ balance has been successfully read;
 __Request Body:__ BalanceRequest.Body
 
 To indicate the account for which the balance is requested, its identifier
-is used. It can be any existing account in NeoFS sidechain `Balance` smart
+is used. It can be any existing account in FS chain `Balance` smart
 contract. If omitted, client implementation MUST set it to the request's
 signer `OwnerID`.
 

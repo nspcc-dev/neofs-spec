@@ -5,14 +5,14 @@
 ### Service "NetmapService"
 
 `NetmapService` provides methods to work with `Network Map` and the information
-required to build it. The resulting `Network Map` is stored in sidechain
+required to build it. The resulting `Network Map` is stored in FS chain
 `Netmap` smart contract, while related information can be obtained from other
 NeoFS nodes.
 
 
 ### Method LocalNodeInfo
 
-Get NodeInfo structure from the particular node directly. 
+Get NodeInfo structure from the particular node directly.
 Node information can be taken from `Netmap` smart contract. In some cases, though,
 one may want to get recent information directly or to talk to the node not yet
 present in the `Network Map` to find out what API version can be used for
@@ -146,7 +146,7 @@ System parameters:
   Number of EigenTrust algorithm iterations to pass in the Reputation system.
   Value: little-endian integer. Default: 0.
 - **EpochDuration** \
-  NeoFS epoch duration measured in Sidechain blocks.
+  NeoFS epoch duration measured in FS chain blocks.
   Value: little-endian integer. Default: 0.
 - **HomomorphicHashingDisabled** \
   Flag of disabling the homomorphic hashing of objects' payload.
@@ -166,7 +166,7 @@ System parameters:
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| key | bytes | Parameter key. UTF-8 encoded string |
+| key | bytes | Parameter key. UTF-8 encoded string (with no zero bytes). |
 | value | bytes | Parameter value |
    
 ### Message NetworkInfo
@@ -176,8 +176,8 @@ Information about NeoFS network
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 | current_epoch | uint64 | Number of the current epoch in the NeoFS network |
-| magic_number | uint64 | Magic number of the sidechain of the NeoFS network |
-| ms_per_block | int64 | MillisecondsPerBlock network parameter of the sidechain of the NeoFS network |
+| magic_number | uint64 | Magic number of FS chain of the NeoFS network |
+| ms_per_block | int64 | MillisecondsPerBlock network parameter of FS chain of the NeoFS network |
 | network_config | NetworkConfig | NeoFS network configuration |
    
 ### Message NodeInfo
@@ -188,7 +188,7 @@ NeoFS node description
 | ----- | ---- | ----------- |
 | public_key | bytes | Public key of the NeoFS node in a binary format |
 | addresses | string | Ways to connect to a node |
-| attributes | Attribute | Carries list of the NeoFS node attributes in a key-value form. Key name must be a node-unique valid UTF-8 string. Value can't be empty. NodeInfo structures with duplicated attribute names or attributes with empty values will be considered invalid. |
+| attributes | Attribute | Carries list of the NeoFS node attributes in a key-value form. Key name must be a node-unique valid UTF-8 string (without zero bytes). Value can't be empty. NodeInfo structures with duplicated attribute names or attributes with empty values will be considered invalid. |
 | state | State | Carries state of the NeoFS node |
    
 ### Message NodeInfo.Attribute
@@ -196,7 +196,7 @@ NeoFS node description
 Administrator-defined Attributes of the NeoFS Storage Node.
 
 `Attribute` is a Key-Value metadata pair. Key name must be a valid UTF-8
-string. Value can't be empty.
+string (without zero bytes that are forbidden). Value can't be empty.
 
 Attributes can be constructed into a chain of attributes: any attribute can
 have a parent attribute and a child attribute (except the first and the last
@@ -292,8 +292,8 @@ storage policy definition languages.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| replicas | Replica | Rules to set number of object replicas and place each one into a named bucket |
-| container_backup_factor | uint32 | Container backup factor controls how deep NeoFS will search for nodes alternatives to include into container's nodes subset |
+| replicas | Replica | Rules to set number of object replicas and place each one into a named bucket. Limited to 256 items. |
+| container_backup_factor | uint32 | Container backup factor (CBF) controls how deep NeoFS will search for alternative nodes to include into container's nodes subset. In total, the number of container nodes is Selector (used by Replica) count times CBF. This number is limited to 64 per-Replica and 512 overall. |
 | selectors | Selector | Set of Selectors to form the container's nodes subset |
 | filters | Filter | List of named filters to reference in selectors |
 | subnet_id | SubnetID | DEPRECATED. Was used for subnetwork ID to select nodes from, currently ignored. |
@@ -306,7 +306,7 @@ default.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| count | uint32 | How many object replicas to put |
+| count | uint32 | How many object replicas to put. Limited to 8. |
 | selector | string | Named selector bucket to put replicas |
    
 ### Message Selector

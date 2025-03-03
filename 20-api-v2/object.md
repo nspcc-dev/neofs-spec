@@ -5,7 +5,7 @@
 ### Service "ObjectService"
 
 `ObjectService` provides API for manipulating objects. Object operations do
-not affect the sidechain and are only served by nodes in p2p style.
+not affect FS chain and are only served by nodes in P2P style.
 
 
 ### Method Get
@@ -53,7 +53,7 @@ GET Object request body
 | ----- | ---- | ----------- |
 | address | Address | Address of the requested object |
 | raw | bool | If `raw` flag is set, request will work only with objects that are physically stored on the peer node |
-                                        
+                                            
 
 __Response Body__ GetResponse.Body
 
@@ -64,7 +64,7 @@ GET Object Response body
 | init | Init | Initial part of the object stream |
 | chunk | bytes | Chunked object payload |
 | split_info | SplitInfo | Meta information of split hierarchy for object assembly. |
-                       
+                           
 ### Method Put
 
 Put the object into container. Request uses gRPC stream. First message
@@ -111,7 +111,7 @@ PUT request body
 | ----- | ---- | ----------- |
 | init | Init | Initial part of the object stream |
 | chunk | bytes | Chunked object payload |
-                                         
+                                             
 
 __Response Body__ PutResponse.Body
 
@@ -120,11 +120,13 @@ PUT Object response body
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 | object_id | ObjectID | Identifier of the saved object |
-            
+                
 ### Method Delete
 
 Delete the object from a container. There is no immediate removal
 guarantee. Object will be marked for removal and deleted eventually.
+Notice that some types of objects (see ObjectType) can not be removed,
+currently it's Tombstone and Lock.
 
 Extended headers can change `Delete` behaviour:
 * __NEOFS__NETMAP_EPOCH \
@@ -155,7 +157,7 @@ Object DELETE request body
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 | address | Address | Address of the object to be deleted |
-                                        
+                                            
 
 __Response Body__ DeleteResponse.Body
 
@@ -164,7 +166,7 @@ Object DELETE Response has an empty body.
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 | tombstone | Address | Address of the tombstone created for the deleted object |
-                                   
+                                       
 ### Method Head
 
 Returns the object Headers without data payload. By default full header is
@@ -204,7 +206,7 @@ Object HEAD request body
 | address | Address | Address of the object with the requested Header |
 | main_only | bool | Return only minimal header subset |
 | raw | bool | If `raw` flag is set, request will work only with objects that are physically stored on the peer node |
-                                        
+                                            
 
 __Response Body__ HeadResponse.Body
 
@@ -215,12 +217,14 @@ Object HEAD response body
 | header | HeaderWithSignature | Full object's `Header` with `ObjectID` signature |
 | short_header | ShortHeader | Short object header |
 | split_info | SplitInfo | Meta information of split hierarchy. |
-                  
+                      
 ### Method Search
 
 Search objects in container. Search query allows to match by Object
 Header's filed values. Please see the corresponding NeoFS Technical
 Specification section for more details.
+
+DEPRECATED: please use SearchV2.
 
 Extended headers can change `Search` behaviour:
 * __NEOFS__NETMAP_EPOCH \
@@ -250,8 +254,8 @@ Object Search request body
 | ----- | ---- | ----------- |
 | container_id | ContainerID | Container identifier were to search |
 | version | uint32 | Version of the Query Language used |
-| filters | Filter | List of search expressions |
-                                         
+| filters | SearchFilter | List of search expressions |
+                                            
 
 __Response Body__ SearchResponse.Body
 
@@ -260,7 +264,42 @@ Object Search response body
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 | id_list | ObjectID | List of `ObjectID`s that match the search query |
-    
+         
+### Method SearchV2
+
+Search for objects in a container. Similar to Search, but:
+* sorted
+* limited in amount of returned data
+* single message
+* allows for additional header fields to be returned
+
+Result is ordered by the 1st requested attribute (if any) and object ID.
+
+                                   
+
+__Request Body:__ SearchV2Request.Body
+
+Object Search request body
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| container_id | ContainerID | Container where the search is being performed. |
+| version | uint32 | Version of the Query Language used. |
+| filters | SearchFilter | List of search expressions. Limited to 8. If additional attributes are requested (see attributes below) then the first filter's key MUST be the first requested attribute. '$Object:containerID' and '$Object:objectID' filters are prohibited. Numeric filters' values MUST be in range [-MaxUint256, MaxUint256]. |
+| cursor | string | Cursor to continue search. Can be omitted or empty for the new search. |
+| count | uint32 | Limits the number of responses to the specified number. Can't be more than 1000. |
+| attributes | string | List of attribute names (including special ones as defined by SearchFilter key) to include into the reply. Limited to 8, these attributes also affect result ordering (result is ordered by the 1st one and then by OID). If additional attributes are requested, then the first filter's key (see filters above) MUST be the first requested attribute. '$Object:containerID' and '$Object:objectID' attributes are prohibited. |
+                                            
+
+__Response Body__ SearchV2Response.Body
+
+Main result structure.
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| result | OIDWithMeta | List of object IDs with additional requested attributes. |
+| cursor | string | Cursor that can be used for subsequent requests. For users it's an opaque string that is omitted or empty when there are no more results to list. For nodes to interoperate this is defined as the latest OID for queries without filters and primary (first) attribute value plus OID. Values are encoded in base64. |
+     
 ### Method GetRange
 
 Get byte range of data payload. Range is set as an (offset, length) tuple.
@@ -306,7 +345,7 @@ Byte range of object's payload request body
 | address | Address | Address of the object containing the requested payload range |
 | range | Range | Requested payload range |
 | raw | bool | If `raw` flag is set, request will work only with objects that are physically stored on the peer node. |
-                                        
+                                            
 
 __Response Body__ GetRangeResponse.Body
 
@@ -319,7 +358,7 @@ chunks.
 | ----- | ---- | ----------- |
 | chunk | bytes | Chunked object payload's range. |
 | split_info | SplitInfo | Meta information of split hierarchy. |
-                           
+                               
 ### Method GetRangeHash
 
 Returns homomorphic or regular hash of object's payload range after
@@ -364,7 +403,7 @@ Get hash of object's payload part request body.
 | ranges | Range | List of object's payload ranges to calculate homomorphic hash |
 | salt | bytes | Binary salt to XOR object's payload ranges before hash calculation |
 | type | ChecksumType | Checksum algorithm type |
-                                        
+                                            
 
 __Response Body__ GetRangeHashResponse.Body
 
@@ -374,7 +413,7 @@ Get hash of object's payload part response body.
 | ----- | ---- | ----------- |
 | type | ChecksumType | Checksum algorithm type |
 | hash_list | bytes | List of range hashes in a binary format |
-                               
+                                   
 ### Method Replicate
 
 Save replica of the object on the NeoFS storage node. Both client and
@@ -393,7 +432,7 @@ Statuses:
 - **CONTAINER_NOT_FOUND** (3072, SECTION_CONTAINER): \
   the container to which the replicated object is associated was not found.
 
-                                                                                        
+                                                                                                
 ### Message GetResponse.Body.Init
 
 Initial part of the `Object` structure stream. Technically it's a
@@ -434,81 +473,24 @@ are not set, they will be calculated by a peer node.
      
 ### Message Range
 
-Object payload range. Ranges of zero length SHOULD be considered as invalid.
+Object payload range. Ranges of zero length SHOULD be considered as invalid
+except for the special 0:0 request which is interpreted as "get whole
+payload" and allows to receive payload only when its size is not known.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 | offset | uint64 | Offset of the range from the object payload start |
 | length | uint64 | Length in bytes of the object payload range |
-       
-### Message SearchRequest.Body.Filter
+             
+### Message SearchV2Response.OIDWithMeta
 
-Filter structure checks if the object header field or the attribute content
-matches a value.
-
-If no filters are set, search request will return all objects of the
-container, including Regular object, Tombstones and Storage Group
-objects. Most human users expect to get only object they can directly
-work with. In that case, `$Object:ROOT` filter should be used.
-
-If `match_type` field is numerical, both `value` field and object
-attribute MUST be base-10 integers.
-
-By default `key` field refers to the corresponding object's `Attribute`.
-Some Object's header fields can also be accessed by adding `$Object:`
-prefix to the name. Here is the list of fields available via this prefix:
-
-* $Object:version \
-  version
-* $Object:objectID \
-  object_id
-* $Object:containerID \
-  container_id
-* $Object:ownerID \
-  owner_id
-* $Object:creationEpoch \
-  creation_epoch
-* $Object:payloadLength \
-  payload_length
-* $Object:payloadHash \
-  payload_hash
-* $Object:objectType \
-  object_type
-* $Object:homomorphicHash \
-  homomorphic_hash
-* $Object:split.parent \
-  object_id of parent
-* $Object:split.splitID \
-  16 byte UUIDv4 used to identify the split object hierarchy parts
-* $Object:split.first \
-  object_id of the first part in split chain; non-acceptable for deprecated V1 split scheme
-
-There are some well-known filter aliases to match objects by certain
-properties:
-
-* $Object:ROOT \
-  Returns only `REGULAR` type objects that are not split or that are the top
-  level root objects in a split hierarchy. This includes objects not
-  present physically, like large objects split into smaller objects
-  without a separate top-level root object. Objects of other types like
-  StorageGroups and Tombstones will not be shown. This filter may be
-  useful for listing objects like `ls` command of some virtual file
-  system. This filter is activated if the `key` exists, disregarding the
-  value and matcher type.
-* $Object:PHY \
-  Returns only objects physically stored in the system. This filter is
-  activated if the `key` exists, disregarding the value and matcher type.
-
-Note: using filters with a key with prefix `$Object:` and match type
-`NOT_PRESENT `is not recommended since this is not a cross-version approach.
-Behavior when processing this kind of filters is undefined.
+OID with additional requested metadata.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| match_type | MatchType | Match type to use |
-| key | string | Attribute or Header fields to match |
-| value | string | Value to match |
-       
+| id | ObjectID | Object ID that matches search criteria. |
+| attributes | string | List of attribute data from the respective object, fields strictly follow requested ones. |
+     
 ### Message Header
 
 Object Header
@@ -520,9 +502,9 @@ Object Header
 | owner_id | OwnerID | Object's owner |
 | creation_epoch | uint64 | Object creation Epoch |
 | payload_length | uint64 | Size of payload in bytes. `0xFFFFFFFFFFFFFFFF` means `payload_length` is unknown. |
-| payload_hash | Checksum | Hash of payload bytes |
+| payload_hash | Checksum | SHA256 hash of payload bytes |
 | object_type | ObjectType | Type of the object payload content |
-| homomorphic_hash | Checksum | Homomorphic hash of the object payload |
+| homomorphic_hash | Checksum | Homomorphic hash of the object payload (Tillich-Zemor). |
 | session_token | SessionToken | Session token, if it was used during Object creation. Need it to verify integrity and authenticity out of Request scope. |
 | attributes | Attribute | User-defined object attributes. Attributes vary in length from object to object, so keep an eye on the entire Header limit depending on the context. |
 | split | Split | Position of the object in the split hierarchy |
@@ -534,13 +516,15 @@ object.
 
 Key name must be an object-unique valid UTF-8 string. Value can't be empty.
 Objects with duplicated attribute names or attributes with empty values
-will be considered invalid.
+will be considered invalid. Keys and values can't contain zero bytes as
+well.
 
 There are some "well-known" attributes starting with `__NEOFS__` prefix
 that affect system behaviour:
 
 * __NEOFS__EXPIRATION_EPOCH \
-  Tells GC to delete object after that epoch
+  Tells GC to delete object after that epoch (but object is available
+  throughout the epoch specified in this attribute).
 * __NEOFS__TICK_EPOCH \
   Decimal number that defines what epoch must produce
   object notification with UTF-8 object address in a
@@ -610,6 +594,77 @@ in the header.
 | header | Header | Object metadata headers |
 | payload | bytes | Payload bytes |
    
+### Message SearchFilter
+
+Filter structure checks if the object header field or the attribute content
+matches a value.
+
+If no filters are set, search request will return all objects of the
+container, including Regular object, Tombstones and Storage Group
+objects. Most human users expect to get only object they can directly
+work with. In that case, `$Object:ROOT` filter should be used.
+
+If `match_type` field is numerical, both `value` field and object
+attribute MUST be base-10 integers.
+
+By default `key` field refers to the corresponding object's `Attribute`.
+Some Object's header fields can also be accessed by adding `$Object:`
+prefix to the name. Here is the list of fields available via this prefix:
+
+* $Object:version \
+  version
+* $Object:ownerID \
+  owner_id
+* $Object:creationEpoch \
+  creation_epoch
+* $Object:payloadLength \
+  payload_length
+* $Object:payloadHash \
+  payload_hash
+* $Object:objectType \
+  object_type
+* $Object:homomorphicHash \
+  homomorphic_hash
+* $Object:split.parent \
+  object_id of parent
+* $Object:split.splitID \
+  16 byte UUIDv4 used to identify the split object hierarchy parts
+* $Object:split.first \
+  object_id of the first part in split chain; non-acceptable for deprecated V1 split scheme
+
+There are some well-known filter aliases to match objects by certain
+properties:
+
+* $Object:ROOT \
+  Returns only `REGULAR` type objects that are not split or that are the top
+  level root objects in a split hierarchy. This includes objects not
+  present physically, like large objects split into smaller objects
+  without a separate top-level root object. Objects of other types like
+  StorageGroups and Tombstones will not be shown. This filter may be
+  useful for listing objects like `ls` command of some virtual file
+  system. This filter is activated if the `key` exists, disregarding the
+  value and matcher type.
+* $Object:PHY \
+  Returns only objects physically stored in the system. This filter is
+  activated if the `key` exists, disregarding the value and matcher type.
+
+Following filters are deprecated:
+
+* $Object:objectID \
+  object_id
+* $Object:containerID \
+  container_id
+
+Note: using filters with a key with prefix `$Object:` and match type
+`NOT_PRESENT `is not recommended since this is not a cross-version approach.
+Behavior when processing this kind of filters is undefined.
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| match_type | MatchType | Match type to use |
+| key | string | Attribute or Header fields to match |
+| value | string | Value to match |
+   
 ### Message ShortHeader
 
 Short header fields
@@ -621,8 +676,8 @@ Short header fields
 | owner_id | OwnerID | Object's owner |
 | object_type | ObjectType | Type of the object payload content |
 | payload_length | uint64 | Size of payload in bytes. `0xFFFFFFFFFFFFFFFF` means `payload_length` is unknown |
-| payload_hash | Checksum | Hash of payload bytes |
-| homomorphic_hash | Checksum | Homomorphic hash of the object payload |
+| payload_hash | Checksum | SHA256 hash of payload bytes. |
+| homomorphic_hash | Checksum | Homomorphic hash of the object payload (Tillich-Zemor). |
    
 ### Message SplitInfo
 
