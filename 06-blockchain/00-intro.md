@@ -2,7 +2,7 @@
 
 # Blockchain components
 
-## Role of blockcahin in the storage system
+## Role of blockchain in the storage system
 
 NeoFS stores data off-chain, on Storage Nodes. Clients access it directly in a peer-to-peer fashion. This allows to maintain the quality of service (read\write speed, big data volumes) at the level of traditional storage systems. That said, NeoFS is a global-scale decentralized network and it needs a proven mechanism to serve as a source of truth and global state and remain at that scale. That's what we use the Neo blockchain for.
 
