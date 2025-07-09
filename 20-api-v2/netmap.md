@@ -146,7 +146,7 @@ System parameters:
   Number of EigenTrust algorithm iterations to pass in the Reputation system.
   Value: little-endian integer. Default: 0.
 - **EpochDuration** \
-  NeoFS epoch duration measured in FS chain blocks.
+  NeoFS epoch duration measured in seconds.
   Value: little-endian integer. Default: 0.
 - **HomomorphicHashingDisabled** \
   Flag of disabling the homomorphic hashing of objects' payload.
@@ -260,6 +260,7 @@ explicitly set:
   Node's preferred way for communications with external clients.
   Clients SHOULD use these addresses if possible.
   Must contain a comma-separated list of multi-addresses.
+  DEPRECATED. Use 'addresses' field instead.
 * Version
   Node implementation's version in a free string form.
 * VerifiedNodesDomain

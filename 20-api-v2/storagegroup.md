@@ -15,6 +15,8 @@ Being an object payload, StorageGroup may have expiration Epoch set with
 will be ignored by InnerRing nodes during Data Audit cycles and will be
 deleted by Storage Nodes.
 
+DEPRECATED: storage groups are no longer used for audit since 2.18.
+
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 | validation_data_size | uint64 | Total size of the payloads of objects in the storage group |

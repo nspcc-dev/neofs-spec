@@ -105,8 +105,8 @@ Signature of something in NeoFS.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| key | bytes | Public key used for signing |
-| sign | bytes | Signature |
+| key | bytes | Public key used for signing. For N3 `scheme`, the field represents a verification script. |
+| sign | bytes | Signature. For N3 `scheme`, the field represents an invocation script. |
 | scheme | SignatureScheme | Scheme contains digital signature scheme identifier |
    
 ### Message SignatureRFC6979
@@ -115,8 +115,8 @@ RFC 6979 signature.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| key | bytes | Public key used for signing |
-| sign | bytes | Deterministic ECDSA with SHA-256 hashing |
+| key | bytes | Public key used for signing. For N3 auth scheme, the field represents a verification script. |
+| sign | bytes | Deterministic ECDSA with SHA-256 hashing. For N3 auth scheme, the field represents an invocation script. |
    
 ### Message SubnetID
 
@@ -163,4 +163,5 @@ Signature scheme describes digital signing scheme used for (key, signature) pair
 | 0 | ECDSA_SHA512 | ECDSA with SHA-512 hashing (FIPS 186-3) |
 | 1 | ECDSA_RFC6979_SHA256 | Deterministic ECDSA with SHA-256 hashing (RFC 6979) |
 | 2 | ECDSA_RFC6979_SHA256_WALLET_CONNECT | Deterministic ECDSA with SHA-256 hashing using WalletConnect API. Here the algorithm is the same, but the message format differs. |
+| 3 | N3 | Neo N3 witness. |
  
