@@ -2,7 +2,7 @@
 
 
 
-Package container contains implementation of Container contract deployed in NeoFS sidechain.
+Package container implements Container contract which is deployed to FS chain.
 
 Container contract stores and manages containers, extended ACLs and container size estimations. Contract does not perform sanity or signature checks of containers or extended ACLs, it is done by Alphabet nodes of the Inner Ring. Alphabet nodes approve it by invoking the same Put or SetEACL methods with the same arguments.
 
@@ -32,6 +32,14 @@ containerDelete:
     type: Signature
   - name: token
     type: ByteArray
+```
+
+nodesUpdate notification. This notification is produced when a container roster is changed. Triggered only by the Alphabet at the beginning of epoch.
+
+```
+name: NodesUpdate
+  - name: ContainerID
+    type: hash256
 ```
 
 setEACL notification. This notification is produced when a container owner wants to update an extended ACL of a container. Alphabet nodes of the Inner Ring catch the notification and validate container ownership, signature and token if present.
@@ -66,6 +74,14 @@ StopEstimation:
 
 #### Contract methods
 
+##### AddNextEpochNodes
+
+```go
+func AddNextEpochNodes(cID interop.Hash256, placementVector uint8, publicKeys []interop.PublicKey)
+```
+
+AddNextEpochNodes accumulates passed nodes as container members for the next epoch to be committed using [CommitContainerListUpdate](<#CommitContainerListUpdate>). Nodes must be grouped by selector index from placement policy \(SELECT clauses\). Results of the call operation can be received via [Nodes](<#Nodes>). This method must be called only when a container list is changed, otherwise nothing should be done. Call must be signed by the Alphabet nodes.
+
 ##### Alias
 
 ```go
@@ -75,6 +91,14 @@ func Alias(cid []byte) string
 Alias method returns a string with an alias of the container if it's set \(Null otherwise\).
 
 If the container doesn't exist, it panics with NotFoundError.
+
+##### CommitContainerListUpdate
+
+```go
+func CommitContainerListUpdate(cID interop.Hash256, replicas []uint8)
+```
+
+CommitContainerListUpdate commits container list changes made by [AddNextEpochNodes](<#AddNextEpochNodes>) calls in advance. Replicas must correspond to ordered placement policy \(REP clauses\). If no [AddNextEpochNodes](<#AddNextEpochNodes>) have been made, it clears container list. Makes "ContainerUpdate" notification with container ID after successful list change. Call must be signed by the Alphabet nodes.
 
 ##### ContainersOf
 
@@ -92,6 +116,24 @@ func Count() int
 
 Count method returns the number of registered containers.
 
+##### Create
+
+```go
+func Create(cnr []byte, invocScript, verifScript, sessionToken []byte, name, zone string, metaOnChain bool)
+```
+
+Create saves container descriptor serialized according to the NeoFS API binary protocol. Created containers are content\-addressed: they may be accessed by SHA\-256 checksum of their data. On success, Create throws 'Created' notification event.
+
+Created containers are disposable: if they are deleted, they cannot be created again. Create throws \[cst.ErrorDeleted\] exception on recreation attempts.
+
+Domain name is optional. If specified, it is used to register 'name.zone' domain for given container. Domain zone is optional: it defaults to the 6th contract deployment parameter which itself defaults to 'container'.
+
+Meta\-on\-chain boolean flag specifies whether meta information about objects from this container can be collected for it.
+
+The operation is paid. Container owner pays per\-container fee \(global chain configuration\) to each committee member. If domain registration is requested, additional alias fee \(also a configuration\) is added to each payment.
+
+Create must have chain's committee multi\-signature witness. Invocation script, verification script and session token parameters are owner credentials. They are transmitted in notary transactions carrying original users' requests. IR verifies requests and approves them via multi\-signature. Once creation is approved, container is persisted and becomes accessible. Credentials are disposable and do not persist in the chain.
+
 ##### Delete
 
 ```go
@@ -102,7 +144,27 @@ Delete method removes a container from the contract storage if it has been invok
 
 Signature is a RFC6979 signature of the container ID. Token is optional and should be a stable marshaled SessionToken structure from API.
 
-If the container doesn't exist, it panics with NotFoundError.
+If the container doesn't exist, it panics with NotFoundError. Deprecated: use [Remove](<#Remove>) instead.
+
+##### GetContainerData
+
+```go
+func GetContainerData(id []byte) []byte
+```
+
+GetContainerData returns binary of the container it was created with by ID.
+
+If the container is missing, GetContainerData throws \[cst.NotFoundError\] exception.
+
+##### GetEACLData
+
+```go
+func GetEACLData(id []byte) []byte
+```
+
+GetEACLData returns binary of container eACL it was put with by the container ID.
+
+If the container is missing, GetEACLData throws \[cst.NotFoundError\] exception.
 
 ##### IterateAllContainerSizes
 
@@ -146,6 +208,14 @@ func NewEpoch(epochNum int)
 
 NewEpoch method removes all container size estimations from epoch older than epochNum \+ 3. It can be invoked only by NewEpoch method of the Netmap contract.
 
+##### Nodes
+
+```go
+func Nodes(cID interop.Hash256, placementVector uint8) iterator.Iterator
+```
+
+Nodes returns iterator over members of the container. The list is handled by the Alphabet nodes and must be updated via [AddNextEpochNodes](<#AddNextEpochNodes>) and [CommitContainerListUpdate](<#CommitContainerListUpdate>) calls.
+
 ##### OnNEP11Payment
 
 ```go
@@ -172,7 +242,7 @@ func Put(container []byte, signature interop.Signature, publicKey interop.Public
 
 Put method creates a new container if it has been invoked by Alphabet nodes of the Inner Ring. Otherwise, it produces containerPut notification.
 
-Container should be a stable marshaled Container structure from API. Signature is a RFC6979 signature of the Container. PublicKey contains the public key of the signer. Token is optional and should be a stable marshaled SessionToken structure from API.
+Container should be a stable marshaled Container structure from API. Signature is a RFC6979 signature of the Container. PublicKey contains the public key of the signer. Token is optional and should be a stable marshaled SessionToken structure from API. Deprecated: use [Create](<#Create>) instead.
 
 ##### PutContainerSize
 
@@ -184,13 +254,57 @@ PutContainerSize method saves container size estimation in contract memory. It c
 
 If the container doesn't exist, it panics with NotFoundError.
 
+##### PutEACL
+
+```go
+func PutEACL(eACL []byte, invocScript, verifScript, sessionToken []byte)
+```
+
+PutEACL puts given eACL serialized according to the NeoFS API binary protocol for the container it is referenced to. Operation must be allowed in the container's basic ACL. If container does not exist, PutEACL throws \[cst.NotFoundError\] exception. On success, PutEACL throws 'EACLChanged' notification event.
+
+See [Create](<#Create>) for details.
+
+##### PutMeta
+
+```go
+func PutMeta(container []byte, signature interop.Signature, publicKey interop.PublicKey, token []byte, name, zone string, metaOnChain bool)
+```
+
+PutMeta is the same as [Put](<#Put>) and [PutNamed](<#PutNamed>) \(and exposed as put from the contract via overload\), but allows named containers and container's meta\-information be handled and notified using the chain. If name and zone are non\-empty strings, it behaves the same as [PutNamed](<#PutNamed>); empty strings make a regular [Put](<#Put>) call. Deprecated: use [Create](<#Create>) instead.
+
 ##### PutNamed
 
 ```go
 func PutNamed(container []byte, signature interop.Signature, publicKey interop.PublicKey, token []byte, name, zone string)
 ```
 
-PutNamed is similar to put but also sets a TXT record in nns contract. Note that zone must exist.
+PutNamed is similar to put but also sets a TXT record in nns contract. Note that zone must exist. DEPRECATED: use [Create](<#Create>) instead.
+
+##### PutNamedOverloaded
+
+```go
+func PutNamedOverloaded(container []byte, signature interop.Signature, publicKey interop.PublicKey, token []byte, name, zone string)
+```
+
+PutNamedOverloaded is the same as [Put](<#Put>) \(and exposed as put from the contract via overload\), but allows named container creation via NNS contract. Deprecated: use [Create](<#Create>) instead.
+
+##### Remove
+
+```go
+func Remove(id []byte, invocScript, verifScript, sessionToken []byte)
+```
+
+Remove removes all data for the referenced container. Remove is no\-op if container does not exist. On success, Remove throws 'Removed' notification event.
+
+See [Create](<#Create>) for details.
+
+##### ReplicasNumbers
+
+```go
+func ReplicasNumbers(cID interop.Hash256) iterator.Iterator
+```
+
+ReplicasNumbers returns iterator over saved by [CommitContainerListUpdate](<#CommitContainerListUpdate>) container's replicas from placement policy.
 
 ##### SetEACL
 
@@ -202,7 +316,7 @@ SetEACL method sets a new extended ACL table related to the contract if it was i
 
 EACL should be a stable marshaled EACLTable structure from API. Protocol version and container reference must be set in 'version' and 'container\_id' fields respectively. Signature is a RFC6979 signature of the Container. PublicKey contains the public key of the signer. Token is optional and should be a stable marshaled SessionToken structure from API.
 
-If the container doesn't exist, it panics with NotFoundError.
+If the container doesn't exist, it panics with NotFoundError. Deprecated: use [PutEACL](<#PutEACL>) instead.
 
 ##### StartContainerEstimation
 
@@ -220,13 +334,29 @@ func StopContainerEstimation(epoch int)
 
 StopContainerEstimation method produces StopEstimation notification. It can be invoked only by Alphabet nodes of the Inner Ring.
 
+##### SubmitObjectPut
+
+```go
+func SubmitObjectPut(metaInformation []byte, sigs [][]interop.Signature)
+```
+
+SubmitObjectPut registers successful object PUT operation and notifies about it. metaInformation must be signed by container nodes according to container's placement, see [VerifyPlacementSignatures](<#VerifyPlacementSignatures>). metaInformation must contain information about an object placed to a container that was created using [Put](<#Put>) \([PutMeta](<#PutMeta>)\) with enabled meta\-on\-chain option.
+
 ##### Update
 
 ```go
-func Update(script []byte, manifest []byte, data any)
+func Update(nefFile, manifest []byte, data any)
 ```
 
 Update method updates contract source code and manifest. It can be invoked by committee only.
+
+##### VerifyPlacementSignatures
+
+```go
+func VerifyPlacementSignatures(cid interop.Hash256, msg []byte, sigs [][]interop.Signature) bool
+```
+
+VerifyPlacementSignatures verifies that message has been signed by container members according to container's placement policy: there should be at least REP number of signatures for every placement vector. sigs must be container's number of SELECTs length.
 
 ##### Version
 

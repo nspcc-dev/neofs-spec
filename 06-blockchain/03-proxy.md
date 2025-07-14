@@ -2,11 +2,11 @@
 
 
 
-Package proxy contains implementation of Proxy contract deployed in NeoFS sidechain.
+Package proxy implements Proxy contract which is deployed to FS chain.
 
-Proxy contract pays for all multisignature transaction executions when notary service is enabled in the sidechain. Notary service prepares multisigned transactions, however they should contain sidechain GAS to be executed. It is inconvenient to ask Alphabet nodes to pay for these transactions: nodes can change over time, some nodes will spend sidechain GAS faster. It leads to economic instability.
+Proxy contract pays for all multisignature transaction executions when notary service is enabled in FS chain. Notary service prepares multisigned transactions, however their senders should have FS chain GAS to succeed. It is inconvenient to ask Alphabet nodes to pay for these transactions: nodes can change over time, some nodes will spend FS chain GAS faster. It leads to economic instability.
 
-Proxy contract exists to solve this issue. While Alphabet contracts hold all sidechain NEO, proxy contract holds most of the sidechain GAS. Alphabet contracts emit half of the available GAS to the proxy contract. The address of the Proxy contract is used as the first signer in a multisignature transaction. Therefore, NeoVM executes Verify method of the contract; and if invocation is verified, Proxy contract pays for the execution.
+Proxy contract exists to solve this issue. While Alphabet contracts hold all FS chain NEO, proxy contract holds most of FS chain GAS. Alphabet contracts emit half of the available GAS to the proxy contract. The address of the Proxy contract is used as the first signer in a multisignature transaction. Therefore, NeoVM executes Verify method of the contract; and if invocation is verified, Proxy contract pays for the execution.
 
 #### Contract notifications
 
@@ -25,7 +25,7 @@ OnNEP17Payment is a callback for NEP\-17 compatible native GAS contract.
 ##### Update
 
 ```go
-func Update(script []byte, manifest []byte, data any)
+func Update(nefFile, manifest []byte, data any)
 ```
 
 Update method updates contract source code and manifest. It can be invoked only by committee.
@@ -36,7 +36,7 @@ Update method updates contract source code and manifest. It can be invoked only 
 func Verify() bool
 ```
 
-Verify checks whether carrier transaction contains either \(2/3N \+ 1\) or \(N/2 \+ 1\) valid multi\-signature of the NeoFS Alphabet.
+Verify checks whether carrier transaction contains either \(2/3N \+ 1\) or \(N/2 \+ 1\) valid multi\-signature of the NeoFS Alphabet. Container contract's \`SubmitObjectPut\` is an exception, Alphabet signature is not required, contract's \`VerifyPlacementSignatures\` is called instead.
 
 ##### Version
 

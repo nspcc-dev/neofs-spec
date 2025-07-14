@@ -2,13 +2,13 @@
 
 
 
-Package balance contains implementation of Balance contract deployed in NeoFS sidechain.
+Package balance implements Balance contract which is deployed to FS chain.
 
 Balance contract stores all NeoFS account balances. It is a NEP\-17 compatible contract, so it can be tracked and controlled by N3 compatible network monitors and wallet software.
 
-This contract is used to store all micro transactions in the sidechain, such as data audit settlements or container fee payments. It is inefficient to make such small payment transactions in the mainchain. To process small transfers, balance contract has higher \(12\) decimal precision than native GAS contract.
+This contract is used to store all micro transactions in FS chain, such as data audit settlements or container fee payments. It is inefficient to make such small payment transactions in main chain. To process small transfers, balance contract has higher \(12\) decimal precision than native GAS contract.
 
-NeoFS balances are synchronized with mainchain operations. Deposit produces minting of NEOFS tokens in Balance contract. Withdraw locks some NEOFS tokens in a special lock account. When NeoFS contract transfers GAS assets back to the user, the lock account is destroyed with burn operation.
+NeoFS balances are synchronized with main chain operations. Deposit produces minting of NEOFS tokens in Balance contract. Withdraw locks some NEOFS tokens in a special lock account. When NeoFS contract transfers GAS assets back to the user, the lock account is destroyed with burn operation.
 
 #### Contract notifications
 
@@ -38,7 +38,7 @@ TransferX:
     type: ByteArray
 ```
 
-Lock notification. This notification is produced when a lock account is created. It contains information about the mainchain transaction that has produced the asset lock, the address of the lock account and the NeoFS epoch number until which the lock account is valid. Alphabet nodes of the Inner Ring catch notification and initialize Cheque method invocation of NeoFS contract.
+Lock notification. This notification is produced when a lock account is created. It contains information about main chain transaction that has produced the asset lock, the address of the lock account and the NeoFS epoch number until which the lock account is valid. Alphabet nodes of the Inner Ring catch notification and initialize Cheque method invocation of NeoFS contract.
 
 ```
 Lock:
@@ -74,7 +74,7 @@ Burn is a method that transfers assets from a user account to an empty account. 
 
 It produces Transfer and TransferX notifications.
 
-Burn method is invoked by Alphabet nodes of the Inner Ring when they process Cheque notification from NeoFS contract. It means that locked assets have been transferred to the user in the mainchain, therefore the lock account should be destroyed. Before that, Alphabet nodes should synchronize precision of mainchain GAS contract and Balance contract. Burn decreases total supply of NEP\-17 compatible NeoFS token.
+Burn method is invoked by Alphabet nodes of the Inner Ring when they process Cheque notification from NeoFS contract. It means that locked assets have been transferred to the user in main chain, therefore the lock account should be destroyed. Before that, Alphabet nodes should synchronize precision of main chain GAS contract and Balance contract. Burn decreases total supply of NEP\-17 compatible NeoFS token.
 
 ##### Decimals
 
@@ -106,7 +106,7 @@ Mint is a method that transfers assets to a user account from an empty account. 
 
 It produces Transfer and TransferX notifications.
 
-Mint method is invoked by Alphabet nodes of the Inner Ring when they process Deposit notification from NeoFS contract. Before that, Alphabet nodes should synchronize precision of mainchain GAS contract and Balance contract. Mint increases total supply of NEP\-17 compatible NeoFS token.
+Mint method is invoked by Alphabet nodes of the Inner Ring when they process Deposit notification from NeoFS contract. Before that, Alphabet nodes should synchronize precision of main chain GAS contract and Balance contract. Mint increases total supply of NEP\-17 compatible NeoFS token.
 
 ##### NewEpoch
 
@@ -159,7 +159,7 @@ TransferX method expands Transfer method by having extra details argument. Trans
 ##### Update
 
 ```go
-func Update(script []byte, manifest []byte, data any)
+func Update(nefFile, manifest []byte, data any)
 ```
 
 Update method updates contract source code and manifest. It can be invoked only by committee.

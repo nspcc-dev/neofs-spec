@@ -2,17 +2,17 @@
 
 
 
-Package neofs contains implementation of NeoFS contract deployed in NeoFS mainchain.
+Package neofs contains NeoFS contract which is deployed to main chain.
 
-NeoFS contract is an entry point to NeoFS users. This contract stores all NeoFS related GAS, registers new Inner Ring candidates and produces notifications to control the sidechain.
+NeoFS contract is an entry point to NeoFS users. This contract stores all NeoFS related GAS, registers new Inner Ring candidates and produces notifications to control FS chain.
 
-While mainchain committee controls the list of Alphabet nodes in native RoleManagement contract, NeoFS can't change more than 1\\3 keys at a time. NeoFS contract contains the actual list of Alphabet nodes in the sidechain.
+While main chain committee controls the list of Alphabet nodes in native RoleManagement contract, NeoFS can't change more than 1\\3 keys at a time. NeoFS contract contains the actual list of Alphabet nodes in FS chain.
 
-Network configuration is also stored in NeoFS contract. All changes in configuration are mirrored in the sidechain with notifications.
+Network configuration is also stored in NeoFS contract. All changes in configuration are mirrored in FS chain with notifications.
 
 #### Contract notifications
 
-Deposit notification. This notification is produced when user transfers native GAS to the NeoFS contract address. The same amount of NEOFS token will be minted in Balance contract in the sidechain.
+Deposit notification. This notification is produced when user transfers native GAS to the NeoFS contract address. The same amount of NEOFS token will be minted in Balance contract in FS chain.
 
 ```
 Deposit:
@@ -52,26 +52,6 @@ Cheque:
     type: ByteArray
 ```
 
-Bind notification. This notification is produced when a user wants to bind public keys with the user account \(OwnerID\). Keys argument is an array of ByteArray.
-
-```
-Bind:
-  - name: user
-    type: ByteArray
-  - name: keys
-    type: Array
-```
-
-Unbind notification. This notification is produced when a user wants to unbind public keys with the user account \(OwnerID\). Keys argument is an array of ByteArray.
-
-```
-Unbind:
-  - name: user
-    type: ByteArray
-  - name: keys
-    type: Array
-```
-
 AlphabetUpdate notification. This notification is produced when Alphabet nodes have updated their lists in the contract. Alphabet argument is an array of ByteArray. It contains public keys of new alphabet nodes.
 
 ```
@@ -102,7 +82,7 @@ SetConfig
 func AlphabetAddress() interop.Hash160
 ```
 
-AlphabetAddress returns 2\\3n\+1 multisignature address of alphabet nodes. It is used in sidechain notary disabled environment.
+AlphabetAddress returns 2\\3n\+1 multisignature address of alphabet nodes. It is used in notary\-disabled FS chain environment.
 
 ##### AlphabetList
 
@@ -110,7 +90,7 @@ AlphabetAddress returns 2\\3n\+1 multisignature address of alphabet nodes. It is
 func AlphabetList() []common.IRNode
 ```
 
-AlphabetList returns an array of alphabet node keys. It is used in sidechain notary disabled environment.
+AlphabetList returns an array of alphabet node keys. It is used in notary\-disabled FS chain environment.
 
 ##### AlphabetUpdate
 
@@ -120,17 +100,7 @@ func AlphabetUpdate(id []byte, args []interop.PublicKey)
 
 AlphabetUpdate updates a list of alphabet nodes with the provided list of public keys. It can be invoked only by alphabet nodes.
 
-This method is used in notary disabled sidechain environment. In this case, the actual alphabet list should be stored in the NeoFS contract.
-
-##### Bind
-
-```go
-func Bind(user interop.Hash160, keys []interop.PublicKey)
-```
-
-Bind method produces notification to bind the specified public keys in NeoFSID contract in the sidechain. It can be invoked only by specified user.
-
-This method produces Bind notification. This method panics if keys are not 33 byte long. User argument must be a valid 20 byte script hash.
+This method is used in notary\-disabled FS chain environment. In this case, the actual alphabet list should be stored in the NeoFS contract.
 
 ##### Cheque
 
@@ -140,7 +110,7 @@ func Cheque(id []byte, user interop.Hash160, amount int, lockAcc []byte)
 
 Cheque transfers GAS back to the user from the contract account, if assets were successfully locked in NeoFS balance contract. It can be invoked only by Alphabet nodes.
 
-This method produces Cheque notification to burn assets in sidechain.
+This method produces Cheque notification to burn assets in FS chain.
 
 ##### Config
 
@@ -194,23 +164,13 @@ func SetConfig(id, key, val []byte)
 
 SetConfig key\-value pair as a NeoFS runtime configuration value. It can be invoked only by Alphabet nodes.
 
-##### Unbind
-
-```go
-func Unbind(user interop.Hash160, keys []interop.PublicKey)
-```
-
-Unbind method produces notification to unbind the specified public keys in NeoFSID contract in the sidechain. It can be invoked only by the specified user.
-
-This method produces Unbind notification. This method panics if keys are not 33 byte long. User argument must be a valid 20 byte script hash.
-
 ##### Update
 
 ```go
-func Update(script []byte, manifest []byte, data any)
+func Update(nefFile, manifest []byte, data any)
 ```
 
-Update method updates contract source code and manifest. It can be invoked only by sidechain committee.
+Update method updates contract source code and manifest. It can be invoked only by the FS chain committee.
 
 ##### Version
 
@@ -228,5 +188,5 @@ func Withdraw(user interop.Hash160, amount int)
 
 Withdraw initializes gas asset withdraw from NeoFS. It can be invoked only by the specified user.
 
-This method produces Withdraw notification to lock assets in the sidechain and transfers withdraw fee from a user account to each Alphabet node. If notary is enabled in the mainchain, fee is transferred to Processing contract. Fee value is specified in NeoFS network config with the key WithdrawFee.
+This method produces Withdraw notification to lock assets in FS chain and transfers withdraw fee from a user account to each Alphabet node. If notary is enabled in main chain, fee is transferred to Processing contract. Fee value is specified in NeoFS network config with the key WithdrawFee.
 

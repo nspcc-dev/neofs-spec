@@ -2,7 +2,7 @@
 
 # Blockchain components
 
-## Role of blockcahin in the storage system
+## Role of blockchain in the storage system
 
 NeoFS stores data off-chain, on Storage Nodes. Clients access it directly in a peer-to-peer fashion. This allows to maintain the quality of service (read\write speed, big data volumes) at the level of traditional storage systems. That said, NeoFS is a global-scale decentralized network and it needs a proven mechanism to serve as a source of truth and global state and remain at that scale. That's what we use the Neo blockchain for.
 
@@ -32,7 +32,7 @@ To solve this problem, we divide smart contract operations into two types:
 
 The first type of operations should be executed in the main chain. These operations are quite rare and they require GAS as a payment asset. The main chain for NeoFS is \Gls{mainnet}. Thus, `NeoFS` contract is deployed in the main chain. It allows to make a deposit, update network config, and reregister the Inner Ring candidate node. The main chain also manages \Gls{AlphabetNodes} of the Inner Ring using the \Gls{RoleManagement}.
 
-The second type of operations can be executed on an additional chain that we call the FS chain. FS chain is a Neo N3 blockchain with a different network configuration. Validator nodes of FS chain are Alphabet nodes of the Inner Ring. FS chain GAS is managed by Alphabet contracts and should be used only for network maintenance and NeoFS contract execution. FS chain has `Alphabet`, `Audit`, `Balance`, `Container`, `NeoFSID`, `Netmap`, `Reputation` contracts. No other contracts unrelated to NeoFS can be deployed in the FS chain.
+The second type of operations can be executed on an additional chain that we call the FS chain. FS chain is a Neo N3 blockchain with a different network configuration. Validator nodes of FS chain are Alphabet nodes of the Inner Ring. FS chain GAS is managed by Alphabet contracts and should be used only for network maintenance and NeoFS contract execution. FS chain has `Alphabet`, `Audit`, `Balance`, `Container`, `Netmap`, `Reputation` contracts. No other contracts unrelated to NeoFS can be deployed in the FS chain.
 
 Inner Ring nodes synchronize states of main chain and FS chain contracts by listening to the notification events and reacting to them.
 

@@ -2,7 +2,7 @@
 
 
 
-Package reputation contains implementation of Reputation contract deployed in NeoFS sidechain.
+Package reputation implements Reputation contract which is deployed to FS chain.
 
 Storage nodes collect reputation data while communicating with other nodes. This data is exchanged and the end result \(global trust values\) is stored in the contract as opaque data.
 
@@ -49,7 +49,7 @@ Epoch is the epoch number when GlobalTrust structure was generated. PeerID conta
 ##### Update
 
 ```go
-func Update(script []byte, manifest []byte, data any)
+func Update(nefFile, manifest []byte, data any)
 ```
 
 Update method updates contract source code and manifest. It can be invoked only by committee.

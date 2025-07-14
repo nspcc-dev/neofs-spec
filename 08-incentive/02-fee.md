@@ -1,12 +1,8 @@
-## Service fees
+d## Service fees
 
 ### Container creation fee
 
 To create a container, a data owner should pay fee. It is calculated as $7 \cdot fee$, where $fee$ is a value from NeoFS network configuration (`ContainerFee`). Each Alphabet node gets $fee$ GAS during this operation.
-
-### Audit result fee
-
-Each generated audit result must be paid for by the container owner. Data owner pays $fee$ set in NeoFS network configuration (`AuditFee`) per one audited container. 
 
 ### Inner Ring candidate fee
 

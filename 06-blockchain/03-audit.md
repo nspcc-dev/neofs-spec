@@ -2,7 +2,7 @@
 
 
 
-Package audit contains implementation of Audit contract deployed in NeoFS sidechain.
+Package audit implements Audit contract which is deployed to FS chain.
 
 Inner Ring nodes perform audit of the registered containers during every epoch. If a container contains StorageGroup objects, an Inner Ring node initializes a series of audit checks. Based on the results of these checks, the Inner Ring node creates a DataAuditResult structure for the container. The content of this structure makes it possible to determine which storage nodes have been examined and see the status of these checks. Regarding this information, the container owner is charged for data storage.
 
@@ -69,7 +69,7 @@ Inner Ring nodes perform audit of containers and produce \`DataAuditResult\` str
 ##### Update
 
 ```go
-func Update(script []byte, manifest []byte, data any)
+func Update(nefFile, manifest []byte, data any)
 ```
 
 Update method updates contract source code and manifest. It can be invoked only by committee.

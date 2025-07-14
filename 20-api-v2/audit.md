@@ -8,6 +8,8 @@
 DataAuditResult keeps record of conducted Data Audits. The detailed report is
 generated separately.
 
+DEPRECATED: This audit mechanism is no longer supported (2.18+).
+
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 | version | Version | Data Audit Result format version. Effectively, the version of API library used to report DataAuditResult structure. |
