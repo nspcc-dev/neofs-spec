@@ -61,6 +61,8 @@ Section of failed statuses independent of the operation.
 | 1 | WRONG_MAGIC_NUMBER | [**1025**] Wrong magic of the NeoFS network. Details: - [**0**] Magic number of the served NeoFS network (big-endian 64-bit unsigned integer). |
 | 2 | SIGNATURE_VERIFICATION_FAIL | [**1026**] Signature verification failure. |
 | 3 | NODE_UNDER_MAINTENANCE | [**1027**] Node is under maintenance. |
+| 4 | BAD_REQUEST | [**1028**] Malformed, syntactically or semantically incorrect request, client-side error. |
+| 5 | BUSY | [**1029**] Some node resources are exhausted and request can't be processed. This is likely to be a transient state and request can be retried in future. |
 
 ### Emun Container
 
@@ -83,6 +85,7 @@ Section of statuses for object-related operations.
 | 3 | LOCK_NON_REGULAR_OBJECT | [**2051**] Locking an object with a non-REGULAR type rejected. |
 | 4 | OBJECT_ALREADY_REMOVED | [**2052**] Object has been marked deleted. |
 | 5 | OUT_OF_RANGE | [**2053**] Invalid range has been requested for an object. |
+| 6 | QUOTA_EXCEEDED | [**2054**] Quota was exceeded; no further PUTs will be allowed within current settings. |
 
 ### Emun Section
 
@@ -112,4 +115,5 @@ Section of NeoFS successful return codes.
 | Number | Name | Description |
 | ------ | ---- | ----------- |
 | 0 | OK | [**0**] Default success. Not detailed. If the server cannot match successful outcome to the code, it should use this code. |
+| 1 | INCOMPLETE | [**1**] Incomplete success, only a part of the request done which may or may not be sufficient for the client. Examples are object PUT making 2 out of 3 required replicas or distributed SEARCH getting result from 4 out of 5 nodes. |
  
