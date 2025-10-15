@@ -84,6 +84,9 @@ Please refer to detailed `XHeader` description.
 Statuses:
 - **OK** (0, SECTION_SUCCESS): \
   object has been successfully saved in the container;
+- **INCOMPLETE** (1, SECTION_SUCCESS): \
+  object was put to some nodes, but the number of replicas is not sufficient
+  to satisfy placement policy;
 - Common failures (SECTION_FAILURE_COMMON);
 - **ACCESS_DENIED** (2048, SECTION_OBJECT): \
   write access to the container is denied;
@@ -93,6 +96,8 @@ Statuses:
 - **LOCK_NON_REGULAR_OBJECT** (2051, SECTION_OBJECT): \
   placement of an object of type LOCK that includes at least one object of
   type other than REGULAR is prohibited;
+- **QUOTA_EXCEEDED** (2054, SECTION_OBJECT): \
+  size quota set by user was exceeded;
 - **CONTAINER_NOT_FOUND** (3072, SECTION_CONTAINER): \
   object storage container not found;
 - **TOKEN_NOT_FOUND** (4096, SECTION_SESSION): \
@@ -138,6 +143,9 @@ Please refer to detailed `XHeader` description.
 Statuses:
 - **OK** (0, SECTION_SUCCESS): \
   object has been successfully marked to be removed from the container;
+- **INCOMPLETE** (1, SECTION_SUCCESS): \
+  some nodes have accepted the deletion mark, but some may still store
+  the object;
 - Common failures (SECTION_FAILURE_COMMON);
 - **ACCESS_DENIED** (2048, SECTION_OBJECT): \
   delete access to the object is denied;
@@ -240,6 +248,9 @@ Please refer to detailed `XHeader` description.
 Statuses:
 - **OK** (0, SECTION_SUCCESS): \
   objects have been successfully selected;
+- **INCOMPLETE** (1, SECTION_SUCCESS): \
+  some nodes were unable to process the request, so the result may
+  not contain all data;
 - Common failures (SECTION_FAILURE_COMMON);
 - **ACCESS_DENIED** (2048, SECTION_OBJECT): \
   access to operation SEARCH of the object is denied;

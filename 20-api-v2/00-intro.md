@@ -17,7 +17,7 @@ popular, simple, and time-tested tools relevant for most languages and
 platforms. Although gRPC is used now, we have everything to transfer structures
 through other protocols, e.g. JSON-RPC.
 
-The API described below corresponds to the [version 2.18.0](https://github.com/nspcc-dev/neofs-api/releases/tag/v2.18.0).
+The API described below corresponds to the [version 2.19.0](https://github.com/nspcc-dev/neofs-api/releases/tag/v2.19.0).
 
 ## Nodes and their identification
 

@@ -222,6 +222,9 @@ Statuses:
   estimation of used space has been successfully announced;
 - Common failures (SECTION_FAILURE_COMMON).
 
+DEPRECATED: every storage node must send storage load directly to `container`
+contract.
+
  
 
 __Request Body:__ AnnounceUsedSpaceRequest.Body
