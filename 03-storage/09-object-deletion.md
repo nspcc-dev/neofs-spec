@@ -26,3 +26,7 @@ If an expired Tombstone is found, the associated Graveyard record is updated: th
 GC searches through the Graveyard and deletes Objects which have been previously GCMark'ed for deletion. It first removes all metadata associated with this objectID and then removes the Object and the related Tombstone from Blobstor, Write Cache and filesystem.
 
 This procedure is the same for any object type, i.e. a Storage Group removal goes through the mentioned stages as well as a Regular Object.
+
+### Unpaid containers
+
+If network configuration contains a positive `BasicIncomeRate` (see \nameref{sec:Incentive}), container owners should pay for storage being used. Once there are not enough NeoFS tokens to pay for storage according to the defined rate, container is marked in the FS chain's Balance contract as an unpaid one. Storage nodes eventually receive notification about it and stop serving unpaid containers. There is a safe epoch window before unpaid containers are removed from storage. Practically, it is 3 epochs now, but no expectations should be set, and unpaid data should be considered lost.

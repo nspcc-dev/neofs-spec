@@ -5,27 +5,17 @@ participant "Container\ncontract" as cnr
 participant "Inner Ring\nNodes" as ir
 participant "Balance\ncontract" as bln
 
-netmap --> ir: New epoch notification
-group 1\3 of epoch
-ir -> cnr: Start estimation
-cnr --> sn: Start estimation notification
-sn -> sn: Exchange estimations
-...
-ir -> cnr: Stop estimation
-cnr --> sn: Stop estimation notification
-sn -> cnr: Estimate container sizes
+group every 1\3 of epoch (including epoch start)
+sn -> cnr: Reporting actual storage state
+cnr -> cnr: Normalizes values
 ...
 end
 
-group 2\3 of epoch
-ir -> cnr: Get estimations
-ir -> bln: Transfer to bank account
-...
-end
-
-group 3\3 of epoch
-ir -> bln: Get balance of bank account
-ir -> bln: Transfer to Storage Node accounts
+group 1\2 of epoch
+ir -> bln: Pay for <cid> container tx
+bln <-> netmap: Request basic income rate
+bln <-> cnr: Request billing info for <cid>
+bln -> bln: Transfer requested amount to SNs
 ...
 end
 
