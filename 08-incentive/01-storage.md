@@ -1,6 +1,6 @@
 ## Data storage payments
 
-Data storage payments are made once an epoch. Epochs are measured in seconds based on FS chain blocks' timestamps, and can change their duration depending on network settings. Thus, estimated profit and expense for an hour, week or month may vary depending on epoch duration. Payments are done based on load reports that storage nodes do every epoch. Storage node must be part of container to report its storage in it and receive incoming payments. Storing data without reporting about it leads to no balance increase.
+Data storage payments are made once an epoch. Epochs are measured in seconds based on FS chain blocks' timestamps, and can change their duration depending on network settings. Thus, estimated profit and expense for an hour, week or month may vary depending on epoch duration. Payments are done based on load reports that storage nodes do every epoch (see \nameref{sec:Reports}). Storage node must be part of container to report its storage in it and receive incoming payments. Storing data without reporting about it leads to no balance increase.
 
 Data storage payments flow: 
 
