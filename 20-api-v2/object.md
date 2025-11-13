@@ -555,6 +555,16 @@ that affect system behaviour:
 * __NEOFS__TICK_TOPIC \
   UTF-8 string topic ID that is used for object notification.
   DEPRECATED: attribute ignored by servers.
+* __NEOFS__EC_RULE_IDX \
+  Index of EC rule in container's `PlacementPolicy.ec_rules` according to
+  which the part was created. Base-10 integer.
+* __NEOFS__EC_PART_IDX \
+  Index in the EC parts into which the parent object is divided according
+  to `__NEOFS__EC_RULE_IDX` EC rule. Base-10 integer.
+* __NEOFS__EC_PART_HASHES \
+  Ordered list of payload hashes of EC parts into which this object is
+  divided. Hash function is SHA-256. Items are comma-separated, each item
+  is hex-encoded.
 
 And some well-known attributes used by applications only:
 
@@ -591,7 +601,7 @@ must be within the same container.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| parent | ObjectID | Identifier of the origin object. Known only to the minor child. |
+| parent | ObjectID | Identifier of the origin object. If the origin object is split to comply with the object size limit, `parent` is known only to the minor child. |
 | previous | ObjectID | Identifier of the left split neighbor |
 | parent_signature | Signature | `signature` field of the parent object. Used to reconstruct parent. |
 | parent_header | Header | `header` field of the parent object. Used to reconstruct parent. |
