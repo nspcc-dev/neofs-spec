@@ -6,7 +6,7 @@ Package balance implements Balance contract which is deployed to FS chain.
 
 Balance contract stores all NeoFS account balances. It is a NEP\-17 compatible contract, so it can be tracked and controlled by N3 compatible network monitors and wallet software.
 
-This contract is used to store all micro transactions in FS chain, such as data audit settlements or container fee payments. It is inefficient to make such small payment transactions in main chain. To process small transfers, balance contract has higher \(12\) decimal precision than native GAS contract.
+This contract is used to store all micro transactions in FS chain, such as basic income settlements or container fee payments. It is inefficient to make such small payment transactions in main chain. To process small transfers, balance contract has higher \(12\) decimal precision than native GAS contract.
 
 NeoFS balances are synchronized with main chain operations. Deposit produces minting of NEOFS tokens in Balance contract. Withdraw locks some NEOFS tokens in a special lock account. When NeoFS contract transfers GAS assets back to the user, the lock account is destroyed with burn operation.
 
@@ -54,6 +54,32 @@ Lock:
     type: Integer
 ```
 
+Payment notification. This notification is produced when container has been paid by its owner according to storage nodes' reports.
+
+```
+Payment
+  - name: UserID
+	type: Hash160
+  - name: ContainerID
+	type: Hash256
+  - name: Epoch
+	type: Integer
+  - name: Amount
+	type: Integer
+```
+
+ChangePaymentStatus notification. This notification is produced when container's payment status is changed. It is produced in both cases: when a paid earlier container is marked unpaid, and when an unpaid container is paid successfully.
+
+```
+ChangePaymentStatus
+  - name: ContainerID
+	type: Hash256
+  - name: Epoch
+	type: Integer
+  - name: Unpaid
+	type: Boolean
+```
+
 #### Contract methods
 
 ##### BalanceOf
@@ -83,6 +109,22 @@ func Decimals() int
 ```
 
 Decimals is a NEP\-17 standard method that returns precision of NeoFS balances.
+
+##### GetUnpaidContainerEpoch
+
+```go
+func GetUnpaidContainerEpoch(cid interop.Hash256) int
+```
+
+GetUnpaidContainerEpoch returns epoch from which container is considered unpaid. Returns \-1 if container is paid successfully.
+
+##### IterateUnpaid
+
+```go
+func IterateUnpaid() iterator.Iterator
+```
+
+IterateUnpaid is like \[Unpaid\] but for every unpaid container. Iteration is through key\-value pair, where key is container ID, value is epoch from which container is considered unpaid.
 
 ##### Lock
 
@@ -118,6 +160,14 @@ NewEpoch is a method that checks timeout on lock accounts and returns assets if 
 
 It produces Transfer and TransferX notifications.
 
+##### SettleContainerPayment
+
+```go
+func SettleContainerPayment(cid interop.Hash256) bool
+```
+
+SettleContainerPayment distributes storage payments from container's owner account to storage nodes that serve container's objects. Transaction must be witnessed by the actual Alphabet multi\-signature. Produces \`ChangePaymentStatus\` notification on any payment status changes. If payment is successful, \`Payment\` notification is thrown. If payment cannot be fully made, container is registered as an unpaid one, see \[IsUnpaid\].
+
 ##### Symbol
 
 ```go
@@ -147,7 +197,7 @@ It produces Transfer and TransferX notifications. TransferX notification will ha
 ##### TransferX
 
 ```go
-func TransferX(from, to interop.Hash160, amount int, details []byte)
+func TransferX(from, to interop.Hash160, amount int, details []byte) bool
 ```
 
 TransferX is a method for NeoFS balance to be transferred from one account to another. It can be invoked by the account owner or by Alphabet nodes.

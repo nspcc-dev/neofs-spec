@@ -120,34 +120,6 @@ func Config(key []byte) any
 
 Config returns configuration value of NeoFS configuration. If the key does not exist, returns nil.
 
-##### InnerRingCandidateAdd
-
-```go
-func InnerRingCandidateAdd(key interop.PublicKey)
-```
-
-InnerRingCandidateAdd adds a key to a list of Inner Ring candidates. It can be invoked only by the candidate itself.
-
-This method transfers fee from a candidate to the contract account. Fee value is specified in NeoFS network config with the key InnerRingCandidateFee.
-
-##### InnerRingCandidateRemove
-
-```go
-func InnerRingCandidateRemove(key interop.PublicKey)
-```
-
-InnerRingCandidateRemove removes a key from a list of Inner Ring candidates. It can be invoked by Alphabet nodes or the candidate itself.
-
-This method does not return fee back to the candidate.
-
-##### InnerRingCandidates
-
-```go
-func InnerRingCandidates() []common.IRNode
-```
-
-InnerRingCandidates returns an array of structures that contain an Inner Ring candidate node key.
-
 ##### OnNEP17Payment
 
 ```go
