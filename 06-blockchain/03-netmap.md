@@ -46,6 +46,14 @@ NewEpoch
     type: Integer
 ```
 
+NewEpochSubscription notification. This notification is produced when a new contract was subscribed to new epoch event.
+
+```
+NewEpochSubscription
+  - name: contract
+	type: Hash160
+```
+
 #### Contract methods
 
 ##### AddNode
@@ -235,6 +243,14 @@ func SubscribeForNewEpoch(contract interop.Hash160)
 ```
 
 SubscribeForNewEpoch registers passed contract as a NewEpoch event subscriber. Such a contract must have a \`NewEpoch\` method with a single numeric parameter. Transactions that call SubscribeForNewEpoch must be witnessed by the Alphabet. Produces \`NewEpochSubscription\` notification event with a just registered recipient in a success case.
+
+##### UnsubscribeFromNewEpoch
+
+```go
+func UnsubscribeFromNewEpoch(contract interop.Hash160)
+```
+
+UnsubscribeFromNewEpoch removes new epoch subscription made by [SubscribeForNewEpoch](<#SubscribeForNewEpoch>) beforehand. Does nothing if subscription has not been made. Transactions that call UnsubscribeFromNewEpoch must be witnessed by the Alphabet. Produces \`NewEpochUnsubscription\` notification event if any unsubscription was made.
 
 ##### Update
 

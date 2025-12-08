@@ -56,20 +56,28 @@ setEACL:
     type: ByteArray
 ```
 
-StartEstimation notification. This notification is produced when Storage nodes should exchange estimation values of container sizes among other Storage nodes.
+ContainerQuotaSet notification. This notification is produced when container's owner sets \(updates\) size limitation for storage used for all objects in this container.
 
 ```
-StartEstimation:
-  - name: epoch
-    type: Integer
+ContainerQuotaSet
+  - name: ContainerID
+	type: Hash256
+  - name: LimitValue
+	type: Integer
+  - name: Hard
+	type: Boolean
 ```
 
-StopEstimation notification. This notification is produced when Storage nodes should calculate average container size based on received estimations and store it in Container contract.
+UserQuotaSet notification. This notification is produced when container's owner sets \(updates\) size limitation for storage used for all objects in \_all\_ containers he owns.
 
 ```
-StopEstimation:
-  - name: epoch
-    type: Integer
+UserQuotaSet
+  - name: UserID
+	type: ByteArray # 25 byte N3 address
+  - name: LimitValue
+	type: Integer
+  - name: Hard
+	type: Boolean
 ```
 
 #### Contract methods
@@ -166,47 +174,37 @@ GetEACLData returns binary of container eACL it was put with by the container ID
 
 If the container is missing, GetEACLData throws \[cst.NotFoundError\] exception.
 
-##### IterateAllContainerSizes
+##### GetTakenSpaceByUser
 
 ```go
-func IterateAllContainerSizes(epoch int) iterator.Iterator
+func GetTakenSpaceByUser(user []byte) int
 ```
 
-IterateAllContainerSizes method returns iterator over all container size estimations that have been registered for the specified epoch. Items returned from this iterator are key\-value pairs with keys having container ID as a prefix and values being Estimation structures.
+GetTakenSpaceByUser returns total load space in all containers user owns. If user have no containers, it returns 0.
 
-##### IterateContainerSizes
+##### IterateAllReportSummaries
 
 ```go
-func IterateContainerSizes(epoch int, cid interop.Hash256) iterator.Iterator
+func IterateAllReportSummaries() iterator.Iterator
 ```
 
-IterateContainerSizes method returns iterator over specific container size estimations that have been registered for the specified epoch. The iterator items are Estimation structures.
+IterateAllReportSummaries method returns iterator over all total container sizes that have been registered for the specified epoch. Items returned from this iterator are key\-value pairs with keys having container ID as a prefix and values being [NodeReportSummary](<#NodeReportSummary>) structures.
 
-##### List
+##### IterateBillingStats
 
 ```go
-func List(owner []byte) [][]byte
+func IterateBillingStats(cid interop.Hash256) iterator.Iterator
 ```
 
-List method returns a list of all container IDs owned by the specified owner.
+IterateBillingStats method returns iterator over container's billing statistics made based on [NodeReport](<#NodeReport>).
 
-##### ListContainerSizes
+##### IterateReports
 
 ```go
-func ListContainerSizes(epoch int) [][]byte
+func IterateReports(cid interop.Hash256) iterator.Iterator
 ```
 
-ListContainerSizes method returns the IDs of container size estimations that have been registered for the specified epoch.
-
-Deprecated: please use IterateAllContainerSizes API, this one is not convenient to use and limited in the number of items it can return. It will be removed in future versions.
-
-##### NewEpoch
-
-```go
-func NewEpoch(epochNum int)
-```
-
-NewEpoch method removes all container size estimations from epoch older than epochNum \+ 3. It can be invoked only by NewEpoch method of the Netmap contract.
+IterateReports method returns iterator over nodes' reports that were claimed for specified epoch and container.
 
 ##### Nodes
 
@@ -244,16 +242,6 @@ Put method creates a new container if it has been invoked by Alphabet nodes of t
 
 Container should be a stable marshaled Container structure from API. Signature is a RFC6979 signature of the Container. PublicKey contains the public key of the signer. Token is optional and should be a stable marshaled SessionToken structure from API. Deprecated: use [Create](<#Create>) instead.
 
-##### PutContainerSize
-
-```go
-func PutContainerSize(epoch int, cid []byte, usedSize int, pubKey interop.PublicKey)
-```
-
-PutContainerSize method saves container size estimation in contract memory. It can be invoked only by Storage nodes from the network map. This method checks witness based on the provided public key of the Storage node.
-
-If the container doesn't exist, it panics with NotFoundError.
-
 ##### PutEACL
 
 ```go
@@ -288,6 +276,16 @@ func PutNamedOverloaded(container []byte, signature interop.Signature, publicKey
 
 PutNamedOverloaded is the same as [Put](<#Put>) \(and exposed as put from the contract via overload\), but allows named container creation via NNS contract. Deprecated: use [Create](<#Create>) instead.
 
+##### PutReport
+
+```go
+func PutReport(cid interop.Hash256, sizeBytes, objsNumber int, pubKey interop.PublicKey)
+```
+
+PutReport method saves container's state report in contract memory. It must be invoked only by Storage nodes that belong to reported container. This method checks witness based on the provided public key of the Storage node. sizeBytes is a total storage that is used by storage node for storing all marshaled objects that belong to the specified container. objsNumber is a total number of container's object storage node have.
+
+If the container doesn't exist, it panics with \[cst.NotFoundError\].
+
 ##### Remove
 
 ```go
@@ -318,21 +316,37 @@ EACL should be a stable marshaled EACLTable structure from API. Protocol version
 
 If the container doesn't exist, it panics with NotFoundError. Deprecated: use [PutEACL](<#PutEACL>) instead.
 
-##### StartContainerEstimation
+##### SetHardContainerQuota
 
 ```go
-func StartContainerEstimation(epoch int)
+func SetHardContainerQuota(cID interop.Hash256, size int)
 ```
 
-StartContainerEstimation method produces StartEstimation notification. It can be invoked only by Alphabet nodes of the Inner Ring.
+SetHardContainerQuota sets hard size quota that limits all space used for storing objects in cID \(including object replicas\). Non\-positive size sets no limitation. After exceeding the limit nodes will refuse any further PUTs. Call must be signed by cID's owner. Limit can be changed with a repeated call. See also [SetSoftContainerQuota](<#SetSoftContainerQuota>). Panics if cID is incorrect or container does not exist.
 
-##### StopContainerEstimation
+##### SetHardUserQuota
 
 ```go
-func StopContainerEstimation(epoch int)
+func SetHardUserQuota(user []byte, size int)
 ```
 
-StopContainerEstimation method produces StopEstimation notification. It can be invoked only by Alphabet nodes of the Inner Ring.
+SetHardUserQuota sets size quota that limits all space used for storing objects in all containers that belong to user \(including object replicas\). Non\-positive size sets no limitation. After exceeding the limit nodes will refuse any further PUTs. Call must be signed by user. Limit can be changed with a repeated call. See also [SetSoftUserQuota](<#SetSoftUserQuota>). Panics if user is incorrect.
+
+##### SetSoftContainerQuota
+
+```go
+func SetSoftContainerQuota(cID interop.Hash256, size int)
+```
+
+SetSoftContainerQuota sets soft size quota that limits all space used for storing objects in cID \(including object replicas\). Non\-positive size sets no limitation. After exceeding the limit nodes are instructed to warn only, without denial of service. Call must be signed by cID's owner. Limit can be changed with a repeated call. See also [SetHardContainerQuota](<#SetHardContainerQuota>). Panics if cID is incorrect or container does not exist.
+
+##### SetSoftUserQuota
+
+```go
+func SetSoftUserQuota(user []byte, size int)
+```
+
+SetSoftUserQuota sets size quota that limits all space used for storing objects in all containers that belong to user \(including object replicas\). Non\-positive size sets no limitation. After exceeding the limit nodes are instructed to warn only, without denial of service. Call must be signed by user. Limit can be changed with a repeated call. See also [SetHardUserQuota](<#SetHardUserQuota>). Panics if user is incorrect.
 
 ##### SubmitObjectPut
 
