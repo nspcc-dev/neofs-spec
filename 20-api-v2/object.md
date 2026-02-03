@@ -520,9 +520,10 @@ Object Header
 | payload_hash | Checksum | SHA256 hash of payload bytes |
 | object_type | ObjectType | Type of the object payload content |
 | homomorphic_hash | Checksum | Homomorphic hash of the object payload (Tillich-Zemor). |
-| session_token | SessionToken | Session token, if it was used during Object creation. Need it to verify integrity and authenticity out of Request scope. |
+| session_token | SessionToken | Session token, if it was used during Object creation. Need it to verify integrity and authenticity out of Request scope. Only one of `session_token` or `session_token_v2` can be set. |
 | attributes | Attribute | User-defined object attributes. Attributes vary in length from object to object, so keep an eye on the entire Header limit depending on the context. |
 | split | Split | Position of the object in the split hierarchy |
+| session_token_v2 | SessionTokenV2 | Session token V2, if it was used during Object creation. Need it to verify integrity and authenticity out of Request scope. Only one of `session_token` or `session_token_v2` can be set. |
    
 ### Message Header.Attribute
 
