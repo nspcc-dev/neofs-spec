@@ -124,7 +124,7 @@ GetUnpaidContainerEpoch returns epoch from which container is considered unpaid.
 func IterateUnpaid() iterator.Iterator
 ```
 
-IterateUnpaid is like \[Unpaid\] but for every unpaid container. Iteration is through key\-value pair, where key is container ID, value is epoch from which container is considered unpaid.
+IterateUnpaid is like [GetUnpaidContainerEpoch](<#GetUnpaidContainerEpoch>) but for every unpaid container. Iteration is through key\-value pair, where key is container ID, value is epoch from which container is considered unpaid.
 
 ##### Lock
 
@@ -166,7 +166,7 @@ It produces Transfer and TransferX notifications.
 func SettleContainerPayment(cid interop.Hash256) bool
 ```
 
-SettleContainerPayment distributes storage payments from container's owner account to storage nodes that serve container's objects. Transaction must be witnessed by the actual Alphabet multi\-signature. Produces \`ChangePaymentStatus\` notification on any payment status changes. If payment is successful, \`Payment\` notification is thrown. If payment cannot be fully made, container is registered as an unpaid one, see \[IsUnpaid\].
+SettleContainerPayment distributes storage payments from container's owner account to storage nodes that serve container's objects. Transaction must be witnessed by the actual Alphabet multi\-signature. Produces \`ChangePaymentStatus\` notification on any payment status changes. If payment is successful, \`Payment\` notification is thrown. If payment cannot be fully made, container is registered as an unpaid one, see [GetUnpaidContainerEpoch](<#GetUnpaidContainerEpoch>).
 
 ##### Symbol
 
