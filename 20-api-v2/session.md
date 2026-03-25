@@ -113,6 +113,8 @@ Information about the response
 
 Verification info for the response signed by all intermediate nodes
 
+DEPRECATED: was eliminated from the protocol starting from version `v2.22`.
+
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 | body_signature | Signature | Response Body signature. Should be generated once by an answering node. |

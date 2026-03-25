@@ -484,7 +484,7 @@ are not set, they will be calculated by a peer node.
 | object_id | ObjectID | ObjectID if available. |
 | signature | Signature | Object signature if available |
 | header | Header | Object's Header. The maximum length is 16KB. |
-| copies_number | uint32 | Number of the object copies to store within the RPC call. By default object is processed according to the container's placement policy. |
+| copies_number | uint32 | Number of the object copies to store within the RPC call. By default object is processed according to the container's placement policy. DEPRECATED: use `PlacementPolicy.Initial.max_replicas` instead. Servers ignore this field. |
      
 ### Message Range
 

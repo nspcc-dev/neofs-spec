@@ -299,6 +299,7 @@ storage policy definition languages.
 | filters | Filter | List of named filters to reference in selectors |
 | subnet_id | SubnetID | DEPRECATED. Was used for subnetwork ID to select nodes from, currently ignored. |
 | ec_rules | ECRule | Erasure coding rules. Limited to 4 items. |
+| initial | Initial | Initial placement rules. |
    
 ### Message PlacementPolicy.ECRule
 
@@ -343,6 +344,37 @@ because they have no payload.
 | data_part_num | uint32 | Number of data parts |
 | parity_part_num | uint32 | Number of parity parts |
 | selector | string | Name of the linked selector |
+   
+### Message PlacementPolicy.Initial
+
+Rules applied during initial data placement.
+
+`replica_limits` allows to override `Replica.count` and EC partitions. If
+set, `replica_limits` must have a length equal to the sum of `replicas`
+(`RN`) and `ec_rules` length. Each of first `RN` elements of
+`replica_limits` must be less than or equal to corresponding
+`Replica.count`. The remaining elements must be either 0 (corresponding
+EC rule is skipped) or 1 (done). At least one `replica_limits` element
+must be non-zero.
+
+`max_replicas` allows to limit total number of replicas and EC partitions
+for successful operation. If set, `max_replicas` must not overflow total
+replica limit (`replica_limits` or main ones).
+
+`prefer_local` allows to tell server to try to store `MaxReplicas`
+replicas in locations that include this server. `prefer_local` must be set
+along with `max_replicas` only.
+
+Either `replica_limits` or `max_replicas` must be specified.
+
+Initial policy must not repeat the main one. In particular, policy with
+`replica_limits` equal to main ones only is invalid.
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| replica_limits | uint32 | Limits on the number of replicas and EC partitions |
+| max_replicas | uint32 | Maximum total number of replicas |
+| prefer_local | bool | Flag to prefer local placement over regular one |
    
 ### Message Replica
 
