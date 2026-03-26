@@ -484,7 +484,7 @@ are not set, they will be calculated by a peer node.
 | object_id | ObjectID | ObjectID if available. |
 | signature | Signature | Object signature if available |
 | header | Header | Object's Header. The maximum length is 16KB. |
-| copies_number | uint32 | Number of the object copies to store within the RPC call. By default object is processed according to the container's placement policy. |
+| copies_number | uint32 | Number of the object copies to store within the RPC call. By default object is processed according to the container's placement policy. DEPRECATED: use `PlacementPolicy.Initial.max_replicas` instead. Servers ignore this field. |
      
 ### Message Range
 
@@ -520,9 +520,10 @@ Object Header
 | payload_hash | Checksum | SHA256 hash of payload bytes |
 | object_type | ObjectType | Type of the object payload content |
 | homomorphic_hash | Checksum | Homomorphic hash of the object payload (Tillich-Zemor). |
-| session_token | SessionToken | Session token, if it was used during Object creation. Need it to verify integrity and authenticity out of Request scope. |
+| session_token | SessionToken | Session token, if it was used during Object creation. Need it to verify integrity and authenticity out of Request scope. Only one of `session_token` or `session_token_v2` can be set. |
 | attributes | Attribute | User-defined object attributes. Attributes vary in length from object to object, so keep an eye on the entire Header limit depending on the context. |
 | split | Split | Position of the object in the split hierarchy |
+| session_token_v2 | SessionTokenV2 | Session token V2, if it was used during Object creation. Need it to verify integrity and authenticity out of Request scope. Only one of `session_token` or `session_token_v2` can be set. |
    
 ### Message Header.Attribute
 

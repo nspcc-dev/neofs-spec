@@ -12,15 +12,17 @@ nodes.
 
 ### Method Put
 
-`Put` invokes `Container` smart contract's `Put` method and returns
-response immediately. After a new block is issued in FS chain, request is
-verified by Inner Ring nodes. After one more block in FS chain, the container
-is added into smart contract storage.
+Sends transaction calling contract method to create container, and waits
+for the transaction to be executed. Deadline is determined by the
+transport protocol (e.g. `grpc-timeout` header). If the deadline is not
+set, server waits 15s after submitting the transaction.
 
 Statuses:
 - **OK** (0, SECTION_SUCCESS): \
-  request to save the container has been sent to FS chain;
-- Common failures (SECTION_FAILURE_COMMON).
+  container successfully created;
+- Common failures (SECTION_FAILURE_COMMON);
+- **CONTAINER_AWAIT_TIMEOUT** (3075, SECTION_CONTAINER): \
+  transaction was sent but not executed within the deadline.
 
                       
 
@@ -36,7 +38,7 @@ additional signature checks.
 | ----- | ---- | ----------- |
 | container | Container | Container structure to register in NeoFS |
 | signature | SignatureRFC6979 | Signature of a stable-marshalled container according to RFC-6979. |
-                                  
+                                          
 
 __Response Body__ PutResponse.Body
 
@@ -48,21 +50,25 @@ returned here to make sure everything has been done as expected.
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 | container_id | ContainerID | Unique identifier of the newly created container |
-        
+                
 ### Method Delete
 
-`Delete` invokes `Container` smart contract's `Delete` method and returns
-response immediately. After a new block is issued in FS chain, request is
-verified by Inner Ring nodes. After one more block in FS chain, the container
-is added into smart contract storage.
+Sends transaction calling contract method to delete container, and waits
+for the transaction to be executed. Deadline is determined by the
+transport protocol (e.g. `grpc-timeout` header). If the deadline is not
+set, server waits 15s after submitting the transaction.
 NOTE: a container deletion leads to the removal of every object in that
 container, regardless of any restrictions on the object removal (e.g. lock/locked
 object would be also removed).
 
 Statuses:
 - **OK** (0, SECTION_SUCCESS): \
-  request to remove the container has been sent to FS chain;
-- Common failures (SECTION_FAILURE_COMMON).
+  container successfully removed;
+- Common failures (SECTION_FAILURE_COMMON);
+- **CONTAINER_LOCKED** (3074, SECTION_CONTAINER): \
+  deleting a locked container is prohibited;
+- **CONTAINER_AWAIT_TIMEOUT** (3075, SECTION_CONTAINER): \
+  transaction was sent but not executed within the deadline.
 
       
 
@@ -76,14 +82,14 @@ smart contract, so signing algorithm must be supported by NeoVM.
 | ----- | ---- | ----------- |
 | container_id | ContainerID | Identifier of the container to delete from NeoFS |
 | signature | SignatureRFC6979 | `ContainerID` signed with the container owner's key according to RFC-6979. |
-                                  
+                                          
 
 __Response Body__ DeleteResponse.Body
 
 `DeleteResponse` has an empty body because delete operation is asynchronous
 and done via consensus in Inner Ring nodes.
 
-                       
+                               
 ### Method Get
 
 Returns container structure from `Container` smart contract storage.
@@ -104,7 +110,7 @@ Get container structure request body.
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 | container_id | ContainerID | Identifier of the container to get |
-                                  
+                                          
 
 __Response Body__ GetResponse.Body
 
@@ -116,7 +122,7 @@ has been already verified upon container creation.
 | container | Container | Requested container structure |
 | signature | SignatureRFC6979 | Signature of a stable-marshalled container according to RFC-6979. |
 | session_token | SessionToken | Session token if the container has been created within the session |
-                
+                        
 ### Method List
 
 Returns all owner's containers from 'Container` smart contract' storage.
@@ -135,7 +141,7 @@ List containers request body.
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 | owner_id | OwnerID | Identifier of the container owner |
-                                  
+                                          
 
 __Response Body__ ListResponse.Body
 
@@ -144,19 +150,22 @@ List containers response body.
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 | container_ids | ContainerID | List of `ContainerID`s belonging to the requested `OwnerID` |
-            
+                    
 ### Method SetExtendedACL
 
-Invokes 'SetEACL' method of 'Container` smart contract and returns response
-immediately. After one more block in FS chain, changes in an Extended ACL are
-added into smart contract storage.
+Sends transaction calling contract method to set container's extended ACL,
+and waits for the transaction to be executed. Deadline is determined by
+the transport protocol (e.g. `grpc-timeout` header). If the deadline is
+not set, server waits 15s after submitting the transaction.
 
 Statuses:
 - **OK** (0, SECTION_SUCCESS): \
-  request to save container eACL has been sent to FS chain;
-- Common failures (SECTION_FAILURE_COMMON).
+  container eACL successfully set;
+- Common failures (SECTION_FAILURE_COMMON);
+- **CONTAINER_AWAIT_TIMEOUT** (3075, SECTION_CONTAINER): \
+  transaction was sent but not executed within the deadline.
 
-                          
+                                  
 
 __Request Body:__ SetExtendedACLRequest.Body
 
@@ -167,7 +176,7 @@ reference. It will be taken from `EACLTable.container_id` field.
 | ----- | ---- | ----------- |
 | eacl | EACLTable | Extended ACL table to set for the container |
 | signature | SignatureRFC6979 | Signature of stable-marshalled Extended ACL table according to RFC-6979. |
-                                  
+                                          
 
 __Response Body__ SetExtendedACLResponse.Body
 
@@ -199,7 +208,7 @@ Get Extended ACL request body
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 | container_id | ContainerID | Identifier of the container having Extended ACL |
-                                  
+                                          
 
 __Response Body__ GetExtendedACLResponse.Body
 
@@ -212,7 +221,7 @@ the time of container creation.
 | eacl | EACLTable | Extended ACL requested, if available |
 | signature | SignatureRFC6979 | Signature of stable-marshalled Extended ACL according to RFC-6979. |
 | session_token | SessionToken | Session token if Extended ACL was set within a session |
-                    
+                            
 ### Method AnnounceUsedSpace
 
 Announces the space values used by the container for P2P synchronization.
@@ -234,14 +243,68 @@ Container used space announcement body.
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 | announcements | Announcement | List of announcements. If nodes share several containers, announcements are transferred in a batch. |
-                                   
+                                           
 
 __Response Body__ AnnounceUsedSpaceResponse.Body
 
 `AnnounceUsedSpaceResponse` has an empty body because announcements are
 one way communication.
 
-                             
+                                   
+### Method SetAttribute
+
+Sends transaction calling contract method to set container attribute, and
+waits for the transaction to be executed. Deadline is determined by the
+transport protocol (e.g. `grpc-timeout` header). If the deadline is not
+set, server waits 15s after submitting the transaction.
+
+Statuses:
+- **OK** (0, SECTION_SUCCESS): \
+  attribute successfully set;
+- Common failures (SECTION_FAILURE_COMMON);
+- **CONTAINER_AWAIT_TIMEOUT** (3075, SECTION_CONTAINER): \
+  transaction was sent but not executed within the deadline.
+
+                              
+
+__Request Body:__ SetAttributeRequest.Body
+
+Request payload message.
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| parameters | Parameters | Op parameters. |
+| signature | SignatureRFC6979 | N3 witness of stable-marshalled `parameters` field. The signature must authenticate either container owner or one of subjects in the `session_token` field if any. Signature according to `ECDSA_RFC6979_SHA256` scheme is also supported. |
+| session_token | SessionTokenV2 | Optional session token. The token must be issued by the container owner. The token must have at least one subject authenticated by `signature` field. The token must have at least one context with this container and `CONTAINER_SETATTRIBUTE` verb. |
+| session_token_v1 | SessionToken | Optional session token (V1). It must not be set together with `session_token` field that is highly recommended to be used instead. Requirements are the same for both. |
+                                                
+### Method RemoveAttribute
+
+Sends transaction calling contract method to remove container attribute,
+and waits for the transaction to be executed. Deadline is determined by
+the transport protocol (e.g. `grpc-timeout` header). If the deadline is
+not set, server waits 15s after submitting the transaction.
+
+Statuses:
+- **OK** (0, SECTION_SUCCESS): \
+  attribute successfully removed;
+- Common failures (SECTION_FAILURE_COMMON);
+- **CONTAINER_AWAIT_TIMEOUT** (3075, SECTION_CONTAINER): \
+  transaction was sent but not executed within the deadline.
+
+                          
+
+__Request Body:__ RemoveAttributeRequest.Body
+
+Request payload message.
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| parameters | Parameters | Op parameters. |
+| signature | SignatureRFC6979 | N3 witness of stable-marshalled `parameters` field. The signature must authenticate either container owner or one of subjects in the `session_token` field if any. Signature according to `ECDSA_RFC6979_SHA256` scheme is also supported. |
+| session_token | SessionTokenV2 | Optional session token. The token must be issued by the container owner. The token must have at least one subject authenticated by `signature` field. The token must have at least one context with this container and `CONTAINER_REMOVEATTRIBUTE` verb. |
+| session_token_v1 | SessionToken | Optional session token (V1). It must not be set together with `session_token` field that is highly recommended to be used instead. Requirements are the same for both. |
+                                                      
 ### Message AnnounceUsedSpaceRequest.Body.Announcement
 
 Announcement contains used space information for a single container.
@@ -251,7 +314,64 @@ Announcement contains used space information for a single container.
 | epoch | uint64 | Epoch number for which the container size estimation was produced. |
 | container_id | ContainerID | Identifier of the container. |
 | used_space | uint64 | Used space is a sum of object payload sizes of a specified container, stored in the node. It must not include inhumed objects. |
-                               
+                           
+### Message RemoveAttributeRequest.Body.Parameters
+
+Op parameters message.
+
+If container does not have the `attribute`, nothing is done and status
+`OK` is returned.
+
+`valid_until` is required request expiration time in Unix Timestamp
+format.
+
+`attribute` must be one of:
+ - `CORS`;
+ - `S3_TAGS`;
+ - `S3_SETTINGS`;
+ - `S3_NOTIFICATIONS`;
+ - `__NEOFS__LOCK_UNTIL`.
+
+Attribute-specific requirements:
+ - `__NEOFS__LOCK_UNTIL`: current timestamp must have already passed if any
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| container_id | ContainerID | Identifier of the container to remove attribute from. |
+| attribute | string | Attribute to be removed. |
+| valid_until | uint64 | Request expiration time. |
+      
+### Message SetAttributeRequest.Body.Parameters
+
+Op parameters message.
+
+If container does not have the `attribute`, it is added. Otherwise, its
+value is swapped.
+
+`valid_until` is required request expiration time in Unix Timestamp
+format.
+
+`attribute` must be one of:
+ - `CORS`;
+ - `S3_TAGS`;
+ - `S3_SETTINGS`;
+ - `S3_NOTIFICATIONS`;
+ - `__NEOFS__LOCK_UNTIL`.
+
+In general, requirements for `value` are the same as for container
+creation. Attribute-specific requirements:
+ - `__NEOFS__LOCK_UNTIL`: new timestamp must be after the current one if any
+ - `S3_TAGS`: must be a valid JSON object
+ - `S3_SETTINGS`: must be a valid JSON object
+ - `S3_NOTIFICATIONS`: must be a valid JSON object
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| container_id | ContainerID | Identifier of the container to set attribute for. |
+| attribute | string | Attribute to be set. |
+| value | string | New attribute value. |
+| valid_until | uint64 | Request expiration time. |
+          
 ### Message Container
 
 Container is a structure that defines object placement behaviour. Objects can
@@ -271,8 +391,7 @@ of stable-marshalled container message.
 ### Message Container.Attribute
 
 `Attribute` is a user-defined Key-Value metadata pair attached to the
-container. Container attributes are immutable. They are set at the moment of
-container creation and can never be added or updated.
+container.
 
 Key name must be a container-unique valid UTF-8 string. Value can't be
 empty. Containers with duplicated attribute names or attributes with empty
@@ -312,6 +431,8 @@ There are some "well-known" attributes affecting system behaviour:
       information, it is not indexed and object presence/number of copies
       is not proven after a successful object PUT operation; the behavior
       is the same as it was before this attribute introduction
+* __NEOFS__LOCK_UNTIL \
+  Timestamp until which the container cannot be deleted in Unix Timestamp format
 
 And some well-known attributes used by applications only:
 
@@ -319,6 +440,33 @@ And some well-known attributes used by applications only:
   Human-friendly name
 * Timestamp \
   User-defined local time of container creation in Unix Timestamp format
+* CORS \
+  It is used to configure your container to allow cross-origin requests (CORS). The rules are represented as a JSON
+  array of objects with the following fields:
+    1. "AllowedMethods": In this element, you specify allowed HTTP methods: GET, PUT, POST, DELETE, HEAD.
+    2. "AllowedOrigins": In this element, you specify the origins that you want to allow cross-domain requests from,
+    for example, http://www.example.com. The origin string can contain only one "*" wildcard character,
+    such as http://*.example.com. You can optionally specify "*" as the origin to enable all the origins to send
+    cross-origin requests. You can also specify https to enable only secure origins.
+    3. "AllowedHeaders": The element specifies which headers are allowed in a preflight request through the
+    "Access-Control-Request-Headers" request header. Each AllowedHeaders string in your configuration can contain
+    at most one "*" wildcard character. For example, x-app-*.
+    4. "ExposeHeaders": Each ExposeHeader element identifies a header in the response that you want customers
+    to be able to access from their applications (for example, from a JavaScript XMLHttpRequest object).
+    5. "MaxAgeSeconds": The element specifies the time in seconds that your browser can cache the response for a
+    preflight request as identified by the resource, the HTTP method, and the origin.
+    
+    The CORS schema is based on Amazon S3 CORS (https://docs.aws.amazon.com/AmazonS3/latest/userguide/cors.html)
+    configuration.
+* S3_TAGS \
+  It is used to store S3 gate-specific container tags. The value is controlled by the gate itself.
+  Despite it, the value must be valid JSON object.
+* S3_SETTINGS \
+  It is used to store S3 gate-specific container settings. The value is controlled by the gate itself.
+  Despite it, the value must be valid JSON object.
+* S3_NOTIFICATIONS \
+  It is used to store S3 gate-specific container notification settings. The value is controlled by the gate itself.
+  Despite it, the value must be valid JSON object.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |

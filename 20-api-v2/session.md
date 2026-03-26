@@ -80,6 +80,7 @@ request meta headers are folded in matryoshka style.
 | ttl | uint32 | Maximum number of intermediate nodes in the request route |
 | x_headers | XHeader | Request X-Headers |
 | session_token | SessionToken | Session token within which the request is sent |
+| session_token_v2 | SessionTokenV2 | Session token v2 with delegation chain support. Requests are invalid if both session_token and session_token_v2 are set. |
 | bearer_token | BearerToken | `BearerToken` with eACL overrides for the request |
 | origin | RequestMetaHeader | `RequestMetaHeader` of the origin request |
 | magic_number | uint64 | NeoFS network magic. Must match the value for the network that the server belongs to. |
@@ -112,12 +113,23 @@ Information about the response
 
 Verification info for the response signed by all intermediate nodes
 
+DEPRECATED: was eliminated from the protocol starting from version `v2.22`.
+
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 | body_signature | Signature | Response Body signature. Should be generated once by an answering node. |
 | meta_signature | Signature | Response Meta signature is added and signed by each intermediate node |
 | origin_signature | Signature | Signature of previous hops |
 | origin | ResponseVerificationHeader | Chain of previous hops signatures |
+   
+### Message SessionContextV2
+
+SessionContextV2 carries unified context for both ObjectService and ContainerService requests.
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| container | ContainerID | Container where operation is allowed. For container operations, this is the container being operated on. For object operations, this is the container holding the objects. Empty container ID means wildcard (applies to all containers). |
+| verbs | Verb | Operations authorized for this context. Must contain at least one verb (empty list is invalid). Verbs must be sorted in ascending order. Maximum number of verbs: 12. |
    
 ### Message SessionToken
 
@@ -150,6 +162,38 @@ Lifetime parameters of the token. Field names taken from rfc7519.
 | exp | uint64 | Expiration epoch, the last epoch when token is valid. |
 | nbf | uint64 | Not valid before epoch, the first epoch when token is valid. |
 | iat | uint64 | Issued at Epoch |
+   
+### Message SessionTokenV2
+
+SessionTokenV2 represents NeoFS Session Token with delegation support.
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| body | Body | Session token body. |
+| signature | Signature | Signature of the body by the issuer. |
+| origin | SessionTokenV2 | Origin token that was delegated to create this token. This creates a chain of trust through token embedding. When B receives a token from A and wants to delegate to C, B creates a new SessionTokenV2 and embeds A's token here.
+
+Delegation validation rules: 1. Lifetime must be within origin's lifetime (exp >= origin.exp, nbf <= origin.nbf). 2. Contexts must be narrowed (see contexts field validation rules). 3. If origin.final is true, delegation is forbidden. 4. Maximum chain depth: 4 tokens. |
+    
+### Message Target
+
+Target account for SessionTokenV2.
+It can be either direct (OwnerID) or indirect (NNS domain).
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| owner_id | OwnerID | Direct account reference via OwnerID (hash of verification script). |
+| nns_name | string | Indirect account reference via NeoFS Name Service. NNS name is a domain name that resolves to an OwnerID through the NeoFS Name Service. The name must be a valid DNS-like domain name (e.g., "example.neofs") that is registered in the NNS contract on the Neo blockchain. The NNS record should contain a string record with the corresponding OwnerID value in NEP-18 address format. |
+   
+### Message TokenLifetime
+
+Lifetime parameters of the token v2. Field names taken from rfc7519.
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| exp | uint64 | Expiration, the last valid Unix timestamp. |
+| nbf | uint64 | Not valid before, the first valid Unix timestamp. |
+| iat | uint64 | Issued at, the Unix timestamp when the token was issued. |
    
 ### Message XHeader
 
@@ -188,6 +232,8 @@ Container request verbs
 | 1 | PUT | Refers to container.Put RPC call |
 | 2 | DELETE | Refers to container.Delete RPC call |
 | 3 | SETEACL | Refers to container.SetExtendedACL RPC call |
+| 4 | SETATTRIBUTE | Refers to container.SetAttribute RPC call |
+| 5 | REMOVEATTRIBUTE | Refers to container.RemoveAttribute RPC call |
 
 ### Emun ObjectSessionContext.Verb
 
@@ -203,4 +249,26 @@ Object request verbs
 | 5 | DELETE | Refers to object.Delete RPC call |
 | 6 | RANGE | Refers to object.GetRange RPC call |
 | 7 | RANGEHASH | Refers to object.GetRangeHash RPC call |
+
+### Emun Verb
+
+Verb represents all possible operations in NeoFS that can be authorized
+via session tokens or delegation chains. This enum covers both object and
+container service operations.
+
+| Number | Name | Description |
+| ------ | ---- | ----------- |
+| 0 | VERB_UNSPECIFIED | Unknown verb |
+| 1 | OBJECT_PUT | Refers to object.Put RPC call |
+| 2 | OBJECT_GET | Refers to object.Get RPC call |
+| 3 | OBJECT_HEAD | Refers to object.Head RPC call |
+| 4 | OBJECT_SEARCH | Refers to object.Search RPC call |
+| 5 | OBJECT_DELETE | Refers to object.Delete RPC call |
+| 6 | OBJECT_RANGE | Refers to object.GetRange RPC call |
+| 7 | OBJECT_RANGEHASH | Refers to object.GetRangeHash RPC call |
+| 8 | CONTAINER_PUT | Refers to container.Put RPC call |
+| 9 | CONTAINER_DELETE | Refers to container.Delete RPC call |
+| 10 | CONTAINER_SETEACL | Refers to container.SetExtendedACL RPC call |
+| 11 | CONTAINER_SETATTRIBUTE | Refers to container.SetAttribute RPC call |
+| 12 | CONTAINER_REMOVEATTRIBUTE | Refers to container.RemoveAttribute RPC call |
  

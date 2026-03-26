@@ -72,6 +72,8 @@ Section of statuses for container-related operations.
 | ------ | ---- | ----------- |
 | 0 | CONTAINER_NOT_FOUND | [**3072**] Container not found. |
 | 1 | EACL_NOT_FOUND | [**3073**] eACL table not found. |
+| 2 | CONTAINER_LOCKED | [**3074**] Operation rejected by the container lock. |
+| 3 | CONTAINER_AWAIT_TIMEOUT | [**3075**] Async container operation timed out. |
 
 ### Emun Object
 

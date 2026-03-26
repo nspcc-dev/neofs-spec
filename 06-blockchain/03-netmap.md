@@ -64,26 +64,6 @@ func AddNode(n Node2)
 
 AddNode adds a new node into the candidate list for the next epoch. Node must have \[nodestate.Online\] state to be considered and the request must be signed by both the node and Alphabet. AddNode event is emitted upon success.
 
-##### AddPeer
-
-```go
-func AddPeer(nodeInfo []byte)
-```
-
-AddPeer proposes a node for consideration as a candidate for the next\-epoch network map. Information about the node is accepted in NeoFS API binary format. Call transaction MUST be signed by the public key sewn into the parameter \(compressed 33\-byte array starting from 3rd byte\), i.e. by candidate itself. If the signature is correct, the Notary service will submit a request for signature by the NeoFS Alphabet. After collecting a sufficient number of signatures, the node will be added to the list of candidates for the next\-epoch network map \('AddPeerSuccess' notification is thrown after that\).
-
-Deprecated: migrate to [AddNode](<#AddNode>).
-
-##### AddPeerIR
-
-```go
-func AddPeerIR(nodeInfo []byte)
-```
-
-AddPeerIR is called by the NeoFS Alphabet instead of AddPeer when signature of the network candidate is inaccessible. For example, when information about the candidate proposed via AddPeer needs to be supplemented. In such cases, a new transaction will be required and therefore the candidate's signature is not verified by AddPeerIR. Besides this, the behavior is similar.
-
-Deprecated: currently unused, to be removed in future.
-
 ##### CleanupThreshold
 
 ```go
@@ -126,6 +106,14 @@ GetEpochBlock returns block index when given epoch came. Returns 0 if the epoch 
 
 Use [LastEpochBlock](<#LastEpochBlock>) if you are interested in the current epoch.
 
+##### GetEpochBlockByTime
+
+```go
+func GetEpochBlockByTime(ts int) int
+```
+
+GetEpochBlockByTime returns the block index when the latest epoch that started not later than the provided block time came. Returns 0 if the time precedes any known epoch.
+
 ##### GetEpochTime
 
 ```go
@@ -164,6 +152,14 @@ func IsStorageNodeInEpoch(key interop.PublicKey, epoch int) bool
 
 IsStorageNodeInEpoch is the same as [IsStorageNode](<#IsStorageNode>), but allows to do the check for previous epochs if they're still stored in the contract. If this epoch is no longer stored \(or too new\) it will return false.
 
+##### IsStorageNodeStatus
+
+```go
+func IsStorageNodeStatus(key interop.PublicKey, epoch int, status nodestate.Type) bool
+```
+
+IsStorageNodeStatus checks if the given status matches for the given node in the specified epoch.
+
 ##### LastEpochBlock
 
 ```go
@@ -198,7 +194,7 @@ ListCandidates returns an iterator for a set of current candidate nodes. Iterato
 func ListNodes() iterator.Iterator
 ```
 
-ListNodes provides an iterator to walk over current node set. It is similar to [Netmap](<#Netmap>) method, iterator values are [Node2](<#Node2>) structures.
+ListNodes provides an iterator to walk over current \(as in corresponding to the current epoch network map\) node set. Iterator values are [Node2](<#Node2>) structures.
 
 ##### ListNodesEpoch
 
@@ -281,16 +277,6 @@ UpdateState proposes a new state of candidate for the next\-epoch network map. T
 UpdateState panics if requested candidate is missing in the current candidate set. UpdateState drops candidate from the candidate set if it is switched to \[nodestate.Offline\].
 
 State MUST be from the \[nodestate.Type\] enum. Public key MUST be interop.PublicKeyCompressedLen bytes.
-
-##### UpdateStateIR
-
-```go
-func UpdateStateIR(state nodestate.Type, publicKey interop.PublicKey)
-```
-
-UpdateStateIR is called by the NeoFS Alphabet instead of UpdateState when signature of the network candidate is inaccessible. In such cases, a new transaction will be required and therefore the candidate's signature is not verified by UpdateStateIR. Besides this, the behavior is similar.
-
-Deprecated: migrate to [UpdateState](<#UpdateState>) and [DeleteNode](<#DeleteNode>).
 
 ##### Version
 
