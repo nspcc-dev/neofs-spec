@@ -67,6 +67,12 @@ Selector can return different set of nodes for every epoch; however, they are al
 
 Replica is an independent set of nodes where single object copy is stored. It can refer to selector (by default all nodes are considered) and can specify a number of copies to store.
 
+### Initial placement
+
+Placement policy can also define optional initial placement rules. They are used only during the initial `PUT` of the object and allow the network to accept the object before the full placement policy is satisfied. After that, background replication can finish placement according to the main policy.
+
+Initial placement can either limit particular replica and erasure-coding rules or set a smaller total number of replicas required for a successful `PUT`. In the latter case, the policy can additionally prefer nodes local to the receiving storage node. Initial placement rules must be stricter than the main policy and cannot repeat it exactly.
+
 ### Container Backup Factor
 
 Container backup factor (`CBF`) controls maximum number of nodes to be included in a container's node set. It doesn't set strict boundaries, though. Consider placement policy which selects `X` nodes in 2 different countries with `CBF 2`. In this case, we can expect container's node set to have from `X` to `X * 2` nodes in every selected country. Having less than `X * 2` nodes is not considered as fail.

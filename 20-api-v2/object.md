@@ -83,10 +83,13 @@ Please refer to detailed `XHeader` description.
 
 Statuses:
 - **OK** (0, SECTION_SUCCESS): \
-  object has been successfully saved in the container;
+  object has been successfully saved in the container according to the
+  initial placement policy if it is configured, or according to the full
+  container placement policy otherwise;
 - **INCOMPLETE** (1, SECTION_SUCCESS): \
   object was put to some nodes, but the number of replicas is not sufficient
-  to satisfy placement policy;
+  to satisfy the initial placement policy if it is configured, or the full
+  placement policy otherwise;
 - Common failures (SECTION_FAILURE_COMMON);
 - **ACCESS_DENIED** (2048, SECTION_OBJECT): \
   write access to the container is denied;
