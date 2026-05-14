@@ -69,9 +69,9 @@ Replica is an independent set of nodes where single object copy is stored. It ca
 
 ### Initial placement
 
-Placement policy can also define optional initial placement rules. They are used only during the initial `PUT` of the object and allow the network to accept the object before the full placement policy is satisfied. After that, background replication can finish placement according to the main policy.
+Placement policy can also define optional initial placement rules. They are used only during the initial `PUT` of the object and allow the network to accept the object before the full placement policy is satisfied. After that, regular replication mechanisms continue converging placement to the main policy.
 
-Initial placement can either limit particular replica and erasure-coding rules or set a smaller total number of replicas required for a successful `PUT`. In the latter case, the policy can additionally prefer nodes local to the receiving storage node. Initial placement rules must be stricter than the main policy and cannot repeat it exactly.
+Initial placement can either limit particular replica and erasure-coding rules or set a smaller total number of replicas required for a successful `PUT`. In the latter case, the policy can additionally prefer nodes local to the receiving storage node. Initial placement must relax the success condition relative to the main policy, for example by lowering per-replica or total replica requirements, and therefore cannot repeat the main policy exactly.
 
 ### Container Backup Factor
 
