@@ -1,6 +1,6 @@
 ### Object Expiration
 
-In NeoFS, Objects may have an "expiration date". When an Object expires, it is marked for deletion and isn't available anymore. There is a well-known `__NEOFS__EXPIRATION_EPOCH` attribute which specifies the expiration date: the Object remains available throughout that epoch and expires after it occurs. Only a Regular Object may expire.
+In NeoFS, Objects may have an "expiration date". When an Object expires, it is marked for deletion and isn't available anymore. There is a well-known `__NEOFS__EXPIRATION_EPOCH` attribute which specifies the expiration date: the Object remains available throughout that epoch and expires after it ends. Only a Regular Object may expire.
 
 A Tombstone object is created upon Regular Object or Storage Group deletion. Every Tombstone object has the `__NEOFS__EXPIRATION_EPOCH` attribute as well. Thereby Storage Engine is able to filter Tombstones and select ones for total cleanup.
 
