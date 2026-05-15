@@ -70,3 +70,15 @@ Replica is an independent set of nodes where single object copy is stored. It ca
 ### Container Backup Factor
 
 Container backup factor (`CBF`) controls maximum number of nodes to be included in a container's node set. It doesn't set strict boundaries, though. Consider placement policy which selects `X` nodes in 2 different countries with `CBF 2`. In this case, we can expect container's node set to have from `X` to `X * 2` nodes in every selected country. Having less than `X * 2` nodes is not considered as fail.
+
+### Initial placement
+
+Placement policy can also define optional initial placement rules. They are used only during object creation and allow the network to accept the object before the full placement policy is satisfied. If initial placement is not configured, object creation succeeds only after the full placement policy is satisfied. After successful initial placement, background replication continues working toward the full main placement policy.
+
+Initial placement has three controls:
+
+1. `replica_limits` — per-rule limits for initial placement. The list is aligned with all `Replicas` first and then with all erasure-coding rules. For replica rules, each value limits how many copies are required for the corresponding replica during initial placement. For erasure-coding rules, `0` means that the rule is skipped during initial placement and `1` means that it must be completed. The list must cover all replica and erasure-coding rules, and at least one element must be non-zero.
+2. `max_replicas` — the total number of replicas and erasure-coding partitions sufficient for a successful `PUT`. It limits the overall amount of work required during initial placement and cannot exceed the total allowed by `replica_limits` or by the main placement policy if `replica_limits` is not set.
+3. `prefer_local` — optimization flag for `max_replicas`. When it is enabled, the receiving storage node first tries to place the initial replicas in locations that include itself. If that attempt does not satisfy the policy, regular placement rules are used.
+
+If initial placement is configured, it must relax the success condition relative to the main policy. Therefore, it cannot repeat the main policy exactly.
