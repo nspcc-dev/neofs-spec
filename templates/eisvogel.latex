@@ -657,7 +657,7 @@ $if(tables)$
 \renewcommand{\arraystretch}{1.3}     % spacing (padding)
 \cmidrulekern=-\tabcolsep             % extend booktabs rules to the row color width
 \makeatletter
-\def\@BLTrule{\@ifnextchar({\@@BLTrule}{\@@BLTrule(lr)}} % apply the extension on both sides
+\def\@BLTrule{\@ifnextchar({\@@BLTrule}{\@@BLTrule(lr)}} % default lr = left/right extension
 \makeatother
 
 $if(table-use-row-colors)$
