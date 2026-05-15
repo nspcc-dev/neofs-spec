@@ -655,6 +655,10 @@ $if(tables)$
 \arrayrulecolor{table-rule-color}     % color of \toprule, \midrule, \bottomrule
 \setlength\heavyrulewidth{0.3ex}      % thickness of \toprule, \bottomrule
 \renewcommand{\arraystretch}{1.3}     % spacing (padding)
+\cmidrulekern=-\tabcolsep             % let longtable rules reach the row color edges
+\makeatletter
+\def\@BLTrule{\@ifnextchar({\@@BLTrule}{\@@BLTrule(lr)}} % default to left/right extension when no trim is requested
+\makeatother
 
 $if(table-use-row-colors)$
 % TODO: This doesn't work anymore. I don't know why.
