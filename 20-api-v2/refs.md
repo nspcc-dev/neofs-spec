@@ -151,7 +151,7 @@ Checksum algorithm type.
 | Number | Name | Description |
 | ------ | ---- | ----------- |
 | 0 | CHECKSUM_TYPE_UNSPECIFIED | Unknown. Not used |
-| 1 | TZ | Tillich-Zemor homomorphic hash function |
+| 1 | TZ | Tillich-Zemor homomorphic hash function DEPRECATED starting from 2.23 API version. |
 | 2 | SHA256 | SHA-256 |
 
 ### Emun SignatureScheme
