@@ -34,10 +34,18 @@ creation by `Container` smart contract. `ContainerID` is a SHA256 hash of
 the stable-marshalled container strucutre, hence there is no need for
 additional signature checks.
 
+Optional `eacl` field allows to set extended access rules for the
+container. It must be either set or unset along with `eacl_signature`.
+If session token is used for container creation with a non-empty initial
+eACL, it must be V2 versioned and it must be authorized for both
+CONTAINER_PUT and CONTAINER_SETEACL operations.
+
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 | container | Container | Container structure to register in NeoFS |
 | signature | SignatureRFC6979 | Signature of a stable-marshalled container according to RFC-6979. |
+| eacl | EACLTable | Extended ACL for the container. |
+| eacl_signature | SignatureRFC6979 | N3 witness of stable-marshalled `eacl` field. The witness must authenticate either container owner or one of subjects in the `eacl_session_token` field if any. Signature according to `ECDSA_RFC6979_SHA256` scheme is also supported. |
                                           
 
 __Response Body__ PutResponse.Body
@@ -157,6 +165,8 @@ Sends transaction calling contract method to set container's extended ACL,
 and waits for the transaction to be executed. Deadline is determined by
 the transport protocol (e.g. `grpc-timeout` header). If the deadline is
 not set, server waits 15s after submitting the transaction.
+
+Starting from 2.24 version, initial eACL is supported in Put request.
 
 Statuses:
 - **OK** (0, SECTION_SUCCESS): \

@@ -175,8 +175,8 @@ request.
 | 3 | PUT | Put |
 | 4 | DELETE | Delete |
 | 5 | SEARCH | Search |
-| 6 | GETRANGE | GetRange |
-| 7 | GETRANGEHASH | GetRangeHash |
+| 6 | GETRANGE | GetRange. DEPRECATED: use parameterized Get instead. |
+| 7 | GETRANGEHASH | GetRangeHash. DEPRECATED: should not be used. |
 
 ### Emun Role
 

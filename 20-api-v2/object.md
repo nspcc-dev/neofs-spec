@@ -53,6 +53,8 @@ GET Object request body
 | ----- | ---- | ----------- |
 | address | Address | Address of the requested object |
 | raw | bool | If `raw` flag is set, request will work only with objects that are physically stored on the peer node |
+| range | Range | Requested payload range (whole payload if not specified). |
+| payload_only | bool | If set, makes Get return payload only, completely omitting Init response message with header data. |
                                             
 
 __Response Body__ GetResponse.Body
@@ -322,6 +324,8 @@ Like in `Get` method, the response uses gRPC stream. Requested range can be
 restored by concatenation of all received payload chunks keeping the receiving
 order.
 
+DEPRECATED: use `Get` with `range` (and `payload_only` if needed) parameter.
+
 Extended headers can change `GetRange` behaviour:
 * __NEOFS__NETMAP_EPOCH \
   Will use the requsted version of Network Map for object placement
@@ -380,6 +384,8 @@ Returns homomorphic or regular hash of object's payload range after
 applying XOR operation with the provided `salt`. Ranges are set of (offset,
 length) tuples. Hashes order in response corresponds to the ranges order in
 the request. Note that hash is calculated for XORed data.
+
+DEPRECATED: no valid use cases.
 
 Extended headers can change `GetRangeHash` behaviour:
 * __NEOFS__NETMAP_EPOCH \
@@ -519,7 +525,7 @@ Object Header
 | payload_length | uint64 | Size of payload in bytes. `0xFFFFFFFFFFFFFFFF` means `payload_length` is unknown. |
 | payload_hash | Checksum | SHA256 hash of payload bytes |
 | object_type | ObjectType | Type of the object payload content |
-| homomorphic_hash | Checksum | Homomorphic hash of the object payload (Tillich-Zemor). |
+| homomorphic_hash | Checksum | Homomorphic hash of the object payload (Tillich-Zemor). DEPRECATED. Objects of 2.23+ version must have it empty. |
 | session_token | SessionToken | Session token, if it was used during Object creation. Need it to verify integrity and authenticity out of Request scope. Only one of `session_token` or `session_token_v2` can be set. |
 | attributes | Attribute | User-defined object attributes. Attributes vary in length from object to object, so keep an eye on the entire Header limit depending on the context. |
 | split | Split | Position of the object in the split hierarchy |
@@ -655,8 +661,6 @@ prefix to the name. Here is the list of fields available via this prefix:
   payload_hash
 * $Object:objectType \
   object_type
-* $Object:homomorphicHash \
-  homomorphic_hash
 * $Object:split.parent \
   object_id of parent
 * $Object:split.splitID \
