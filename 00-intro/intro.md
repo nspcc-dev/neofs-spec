@@ -87,4 +87,21 @@ with low-spec hardware in private networks.
 
 ## Out of Scope
 
+Even though FS part of NeoFS has something to say about files, NeoFS does not
+and will not provide proper file semantics (as can be expected from POSIX).
+It can be emulated at gateway level, but at its core NeoFS is an object storage
+with immutable objects and all NeoFS object operations are built around this
+principle.
+
+NeoFS objects are also not NFTs by their nature even though objects can be
+used to store NFT data. Still, it doesn't natively provide the semantics
+expected for NFT and it has to implemented externally. However this semantics
+is provided at the container level currently.
+
+There is no attempt to provide any built-in payment functionality other than
+protocol-level fees and storage payments. This means any "pay to access object"
+schemes have to be implemented elsewhere. However, NeoFS provides enough
+building blocks to make it possible.
+
+
 ## Future Goals
