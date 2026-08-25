@@ -32,6 +32,36 @@ Together, this set of features makes it possible to utilize a dApp's Smart Contr
 
 ## Background
 
+While blockchain technology solves synchronization problem and gives some
+shared state to applications it was never designed to store any decent amounts
+of data. But real applications have storage requirements for different
+purposes, so an extension of some kind for blockchain was needed and that's
+the initial problem NeoFS tried to solve.
+
+It at the same time wanted to keep the advantages of a distributed system
+since many applications built around blockchain technology still had a lot
+of centralization points on their backends. A typical one is using cloud
+storage providers for users data and hosting. This is also one of the key
+requirements for NeoFS, to be able to build an application without external
+centralized dependencies.
+
+Then we always wanted to keep the spirit of decentralization in that no single
+entity should be responsible for the whole network/dictate policies and prices.
+That's why the network allows anyone to spin up a node to store some data and
+other network-level functions are performed by a set of keys designated by
+a Neo network committee.
+
+The same requirement always brought another implication with it: in NeoFS
+nodes can't trust each other in the same way blockchain nodes can not trust
+each other by default. This affects both request verifications and storage
+proofing, the network needs to be safe both from malicious users and from
+malicious nodes.
+
+As project evolved these initial requirements were augmented with various
+additional ones like ability to run efficient private networks, so current
+NeoFS tries to be more generic and cover more scenarios.
+
+
 ## Technical Requirements
 
 ## Out of Scope
