@@ -19,13 +19,13 @@ table-use-row-colors: true
 
 \Gls{NeoFS} is a decentralized distributed object storage system integrated with the [Neo Blockchain](https://neo.org).
 
-We store and distribute users' data across a peer-to-peer network of \Glspl{Node}. Whether a business or an individual, any Neo user may join the network and get paid for providing storage resources to others, or pay a competitive price to employ NeoFS as a storage solution.
+We store and distribute users' data across a peer-to-peer network of \Glspl{Node}. Whether a business or an individual, any Neo user can join the network and get paid for providing storage resources to others, or pay a competitive price to use NeoFS as a storage solution.
 
-The decentralized architecture and flexible storage policies allow users to reliably store object data in the NeoFS network. Each \Gls{Node} is responsible for executing the specific storage policies selected by the user, including the geographical location, redundancy level, number of nodes, type of disk, capacity, etc. Thus, NeoFS enables a transparent data placement process which gives full control over data to the users.
+Decentralized architecture and flexible storage policies allow users to reliably store object data in the NeoFS network. Each \Gls{Node} is responsible for executing specific storage policies selected by the user, including geographical location, redundancy level, number of nodes, type of disk, capacity, etc. Thus, NeoFS enables transparent data placement process which gives full control over data to users.
 
-Deep [Neo Blockchain](https://neo.org) integration allows NeoFS to be used by \glspl{dApp} directly from [NeoVM](https://docs.neo.org/docs/en-us/basic/technology/neovm.html) on the [Smart Contract](https://docs.neo.org/docs/en-us/basic/technology/neocontract.html) code level. As a result, dApps are not limited to on-chain storage and one can manipulate large amounts of data without paying a prohibitive price.
+Deep [Neo Blockchain](https://neo.org) integration allows NeoFS to be used by \glspl{dApp} directly from [NeoVM](https://docs.neo.org/docs/en-us/basic/technology/neovm.html) at the [Smart Contract](https://docs.neo.org/docs/en-us/basic/technology/neocontract.html) code level. As a result, dApps are not limited to on-chain storage and one can manipulate large amounts of data without paying a prohibitive price.
 
-NeoFS provides native [gRPC](https://grpc.io) \Gls{api} and supports popular protocol gateways such as [AWS S3](https://docs.aws.amazon.com/AmazonS3/latest/API/Welcome.html), [HTTP](https://wikipedia.org/wiki/Hypertext_Transfer_Protocol), [FUSE](https://wikipedia.org/wiki/Filesystem_in_Userspace), and [sFTP](https://en.wikipedia.org/wiki/SSH_File_Transfer_Protocol), which allows developers to easily integrate their existing applications without rewriting code.
+NeoFS provides native [gRPC](https://grpc.io) \Gls{api} and supports popular protocol gateways such as [AWS S3](https://docs.aws.amazon.com/AmazonS3/latest/API/Welcome.html) and [REST](https://en.wikipedia.org/wiki/REST), which allows developers to easily integrate their existing applications without rewriting code.
 
 Together, this set of features makes it possible to utilize a dApp's Smart Contract to manage monetary assets and obtain data access permissions on NeoFS through a regular Web Browser or a mobile application.
 
