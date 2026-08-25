@@ -64,6 +64,27 @@ NeoFS tries to be more generic and cover more scenarios.
 
 ## Technical Requirements
 
+NeoFS can work on a broad range of modern hardware. Client-side its
+requirements are not much different from any other cloud storage providers
+and working via gateways brings the cost even lower, anything that can
+perform HTTP requests can access NeoFS data.
+
+Storage nodes require some disk space to provide it to users and need to
+have good internet connectivity to answer various requests in timely manner
+(otherwise they can get bad reputation and/or be kicked out of the network
+map). CPU-wise any mid-range modern desktop processor is sufficient and
+real nodes can function with as low as 8 GB of RAM, but this can depend
+on implementation and we recommend more in general.
+
+Inner ring nodes have lower resource requirements than storage nodes, but
+their connectivity and availability matters even more since they're
+responsible for action approval and network synchronization.
+
+Specific NeoFS implementations can have more precise requirements, but in
+general there is nothing in the protocol that makes it impossible to work
+with low-spec hardware in private networks.
+
+
 ## Out of Scope
 
 ## Future Goals
