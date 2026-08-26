@@ -105,3 +105,13 @@ building blocks to make it possible.
 
 
 ## Future Goals
+
+NeoFS solves the storage problem for dApps, but to be able to create any kind
+of decentralized applications computation needs to be distributed as well.
+Blockchain allows for some compute, but this resource is limited and costly,
+CPU-intensive application-specific problems are still solved elsewhere and
+NeoFS can provide a platform for changing that with Lambda support and other
+related technologies.
+
+Since one of the core NeoFS features is rich object metadata system it can
+also be leveraged in task-specific scenarios with additional optimizations.
