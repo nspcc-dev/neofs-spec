@@ -4,12 +4,14 @@ In NeoFS, storage policy is a flexible way to specify rules for storing objects.
 
 Because Storage Policy is attached to the container structure there is a compact definition for system's internal use and some higher level language definitions for humans to use, that are translated to internal representation. For example, there is an SQL-like language to be used by humans, JSON notation to be used in software and there may be many others, like a graphical language using [Blockly](https://developers.google.com/blockly). In our examples we will use SQL-like notation.
 
-Storage Policy internal definition consists of four parts:
+Storage Policy internal definition consists of six parts:
 
 1. Filters
 2. Selectors
 3. Replicas
-4. Container Backup Factor
+4. EC rules
+5. Container Backup Factor
+6. Initial placement
 
 The result of applying a storage policy to the netmap is a set of nodes structured by `Replicas` and used to select candidates to put objects on. The selection algorithm is deterministic, hence on different nodes or clients the same Storage Policy applied to the same version of netmap will give the identical result.
 
@@ -66,6 +68,13 @@ Selector can return different set of nodes for every epoch; however, they are al
 ### Replicas
 
 Replica is an independent set of nodes where single object copy is stored. It can refer to selector (by default all nodes are considered) and can specify a number of copies to store.
+
+### EC rules
+
+Erasure coding rules are somewhat similar to replicas definition in that they're
+defining a set of nodes storing object data, but this data is split and encoded
+according to EC policy settings (data and parity parts). More on EC in the
+respective chapter.
 
 ### Container Backup Factor
 
