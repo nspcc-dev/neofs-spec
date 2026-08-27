@@ -8,6 +8,11 @@ There are two active versions of split objects, both are supported, but second o
 
 ### Object Split V1
 
+V1 split is organized as a chain of objects sharing common split ID. Large
+object data is available only in the last part and duplicated in the link
+object that acts like a chain index. V1 Link object is seriously limited by
+header size.
+
 ![Large object split V1](pic/object_split_all_v1)
 
 * First part \
@@ -23,6 +28,13 @@ There are two active versions of split objects, both are supported, but second o
   There are special "Link objects" that have the same common `split_id`, do not have any payload, but contain original object's `ObjectID` in `parent` field, it's signature in `parent_signature`, original object's `Header` in `parent_header` and the list of all object parts with payload in repeated `children` field. Link objects help to speed up large object reconstruction and `HEAD` request processing. If Link object is lost, the original large object still will be reconstructed from its parts, but it will require more actions from NeoFS nodes.
 
 ### Object Split V2
+
+V2 split is organized as a chain of objects that start with a special object
+and then sharing this first object ID as a split ID. Initial large object data
+is available in the first part, but its incomplete, while the last part
+contains complete data (just like in V1). V2 Link object is also a chain index,
+but all of its data is stored in object payload which allows for very big
+objects unlike V1 split.
 
 ![Large object split V2](pic/object_split_all_v2)
 
