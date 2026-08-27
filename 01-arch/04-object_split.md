@@ -1,10 +1,10 @@
 ## Large objects split
 
-NeoFS has a limit on the maximal physically stored single object size. If there is a large object exceeding that `MaxObjectSize`, it will be split into a series of smaller objects that are logically linked together.
+NeoFS has a limit on the maximal physically stored single object size. If there is a large object exceeding configured `MaxObjectSize`, it will be split into a series of smaller objects that are logically linked together.
 
-For each part of the original object's payload, a separate object with own `ObjectID` will be created. The large object will not be physically present in the system, but it will be reconstructed from the object parts when requested.
+For each part of the original object's payload, a separate object with its own `ObjectID` will be created. Large object will not be physically present in the system, but it will be reconstructed from object parts when requested.
 
-There are two active versions of the split objects, both are supported, but the second one is more flexible and support attributes-based ACL rules. The first one is kept for backward compatibility only. All objects participating in the split have the `Split` headers set. Depending on the place in the split hierarchy, it has different field combinations.
+There are two active versions of split objects, both are supported, but second one is more flexible and supports attribute-based ACL rules. The first one is kept for backward compatibility only. All objects participating in the split have `Split` headers set. Depending on the place in the split hierarchy, it has different field combinations.
 
 ### Object Split V1
 
@@ -20,10 +20,9 @@ There are two active versions of the split objects, both are supported, but the 
   At this point, all the information about the object under split is known. Hence, the last part contains not only the `split_id` and `previous` fields, but also the `ObjectID` of the original large object in its `parent` field, signed `ObjectID` in `parent_signature` and original object's `Header` in `parent_header`.
 
 * Link object \
-  There are special "Link objects" that have the same common `split_id`, do not have any payload, but contain original object's `ObjectID` in `parent` field, it's signature in `parent_signature`, original object's `Header` in `parent_header` and the list of all object parts with payload in repeated `children` field. Link objects help to speed up the large object reconstruction and `HEAD` requests processing. If Link object is lost, the original large object still will be reconstructed from its parts, but it will require more actions from NeoFS nodes.
+  There are special "Link objects" that have the same common `split_id`, do not have any payload, but contain original object's `ObjectID` in `parent` field, it's signature in `parent_signature`, original object's `Header` in `parent_header` and the list of all object parts with payload in repeated `children` field. Link objects help to speed up large object reconstruction and `HEAD` request processing. If Link object is lost, the original large object still will be reconstructed from its parts, but it will require more actions from NeoFS nodes.
 
 ### Object Split V2
-\pagebreak
 
 ![Large object split V2](pic/object_split_all_v2)
 
@@ -37,7 +36,7 @@ There are two active versions of the split objects, both are supported, but the 
   At this point, all the information about the object under split is known. Hence, the last part contains not only the `first` and `previous` fields, but also the `ObjectID` of the original large object in its `parent` field, signed `ObjectID` in `parent_signature` and original object's `Header` in `parent_header`.
 
 * Link object \
-  There are special "Link objects" that have the same common `first` field, but also contain original object's `ObjectID` in `parent` field, its signature in `parent_signature`, original object's `Header` in `parent_header` and a list of all the object parts' IDs paired with their sizes encoded in the payload. Link objects help to speed up the large object reconstruction and `HEAD` requests processing. If a Link object is lost, the original large object still will be reconstructed from its parts, but it will require more actions from NeoFS nodes.
+  There are special "Link objects" that have the same common `first` field, but also contain original object's `ObjectID` in `parent` field, its signature in `parent_signature`, original object's `Header` in `parent_header` and a list of all the object parts' IDs paired with their sizes encoded in the payload. Link objects help to speed up large object reconstruction and `HEAD` request processing. If a Link object is lost, the original large object still will be reconstructed from its parts, but it will require more actions from NeoFS nodes.
 
 All the split hierarchy objects may be physically stored on different nodes. During reconstruction, at first the link object or the last part object will be found. If it's a HEAD request, the link object or the last part object will have all the information required to return the original large object's HEAD response. For a GET request, the payload will be taken from part objects listed in the Link object's payload. As they are ordered, it will be possible to begin streaming the payload as soon as the first part object becomes available. If a Link object is lost, some additional time will be spent on reconstructing the list from `split.previous` header fields.
 
