@@ -3,13 +3,9 @@
 start
 partition "BasicACL Check" {
 :SelectNibbleMask;
-if (isSystem?) then (yes)
- if (isIR?) then (yes)
-  :CheckIR;
- else (isContainer)
-  :CheckContainer;
-endif
-
+if (isContainer?) then (yes)
+  :AllowContainerNodeOps;
+  stop
 else (no)
   if (isOwner?) then (yes)
     :CheckOwner;
@@ -31,17 +27,10 @@ if (hasBearerEnabled?) then (yes)
   endif
 endif
 
-if (isFinal?) then (yes)
-  stop
-endif
 }
 
 partition "ExtendedACL Check" {
-if (isSystem) then (yes)
-end
-else
 :CheckExtendedACL;
-endif
 stop
 }
 
