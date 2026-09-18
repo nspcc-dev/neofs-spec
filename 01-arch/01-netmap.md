@@ -1,8 +1,19 @@
 ## Epoch
 
-For the NeoFS network to work properly, all nodes should have the same view of the network. This snapshot view must be tied to some timestamp, but in the distributed environment for NeoFS there is no reliable common source of time other then a monotonically increasing number of blocks in the Blockchain. It means we can only use [discrete time model](https://en.wikipedia.org/wiki/Discrete_time_and_continuous_time) and define some time period in blocks to snapshot the common view of the network. This period has to be small enough to keep the snapshot information fresh and big enough to let the information be distributed fast enough between network nodes. This regular time period is called Epoch.
+For the NeoFS network to work properly, all nodes should have the same view of
+the network. This view can not change too often both because of its own
+synchronization issues and because it also affects data distribution and
+policies. A number of NeoFS subsystems like payment and reputation also
+need some well-known period of time for their operation. This regular time
+period is called Epoch.
 
-During an Epoch all common information snapshots are immutable. New nodes can be registered, misbehaving nodes can be removed, some nodes can go offline, but those changes will be reflected only in the next version of the netmap issued for the next Epoch. All these changes signed by Inner Ring are propagated to the network only when the new Epoch starts.
+Since NeoFS is synchronized via Blockchain epochs are tied to block timestamps
+(initially to block numbers, but this was changed) following [discrete time model](https://en.wikipedia.org/wiki/Discrete_time_and_continuous_time),
+usually this period is set to one hour of blockchain time. During an Epoch
+network map can not be changed. Even though new nodes are allowed to register
+and be removed, those changes will be reflected only in the next version
+of the netmap issued for the next Epoch.
+
 
 ## Network Map
 
