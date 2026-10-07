@@ -43,7 +43,7 @@ Statuses:
 - **TOKEN_EXPIRED** (4097, SECTION_SESSION): \
   provided session token has expired.
 
-             
+              
 
 __Request Body:__ GetRequest.Body
 
@@ -55,7 +55,8 @@ GET Object request body
 | raw | bool | If `raw` flag is set, request will work only with objects that are physically stored on the peer node |
 | range | Range | Requested payload range (whole payload if not specified). |
 | payload_only | bool | If set, makes Get return payload only, completely omitting Init response message with header data. |
-                                            
+| extended_range | ExtendedRange | Requested extended payload range. MUST NOT be set together with `range`. |
+                                                
 
 __Response Body__ GetResponse.Body
 
@@ -66,7 +67,7 @@ GET Object Response body
 | init | Init | Initial part of the object stream |
 | chunk | bytes | Chunked object payload |
 | split_info | SplitInfo | Meta information of split hierarchy for object assembly. |
-                           
+                              
 ### Method Put
 
 Put the object into container. Request uses gRPC stream. First message
@@ -102,13 +103,16 @@ Statuses:
   size quota set by user was exceeded;
 - **CONTAINER_NOT_FOUND** (3072, SECTION_CONTAINER): \
   object storage container not found;
+- **CONTAINER_REVISION_MISMATCH** (3076, SECTION_CONTAINER): \
+  if requester attached container revision he knows and it does not match
+  the server's one.
 - **TOKEN_NOT_FOUND** (4096, SECTION_SESSION): \
   (for trusted object preparation) session private key does not exist or has
 been deleted;
 - **TOKEN_EXPIRED** (4097, SECTION_SESSION): \
   provided session token has expired.
 
-                       
+                        
 
 __Request Body:__ PutRequest.Body
 
@@ -118,7 +122,7 @@ PUT request body
 | ----- | ---- | ----------- |
 | init | Init | Initial part of the object stream |
 | chunk | bytes | Chunked object payload |
-                                             
+                                                 
 
 __Response Body__ PutResponse.Body
 
@@ -127,7 +131,7 @@ PUT Object response body
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 | object_id | ObjectID | Identifier of the saved object |
-                
+                   
 ### Method Delete
 
 Delete the object from a container. There is no immediate removal
@@ -155,6 +159,9 @@ Statuses:
   deleting a locked object is prohibited;
 - **CONTAINER_NOT_FOUND** (3072, SECTION_CONTAINER): \
   object container not found;
+- **CONTAINER_REVISION_MISMATCH** (3076, SECTION_CONTAINER): \
+  if requester attached container revision he knows and it does not match
+  the server's one.
 - **TOKEN_EXPIRED** (4097, SECTION_SESSION): \
   provided session token has expired.
 
@@ -167,7 +174,8 @@ Object DELETE request body
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 | address | Address | Address of the object to be deleted |
-                                            
+| container_revision | uint64 | Starting from API v2.27.0, requester may attach container revision to ensure container state is up to date. If server's known revision does not match the requested one, it must return **CONTAINER_REVISION_MISMATCH** (3076) response status with no payload. |
+                                                
 
 __Response Body__ DeleteResponse.Body
 
@@ -176,7 +184,7 @@ Object DELETE Response has an empty body.
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 | tombstone | Address | Address of the tombstone created for the deleted object |
-                                       
+                                           
 ### Method Head
 
 Returns the object Headers without data payload. By default full header is
@@ -205,7 +213,7 @@ Statuses:
 - **TOKEN_EXPIRED** (4097, SECTION_SESSION): \
   provided session token has expired.
 
-                  
+                   
 
 __Request Body:__ HeadRequest.Body
 
@@ -218,7 +226,7 @@ Object HEAD request body
 
 DEPRECATED. This field is ignored. |
 | raw | bool | If `raw` flag is set, request will work only with objects that are physically stored on the peer node |
-                                            
+                                                
 
 __Response Body__ HeadResponse.Body
 
@@ -231,7 +239,7 @@ Object HEAD response body
 
 DEPRECATED. Use HeaderWithSignature instead. |
 | split_info | SplitInfo | Meta information of split hierarchy. |
-                      
+                         
 ### Method Search
 
 Search objects in container. Search query allows to match by Object
@@ -258,10 +266,13 @@ Statuses:
   access to operation SEARCH of the object is denied;
 - **CONTAINER_NOT_FOUND** (3072, SECTION_CONTAINER): \
   search container not found;
+- **CONTAINER_REVISION_MISMATCH** (3076, SECTION_CONTAINER): \
+  if requester attached container revision he knows and it does not match
+  the server's one.
 - **TOKEN_EXPIRED** (4097, SECTION_SESSION): \
   provided session token has expired.
 
-                               
+                                   
 
 __Request Body:__ SearchRequest.Body
 
@@ -272,7 +283,7 @@ Object Search request body
 | container_id | ContainerID | Container identifier were to search |
 | version | uint32 | Version of the Query Language used |
 | filters | SearchFilter | List of search expressions |
-                                            
+                                                
 
 __Response Body__ SearchResponse.Body
 
@@ -292,7 +303,7 @@ Search for objects in a container. Similar to Search, but:
 
 Result is ordered by the 1st requested attribute (if any) and object ID.
 
-                                   
+                                       
 
 __Request Body:__ SearchV2Request.Body
 
@@ -302,11 +313,12 @@ Object Search request body
 | ----- | ---- | ----------- |
 | container_id | ContainerID | Container where the search is being performed. |
 | version | uint32 | Version of the Query Language used. |
-| filters | SearchFilter | List of search expressions. Limited to 8. If additional attributes are requested (see attributes below) then the first filter's key MUST be the first requested attribute. '$Object:containerID' and '$Object:objectID' filters are prohibited. Numeric filters' values MUST be in range [-MaxUint256, MaxUint256]. |
+| filters | SearchFilter | List of search expressions. Limited to 8. If additional attributes are requested (see attributes below) then the first filter's key MUST be the first requested attribute. '$Object:containerID', '$Object:objectID' and '__NEOFS__NONCE' filters are prohibited. Numeric filters' values MUST be in range [-MaxUint256, MaxUint256]. |
 | cursor | string | Cursor to continue search. Can be omitted or empty for the new search. |
 | count | uint32 | Limits the number of responses to the specified number. Can't be more than 1000. |
-| attributes | string | List of attribute names (including special ones as defined by SearchFilter key) to include into the reply. Limited to 8, these attributes also affect result ordering (result is ordered by the 1st one and then by OID). If additional attributes are requested, then the first filter's key (see filters above) MUST be the first requested attribute. '$Object:containerID' and '$Object:objectID' attributes are prohibited. If meta_header.ttl = 1 and the first filter is not STRING_EQUAL, values of the first filtered attribute are requested automatically. |
-                                            
+| attributes | string | List of attribute names (including special ones as defined by SearchFilter key) to include into the reply. Limited to 8, these attributes also affect result ordering (result is ordered by the 1st one and then by OID). If additional attributes are requested, then the first filter's key (see filters above) MUST be the first requested attribute. '$Object:containerID', '$Object:objectID' and '__NEOFS__NONCE' attributes are prohibited. If meta_header.ttl = 1 and the first filter is not STRING_EQUAL, values of the first filtered attribute are requested automatically. |
+| container_revision | uint64 | Starting from API v2.27.0, requester may attach container revision to ensure container state is up to date. If server's known revision does not match the requested one, it must return **CONTAINER_REVISION_MISMATCH** (3076) response status with no payload. |
+                                                
 
 __Response Body__ SearchV2Response.Body
 
@@ -353,7 +365,7 @@ Statuses:
 - **TOKEN_EXPIRED** (4097, SECTION_SESSION): \
   provided session token has expired.
 
-         
+          
 
 __Request Body:__ GetRangeRequest.Body
 
@@ -364,7 +376,7 @@ Byte range of object's payload request body
 | address | Address | Address of the object containing the requested payload range |
 | range | Range | Requested payload range |
 | raw | bool | If `raw` flag is set, request will work only with objects that are physically stored on the peer node. |
-                                            
+                                                
 
 __Response Body__ GetRangeResponse.Body
 
@@ -377,7 +389,7 @@ chunks.
 | ----- | ---- | ----------- |
 | chunk | bytes | Chunked object payload's range. |
 | split_info | SplitInfo | Meta information of split hierarchy. |
-                               
+                                  
 ### Method GetRangeHash
 
 Returns homomorphic or regular hash of object's payload range after
@@ -412,7 +424,7 @@ Statuses:
 - **TOKEN_EXPIRED** (4097, SECTION_SESSION): \
   provided session token has expired.
 
-     
+      
 
 __Request Body:__ GetRangeHashRequest.Body
 
@@ -424,7 +436,7 @@ Get hash of object's payload part request body.
 | ranges | Range | List of object's payload ranges to calculate homomorphic hash |
 | salt | bytes | Binary salt to XOR object's payload ranges before hash calculation |
 | type | ChecksumType | Checksum algorithm type |
-                                            
+                                                
 
 __Response Body__ GetRangeHashResponse.Body
 
@@ -434,7 +446,7 @@ Get hash of object's payload part response body.
 | ----- | ---- | ----------- |
 | type | ChecksumType | Checksum algorithm type |
 | hash_list | bytes | List of range hashes in a binary format |
-                                   
+                                      
 ### Method Replicate
 
 Save replica of the object on the NeoFS storage node. Both client and
@@ -453,7 +465,43 @@ Statuses:
 - **CONTAINER_NOT_FOUND** (3072, SECTION_CONTAINER): \
   the container to which the replicated object is associated was not found.
 
-                                                                                                
+                                                                                        
+### Method ReplicateV2
+
+Save replica of the object on the NeoFS storage node. Both client and
+server must be authenticated NeoFS storage nodes matching storage policy
+of the container referenced by the replicated object. Thus, this operation
+is purely system: regular users should not pay attention to it but use
+Put.
+
+First message is required and MUST contain `init` field only. `object_id`,
+`signature`, `header` and `node_signature` fields are required for it.
+Following messages must contain `payload_chunk` field only.
+
+Server may interrupt the stream with `OK` status if object already exists
+on it.
+
+Statuses:
+- **OK** (0, SECTION_SUCCESS): \
+  the object has been successfully replicated;
+- **INTERNAL_SERVER_ERROR** (1024, SECTION_FAILURE_COMMON): \
+  internal server error described in the text message;
+- **ACCESS_DENIED** (2048, SECTION_OBJECT): \
+  the client does not authenticate any NeoFS storage node matching storage
+  policy of the container referenced by the replicated object
+- **CONTAINER_NOT_FOUND** (3072, SECTION_CONTAINER): \
+  the container to which the replicated object is associated was not found.
+
+                                                                                            
+### Message ExtendedRange
+
+Extended object payload range.
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| first_pos | uint64 | Offset of the first byte from the object payload start. If omitted, the range is defined by `last_pos` as the number of bytes from the payload end. |
+| last_pos | uint64 | Offset of the last byte from the object payload start. If omitted, the range starts at `first_pos` and extends to the end of the payload. |
+               
 ### Message GetResponse.Body.Init
 
 Initial part of the `Object` structure stream. Technically it's a
@@ -491,6 +539,7 @@ are not set, they will be calculated by a peer node.
 | signature | Signature | Object signature if available |
 | header | Header | Object's Header. The maximum length is 16KB. |
 | copies_number | uint32 | Number of the object copies to store within the RPC call. By default object is processed according to the container's placement policy. DEPRECATED: use `PlacementPolicy.Initial.max_replicas` instead. Servers ignore this field. |
+| container_revision | uint64 | Starting from API v2.27.0, requester may attach container revision to ensure container state is up to date. If server's known revision does not match the requested one, it must return **CONTAINER_REVISION_MISMATCH** (3076) response status with no payload. |
      
 ### Message Range
 
@@ -502,7 +551,17 @@ payload" and allows to receive payload only when its size is not known.
 | ----- | ---- | ----------- |
 | offset | uint64 | Offset of the range from the object payload start |
 | length | uint64 | Length in bytes of the object payload range |
-             
+      
+### Message ReplicateV2Request.Init
+
+Stream initialization data.
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| object | Object | Object to be replicated without payload. |
+| signature | Signature | Signature of `object.object_id.value` field. |
+| sign_object | bool | Optional flag that requires server side to attach signature of just replicated object to ensure it has been received correctly. Signature must be calculated with a key that corresponds to an exposed to the network map public key of the object receiver. |
+            
 ### Message SearchV2Response.OIDWithMeta
 
 OID with additional requested metadata.
@@ -553,6 +612,11 @@ that affect system behaviour:
   is the only way to delete/lock objects. It MUST be a single stringified
   (according to [refs.ObjectID] message) object ID with no leading or
   trailing spaces.
+* __NEOFS__NONCE \
+  Can contain any data and is used to prevent OID collisions for otherwise
+  identical objects (same headers, same payload). Usually it contains 8
+  base64-encoded bytes of randomness. This attribute can not be used in
+  SEARCH requests since it's not indexed by nodes.
 * __NEOFS__TICK_EPOCH \
   Decimal number that defines what epoch must produce
   object notification with UTF-8 object address in a
@@ -683,6 +747,10 @@ properties:
 * $Object:PHY \
   Returns only objects physically stored in the system. This filter is
   activated if the `key` exists, disregarding the value and matcher type.
+
+The following object attributes are not indexed and are forbidden for filters:
+
+* __NEOFS__NONCE
 
 Following filters are deprecated:
 

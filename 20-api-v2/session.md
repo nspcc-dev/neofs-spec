@@ -70,8 +70,7 @@ Carries objects involved in the object session.
    
 ### Message RequestMetaHeader
 
-Meta information attached to the request. When forwarded between peers,
-request meta headers are folded in matryoshka style.
+Meta information attached to the request (common things for all requests).
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
@@ -82,7 +81,9 @@ request meta headers are folded in matryoshka style.
 | session_token | SessionToken | Session token within which the request is sent |
 | session_token_v2 | SessionTokenV2 | Session token v2 with delegation chain support. Requests are invalid if both session_token and session_token_v2 are set. |
 | bearer_token | BearerToken | `BearerToken` with eACL overrides for the request |
-| origin | RequestMetaHeader | `RequestMetaHeader` of the origin request |
+| origin | RequestMetaHeader | `RequestMetaHeader` of the origin request.
+
+DEPRECATED: Ignored since API v2.25, all requests are original. |
 | magic_number | uint64 | NeoFS network magic. Must match the value for the network that the server belongs to. |
    
 ### Message RequestVerificationHeader
@@ -91,23 +92,39 @@ Verification info for the request signed by all intermediate nodes.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| body_signature | Signature | Request Body signature. Should be generated once by the request initiator. |
-| meta_signature | Signature | Request Meta signature is added and signed by each intermediate node |
-| origin_signature | Signature | Signature of previous hops |
-| origin | RequestVerificationHeader | Chain of previous hops signatures |
+| body_signature | Signature | Request Body signature. Should be generated once by the request initiator.
+
+DEPRECATED: unused and unchecked since API v2.26, use `request_signature` as a verification instead. |
+| meta_signature | Signature | Request Meta signature is added and signed by each intermediate node.
+
+DEPRECATED: unused and unchecked since API v2.26, use `request_signature` as a verification instead. |
+| origin_signature | Signature | Signature of previous hops.
+
+DEPRECATED: Unused and unchecked since API v2.25, no origin structure to check. |
+| origin | RequestVerificationHeader | Chain of previous hops signatures.
+
+DEPRECATED: Unused and unchecked since API v2.25, no origin structure to check. |
+| request_signature | Signature | Request signature. It is a signature of the whole request marshaled, except for the verification header itself (the verification header field must be omitted completely, attaching no bytes to the signed data). |
    
 ### Message ResponseMetaHeader
 
-Information about the response
+Information about the response. For stream RPCs, non-status information
+can be attached only to stream's first response message and must be
+omitted for the subsequent ones. Error statuses are allowed to be
+transmitted in any message to terminate the stream.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| version | Version | Peer's API version used |
-| epoch | uint64 | Peer's local epoch number |
-| ttl | uint32 | Maximum number of intermediate nodes in the request route |
-| x_headers | XHeader | Response X-Headers |
-| origin | ResponseMetaHeader | `ResponseMetaHeader` of the origin request |
-| status | Status | Status return |
+| version | Version | Server's API version used. Must be attached only if server's version is lower than client's one, optional otherwise. |
+| epoch | uint64 | Peer's local epoch number. Optional. |
+| ttl | uint32 | Maximum number of intermediate nodes in the request route.
+
+DEPRECATED: ignored since API v2.25. |
+| x_headers | XHeader | Response X-Headers. Optional in general, but for certain requests it can be required for correct result processing, read method's description for information. |
+| origin | ResponseMetaHeader | `ResponseMetaHeader` of the origin request.
+
+DEPRECATED: Unused for a long time, ignored since API v2.25. |
+| status | Status | Status return. May be omitted for success request executions (equals to `0` OK status, and only to it), must be attached otherwise. |
    
 ### Message ResponseVerificationHeader
 
@@ -149,7 +166,7 @@ Session Token body
 | id | bytes | Token identifier is a valid UUIDv4 in binary form |
 | owner_id | OwnerID | Identifier of the session initiator |
 | lifetime | TokenLifetime | Lifetime of the session |
-| session_key | bytes | Public key used in session |
+| session_key | bytes | Public key used in session (binary compressed 33-byte 256r1 ECDSA) |
 | object | ObjectSessionContext | ObjectService session context |
 | container | ContainerSessionContext | ContainerService session context |
    

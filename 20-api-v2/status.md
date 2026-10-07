@@ -74,6 +74,7 @@ Section of statuses for container-related operations.
 | 1 | EACL_NOT_FOUND | [**3073**] eACL table not found. |
 | 2 | CONTAINER_LOCKED | [**3074**] Operation rejected by the container lock. |
 | 3 | CONTAINER_AWAIT_TIMEOUT | [**3075**] Async container operation timed out. |
+| 4 | CONTAINER_VERSION_MISMATCH | [**3076**] Requested operation with container is not in sync: container revision does not meet the server's one. Can be returned only if requester provides container version he has, see requests documentation for more info. |
 
 ### Emun Object
 

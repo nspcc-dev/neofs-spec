@@ -53,6 +53,7 @@ Describes a single eACL rule.
 | action | Action | Rule execution result. Either allows or denies access if filters match. |
 | filters | Filter | List of filters to match and see if rule is applicable |
 | targets | Target | List of target subjects to apply ACL rule to |
+| comment | string | Optional auxiliary data associated with the rule. The comment does not affect permission evaluation and must be valid UTF-8 without zero bytes. |
    
 ### Message EACLRecord.Filter
 
@@ -95,6 +96,11 @@ filter by object header fields or user attributes. From the well-known list
 only `$Object:objectID` and `$Object:containerID` will be available, as
 it's possible to take that information from the requested address.
 
+Some filters can be inapplicable for PUT operations that operate with
+unsealed objects. When object is created by storage node its ID in unknown
+and its hashes or length may also be unknown at the time request is checked
+against EACL.
+
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 | header_type | HeaderType | Define if Object or Request header will be used |
@@ -110,14 +116,15 @@ keys to match.
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 | role | Role | Target subject's role class |
-| keys | bytes | List of 25-byte accounts to identify target subjects. 33-byte public keys are also supported, however, they are deprecated and script hashes should be derived from them. |
+| keys | bytes | List of 25-byte accounts (refs.OwnerID) to identify target subjects. 33-byte compressed curve 256r1 ECDSA public keys are also supported, however, they are deprecated and script hashes should be derived from them. |
    
 ### Message EACLTable
 
 Extended ACL rules table. A list of ACL rules defined additionally to Basic
 ACL. Extended ACL rules can be attached to a container and can be updated
-or may be defined in `BearerToken` structure. Please see the corresponding
-NeoFS Technical Specification section for detailed description.
+or may be defined in `BearerToken` structure. Serialized table can't exceed
+64K in size. Please see the corresponding NeoFS Technical Specification
+section for detailed description.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
