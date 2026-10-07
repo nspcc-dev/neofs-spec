@@ -90,6 +90,16 @@ AttributeChanged
     type: String # Name of attribute
 ```
 
+ContainerUpdated notification. Produced when container has been changed.
+
+```
+ContainerUpdated
+  - name: ContainerID
+    type: Hash256
+  - name: Revision
+    type: Integer
+```
+
 #### Contract methods
 
 ##### AddNextEpochNodes
@@ -209,20 +219,6 @@ func Decimals() int
 Decimals returns static zero meaning containers are Non\-divisible NFTs.
 
 Decimals implements NEP\-11 method.
-
-##### Delete
-
-```go
-func Delete(containerID []byte, signature interop.Signature, token []byte)
-```
-
-Delete method removes a container from the contract storage if it has been invoked by Alphabet nodes of the Inner Ring. Otherwise, it produces containerDelete notification.
-
-Signature is a RFC6979 signature of the container ID. Token is optional and should be a stable marshaled SessionToken structure from API.
-
-If the container doesn't exist, it panics with NotFoundError.
-
-Deprecated: use [Remove](<#Remove>) instead.
 
 ##### GetContainerData
 
@@ -424,6 +420,8 @@ RemoveAttribute must have Alphabet witness. Invocation and verification scripts 
 
 If container is missing, RemoveAttribute throws \[cst.NotFoundError\] exception.
 
+Removing an attribute increments container version and emits 'ContainerUpdated' notification.
+
 ##### ReplicasNumbers
 
 ```go
@@ -458,19 +456,7 @@ SetAttribute must have Alphabet witness. Invocation and verification scripts mus
 
 If container is missing, SetAttribute throws \[cst.NotFoundError\] exception.
 
-##### SetEACL
-
-```go
-func SetEACL(eACL []byte, signature interop.Signature, publicKey interop.PublicKey, token []byte)
-```
-
-SetEACL method sets a new extended ACL table related to the contract if it was invoked by Alphabet nodes of the Inner Ring. Otherwise, it produces setEACL notification.
-
-EACL should be a stable marshaled EACLTable structure from API. Protocol version and container reference must be set in 'version' and 'container\_id' fields respectively. Signature is a RFC6979 signature of the Container. PublicKey contains the public key of the signer. Token is optional and should be a stable marshaled SessionToken structure from API.
-
-If the container doesn't exist, it panics with NotFoundError.
-
-Deprecated: use [PutEACL](<#PutEACL>) instead.
+Setting an attribute increments container version and emits 'ContainerUpdated' notification.
 
 ##### SetHardContainerQuota
 
@@ -503,14 +489,6 @@ func SetSoftUserQuota(user []byte, size int)
 ```
 
 SetSoftUserQuota sets size quota that limits all space used for storing objects in all containers that belong to user \(including object replicas\). Non\-positive size sets no limitation. After exceeding the limit nodes are instructed to warn only, without denial of service. Call must be signed by user. Limit can be changed with a repeated call. See also [SetHardUserQuota](<#SetHardUserQuota>). Panics if user is incorrect.
-
-##### SubmitObjectPut
-
-```go
-func SubmitObjectPut(metaInformation []byte, sigs [][]interop.Signature)
-```
-
-SubmitObjectPut registers successful object PUT operation and notifies about it. metaInformation must be signed by container nodes according to container's placement, see [VerifyPlacementSignatures](<#VerifyPlacementSignatures>). metaInformation must contain information about an object placed to a container that was created using [Put](<#Put>) \([PutMeta](<#PutMeta>)\) with enabled meta\-on\-chain option.
 
 ##### Symbol
 
@@ -563,6 +541,8 @@ Transfer makes to an owner of the container identified by tokenID.
 If referenced container does not exist, Transfer throws \[cst.NotFoundError\] exception. If the container has already been removed, Transfer throws \[cst.ErrorDeleted\] exception.
 
 Transfer implements NEP\-11 method.
+
+Changing container owner increments container version and emits 'ContainerUpdated' notification.
 
 ##### Update
 

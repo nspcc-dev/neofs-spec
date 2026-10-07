@@ -17,7 +17,11 @@ of the netmap issued for the next Epoch.
 
 ## Network Map
 
-NeoFS Network Map, or just "netmap", is a structured representation of all active storage nodes available in NeoFS network for the current Epoch.
+NeoFS Network Map, or just "netmap", is a structured representation of all
+active storage nodes available in NeoFS network. It's versioned and each
+new version has a different set of nodes from the previous one. The same
+map version can be valid for a number of epochs, but a single epoch always
+has the same version of network map.
 
 Storage nodes in the netmap are identified by public key. Netmap also has additional information about each node, like network addresses and a list of attributes.
 

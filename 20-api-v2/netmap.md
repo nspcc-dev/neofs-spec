@@ -109,8 +109,9 @@ Network map structure
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| epoch | uint64 | Network map revision number. |
+| epoch | uint64 | Network map revision number. DEPRECATED: Network maps are versioned since API v2.27. |
 | nodes | NodeInfo | Nodes presented in network. |
+| version | uint64 | Network map version number. |
    
 ### Message NetworkConfig
 
@@ -179,6 +180,7 @@ Information about NeoFS network
 | magic_number | uint64 | Magic number of FS chain of the NeoFS network |
 | ms_per_block | int64 | MillisecondsPerBlock network parameter of FS chain of the NeoFS network |
 | network_config | NetworkConfig | NeoFS network configuration |
+| netmap_version | uint64 | Network map version number. |
    
 ### Message NodeInfo
 
@@ -186,7 +188,7 @@ NeoFS node description
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| public_key | bytes | Public key of the NeoFS node in a binary format |
+| public_key | bytes | Public key of the NeoFS node in a binary format (compressed 33-byte curve 256r1 ECDSA). |
 | addresses | string | Ways to connect to a node |
 | attributes | Attribute | Carries list of the NeoFS node attributes in a key-value form. Key name must be a node-unique valid UTF-8 string (without zero bytes). Value can't be empty. NodeInfo structures with duplicated attribute names or attributes with empty values will be considered invalid. |
 | state | State | Carries state of the NeoFS node |
@@ -197,17 +199,6 @@ Administrator-defined Attributes of the NeoFS Storage Node.
 
 `Attribute` is a Key-Value metadata pair. Key name must be a valid UTF-8
 string (without zero bytes that are forbidden). Value can't be empty.
-
-Attributes can be constructed into a chain of attributes: any attribute can
-have a parent attribute and a child attribute (except the first and the last
-one). A string representation of the chain of attributes in NeoFS Storage
-Node configuration uses ":" and "/" symbols, e.g.:
-
-       `NEOFS_NODE_ATTRIBUTE_1=key1:val1/key2:val2`
-
-Therefore the string attribute representation in the Node configuration must
-use "\:", "\/" and "\\" escaped symbols if any of them appears in an attribute's
-key or value.
 
 Node's attributes are mostly used during Storage Policy evaluation to
 calculate object's placement and find a set of nodes satisfying policy

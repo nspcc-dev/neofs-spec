@@ -22,7 +22,7 @@ func Emit()
 
 Emit method produces FS chain GAS and distributes it among Inner Ring nodes and proxy contract. It can be invoked only by an Alphabet node of the Inner Ring.
 
-To produce GAS, an alphabet contract transfers all available NEO from the contract account to itself. 50% of the GAS in the contract account are transferred to proxy contract. 43.75% of the GAS are equally distributed among all Inner Ring nodes. Remaining 6.25% of the GAS stay in the contract.
+To produce GAS, an alphabet contract transfers all available NEO from the contract account to itself. 7/8 of the GAS in the contract account are transferred to proxy contract. 1/16 of the GAS are equally distributed among all Inner Ring nodes. Remaining 1/16 of the GAS stay in the contract.
 
 ##### Gas
 

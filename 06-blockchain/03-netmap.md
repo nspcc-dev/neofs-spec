@@ -54,6 +54,14 @@ NewEpochSubscription
 	type: Hash160
 ```
 
+NewNetmap notification. This notification is produced when a new version of network map is registered.
+
+```
+NewNetmap
+  - name: version
+	type: Integer
+```
+
 #### Contract methods
 
 ##### AddNode
@@ -75,7 +83,7 @@ CleanupThreshold returns the cleanup threshold configuration. Nodes that do not 
 ##### Config
 
 ```go
-func Config(key []byte) any
+func Config(key []byte) []byte
 ```
 
 Config returns configuration value of NeoFS configuration. If key does not exist, returns nil.
@@ -123,18 +131,6 @@ func GetEpochTime(epoch int) int
 GetEpochTime returns block time when given epoch came. Returns 0 if the epoch is missing. Do not confuse with [GetEpochBlock](<#GetEpochBlock>).
 
 Use [LastEpochTime](<#LastEpochTime>) if you are interested in the current epoch.
-
-##### InnerRingList
-
-```go
-func InnerRingList() []common.IRNode
-```
-
-InnerRingList method returns a slice of structures that contains the public key of an Inner Ring node. It should be used in notary disabled environment only.
-
-If notary is enabled, look to NeoFSAlphabet role in native RoleManagement contract of FS chain.
-
-Deprecated: since non\-notary settings are no longer supported, refer only to the RoleManagement contract only. The method will be removed in one of the future releases.
 
 ##### IsStorageNode
 
@@ -204,6 +200,24 @@ func ListNodesEpoch(epoch int) iterator.Iterator
 
 ListNodesEpoch provides an iterator to walk over node set at the given epoch. It's the same as [ListNodes](<#ListNodes>) \(and exposed as listNodes from the contract via overload\), but allows to query a particular epoch data if it's still stored. If this epoch is already expired \(or not happened yet\) returns an empty iterator.
 
+Deprecated: netmwork map based on epochs should not be used. use [ListNodes](<#ListNodes>) or [ListNodesVersion](<#ListNodesVersion>).
+
+##### ListNodesVersion
+
+```go
+func ListNodesVersion(version int) iterator.Iterator
+```
+
+ListNodesVersion provides an iterator to walk over node set at the given version. It's the same as [ListNodes](<#ListNodes>), but allows to query a particular version data if it's still stored. If this version is already removed returns an empty iterator.
+
+##### NetworkMapVersion
+
+```go
+func NetworkMapVersion() int
+```
+
+NetworkMapVersion return current network map version. Version monotonically increases with each change to the network map.
+
 ##### NewEpoch
 
 ```go
@@ -262,7 +276,7 @@ Update method updates contract source code and manifest. It can be invoked only 
 func UpdateSnapshotCount(count int)
 ```
 
-UpdateSnapshotCount updates the number of the stored snapshots. If a new number is less than the old one, old snapshots are removed. Otherwise, history is extended with empty snapshots, so \`Snapshot\` method can return invalid results for \`diff = new\-old\` epochs until \`diff\` epochs have passed.
+UpdateSnapshotCount updates the number of the stored snapshots. If a new number is less than the old one, old snapshots are removed. Otherwise, history is extended with empty snapshots, so \`Snapshot\` method can return invalid results for \`diff = new\-old\` versions until \`diff\` versions have passed.
 
 Count MUST NOT be negative.
 

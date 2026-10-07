@@ -128,8 +128,8 @@ has been already verified upon container creation.
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 | container | Container | Requested container structure |
-| signature | SignatureRFC6979 | Signature of a stable-marshalled container according to RFC-6979. |
-| session_token | SessionToken | Session token if the container has been created within the session |
+| signature | SignatureRFC6979 | Signature of a stable-marshalled container according to RFC-6979. DEPRECATED: nodes can omit this field, clients shouldn't check for it. |
+| session_token | SessionToken | Session token if the container has been created within the session DEPRECATED: nodes can omit this field, clients shouldn't check for it. |
                         
 ### Method List
 
@@ -174,6 +174,9 @@ Statuses:
 - Common failures (SECTION_FAILURE_COMMON);
 - **CONTAINER_AWAIT_TIMEOUT** (3075, SECTION_CONTAINER): \
   transaction was sent but not executed within the deadline.
+- **CONTAINER_REVISION_MISMATCH** (3076, SECTION_CONTAINER): \
+  if requester attached container revision he knows and it does not match
+  the server's one.
 
                                   
 
@@ -186,6 +189,7 @@ reference. It will be taken from `EACLTable.container_id` field.
 | ----- | ---- | ----------- |
 | eacl | EACLTable | Extended ACL table to set for the container |
 | signature | SignatureRFC6979 | Signature of stable-marshalled Extended ACL table according to RFC-6979. |
+| container_revision | uint64 | Starting from API v2.27.0, requester must attach container revision to ensure container state is up to date. If server's known revision does not match the requested one, it must return **CONTAINER_REVISION_MISMATCH** (3076) response status with no payload. |
                                           
 
 __Response Body__ SetExtendedACLResponse.Body
@@ -229,8 +233,8 @@ the time of container creation.
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 | eacl | EACLTable | Extended ACL requested, if available |
-| signature | SignatureRFC6979 | Signature of stable-marshalled Extended ACL according to RFC-6979. |
-| session_token | SessionToken | Session token if Extended ACL was set within a session |
+| signature | SignatureRFC6979 | Signature of stable-marshalled Extended ACL according to RFC-6979. DEPRECATED: nodes can omit this field, clients shouldn't check for it. |
+| session_token | SessionToken | Session token if Extended ACL was set within a session DEPRECATED: nodes can omit this field, clients shouldn't check for it. |
                             
 ### Method AnnounceUsedSpace
 
@@ -397,6 +401,13 @@ of stable-marshalled container message.
 | basic_acl | uint32 | `BasicACL` contains access control rules for the owner, system and others groups, as well as permission bits for `BearerToken` and `Extended ACL` |
 | attributes | Attribute | Attributes represent immutable container's meta data |
 | placement_policy | PlacementPolicy | Placement policy for the object inside the container |
+| revision | uint64 | Container revision. It increments every time container's properties are changed by the owner (or the owner itself is changed).
+
+Do not confuse it with API version: this field describes how many times container has been changed since its creation, while API version describes proto message format.
+
+It must only be set by storage nodes and must not be filled on the client side. The initial revision after a successful container creation call is 1.
+
+Versioned containers are available starting from API v2.27.0. |
    
 ### Message Container.Attribute
 
