@@ -36,7 +36,7 @@ Update method updates contract source code and manifest. It can be invoked only 
 func Verify() bool
 ```
 
-Verify checks whether carrier transaction contains either \(2/3N \+ 1\) or \(N/2 \+ 1\) valid multi\-signature of the NeoFS Alphabet. Container contract's \`SubmitObjectPut\` is an exception, Alphabet signature is not required, contract's \`VerifyPlacementSignatures\` is called instead.
+Verify checks for alphabet or committee signature for a transaction.
 
 ##### Version
 

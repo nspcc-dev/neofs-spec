@@ -115,7 +115,7 @@ This method produces Cheque notification to burn assets in FS chain.
 ##### Config
 
 ```go
-func Config(key []byte) any
+func Config(key []byte) []byte
 ```
 
 Config returns configuration value of NeoFS configuration. If the key does not exist, returns nil.
