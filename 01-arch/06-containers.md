@@ -29,4 +29,6 @@ won't be signed, so incorrect containers can't be created.
 Some subset of well-known container attributes can be changed as well as
 container owner (the mechanism of owner change is out of NeoFS API scope,
 internally it's implemented as [NEP-11](https://github.com/neo-project/proposals/blob/462436528f9fe71993a1ffd0fa7df76cdb7f9641/nep-11.mediawiki)
-token transfer in blockhain components).
+token transfer in blockhain components). Changes like this increment
+container revision number that initially starts at 1 which can be used
+to detect them (an appropriate event is emitted from contracts).
