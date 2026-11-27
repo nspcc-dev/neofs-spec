@@ -1,5 +1,6 @@
 <p align="center">
-<img src="./.github/logo.svg" width="500px" alt="NeoFS">
+<img src="./.github/logo.svg#gh-light-mode-only" width="500px" alt="NeoFS">
+<img src="./.github/logo-dark.svg#gh-dark-mode-only" width="500px" alt="NeoFS">
 </p>
 <p align="center">
   <a href="https://fs.neo.org">NeoFS</a> Technical Specification
